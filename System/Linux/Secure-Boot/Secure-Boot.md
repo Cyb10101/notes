@@ -2,6 +2,8 @@
 
 ## Module signing for drivers
 
+*Note: Must be run after new kernel update!*
+
 When the secure boot has been activated, some drivers have to be signed.
 
 See file: [module-signing.sh](module-signing.sh)
