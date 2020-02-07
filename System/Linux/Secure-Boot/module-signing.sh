@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# Module signing for drivers in secure boot
-# * evdi: DisplayLink
-# * vboxdrv: VirtualBox
-
 PATH_CERTIFICATE="/root/module-signing"
 SIGN_MODULES=(
   evdi
