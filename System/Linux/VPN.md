@@ -41,7 +41,7 @@ sudo apt install wireguard
 
 Then install Cyberghost.
 
-@todo 2019-02-04 Cyberghost cannot be installed:
+@todo 2019-02-04 Cyberghost can not be installed:
 
 ```bash
 # Also run in the Cyberghost installation script:
