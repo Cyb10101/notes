@@ -19,7 +19,7 @@ func getMouseCoordinates() {
   x, y := robotgo.GetMousePos()
   // @todo GetTitle not working
   // fmt.Printf("\n// %s\n", robotgo.GetTitle(robotgo.GetPID()), robotgo.GetPID())
-  fmt.Printf("\n// %s (PID: %d)\n", getProcessByPid(robotgo.GetPID()), robotgo.GetPID())
+  // fmt.Printf("\n// %s (PID: %d)\n", getProcessByPid(robotgo.GetPID()), robotgo.GetPID())
   fmt.Printf("robotgo.MoveMouse(%d, %d)\n", x, y)
 }
 
