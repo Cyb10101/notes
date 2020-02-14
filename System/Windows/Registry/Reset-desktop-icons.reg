@@ -1,0 +1,7 @@
+Windows Registry Editor Version 5.00
+
+; Icons on the desktop have an incorrect grid
+; Requires user logout
+[HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics]
+"IconSpacing"="-1710"
+"IconVerticalSpacing"="-1125"
