@@ -5,6 +5,8 @@ import (
   "fmt"
   "time"
   "os"
+  "os/exec"
+  "strings"
 
   "github.com/go-vgo/robotgo"
 )
@@ -15,6 +17,9 @@ func sleepSeconds(second uint) {
 
 func getMouseCoordinates() {
   x, y := robotgo.GetMousePos()
+  // @todo GetTitle not working
+  // fmt.Printf("\n// %s\n", robotgo.GetTitle(robotgo.GetPID()), robotgo.GetPID())
+  fmt.Printf("\n// %s (PID: %d)\n", getProcessByPid(robotgo.GetPID()), robotgo.GetPID())
   fmt.Printf("robotgo.MoveMouse(%d, %d)\n", x, y)
 }
 
@@ -23,6 +28,17 @@ func ifTenaryUint(condition bool, ifTrue uint, ifFalse uint) uint {
     return ifTrue
   }
   return ifFalse
+}
+
+func getProcessByPid(pid int32) string {
+  out, err := exec.Command("ps", "-h", "-o", "command", "-p", fmt.Sprint(pid)).Output()
+  if err != nil {
+      fmt.Printf("%s", err)
+  }
+  output := string(out[:])
+  output = strings.TrimSpace(output)
+  output = output[(strings.LastIndex(output, "/") + 1):len(output)]
+  return output
 }
 
 func main() {
