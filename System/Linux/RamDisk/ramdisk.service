@@ -1,0 +1,12 @@
+[Unit]
+Description=Restore and save data to ram disk at boot and shutdown
+
+[Service]
+Type=oneshot
+User=root
+RemainAfterExit=yes
+ExecStart=/usr/lib/cyb/ramdisk.sh start
+ExecStop=/usr/lib/cyb/ramdisk.sh stop
+
+[Install]
+WantedBy=multi-user.target
