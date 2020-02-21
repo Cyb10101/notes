@@ -6,23 +6,47 @@ https://www.httrack.com/
 sudo apt install webhttrack
 ```
 
-Struktur > ISO9960-Namen (CDROM)
+Start HTTrack in Browser:
 
-* Site-Kopie > Optionen ändern
-	- Grenzwerte > Maximale übertragungsrate = 250000
-	- FlussKontrolle > Anzahl Verbindungen = 8
-	- Browser ID > HTML-Fußzeile > (none)
+* Start > WebHTTrack
+* Language preference > English
+* Next
 
-AcceptLanguage=de, en, *
+Select Project:
 
-Filterregeln:
+* Select a existing or create new project
+* Base path: Set Download directory
+* Next
+
+Select Urls:
+
+* Action: Download web sites(s)
+* Add url: https://example.org
+* Preferences and mirror options > Set options
+
+Set options:
+
+* Build > Structure = ISO9960 names (CDROM)
+* Flow Control > N# connections = 8
+* Limits > Max transfer rate = 250000
+* Browser ID > HTML-Footer = None (Clear field)
+
+* Scan rules:
 
 ```text
 +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar
 +*.gif +*.jpg +*.jpeg +*.png +*.tif +*.bmp
 +*.zip +*.tar +*.tgz +*.gz +*.rar +*.z +*.exe
 +*.mov +*.mpg +*.mpeg +*.avi +*.asf +*.mp3 +*.mp2 +*.rm +*.wav +*.vob +*.qt +*.vid +*.ac3 +*.wma +*.wmv
--domain.de/de/build/search*
--domain.de/en/build/search*
--domain.de/*/search*
 ```
+* Scan rules - Exclude something:
+
+```text
+-example.org/de/build/search*
+-example.org/en/build/search*
+-example.org/*/search*
+```
+
+* Save with "OK"
+* Next
+* Start
