@@ -69,7 +69,7 @@ func main() {
   robotgo.SetMouseDelay(100)
 
   // Editor [text]
-  coordsEditor := coordinates {x: 2771, y: 275}
+  coordsEditor := coordinates {x: 2772, y: 278}
 
   // Firefox tab
   coordsFirefoxTab := []coordinates {
@@ -132,7 +132,7 @@ func main() {
   }
 
   // Terminal
-  coordsTerminal := coordinates {x: 2066, y: 642}
+  coordsTerminal := coordinates {x: 2282, y: 758}
 
   for i := 0; i < int(repeat); i++ {
     fmt.Printf("\nRunning query %d of %d:\n", i + 1, repeat)
@@ -147,9 +147,11 @@ func main() {
 
       robotgo.MoveMouse(coordsFirefoxAddressBar[i].x, coordsFirefoxAddressBar[i].y)
       robotgo.MouseClick()
+      sleepMilliSeconds(200)
       robotgo.KeyTap("a", "ctrl")
       robotgo.KeyTap("v", "ctrl")
       robotgo.KeyTap("enter")
+      sleepMilliSeconds(200)
     }
 
     timeDiff = 3000 - (getUnixMilliSeconds() - timeStart)
