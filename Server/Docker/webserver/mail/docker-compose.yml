@@ -1,0 +1,131 @@
+version: '3.6'
+services:
+  web:
+    image: webdevops/php-apache:7.4
+    restart: always
+    volumes:
+      - ./.docker/roundmail:/app
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - VIRTUAL_HOST=mail-example.org
+      - VIRTUAL_PROTO=https
+      - VIRTUAL_PORT=443
+      - LETSENCRYPT_HOST=mail-example.org
+
+      - WEB_DOCUMENT_ROOT=/app
+
+      # SSL: Use default cert from global-nginx-proxy
+      #- CERT_NAME=default
+      # SSL: Do not a redirect in global-nginx-proxy, if you use another port than 443
+      - HTTPS_METHOD=noredirect
+
+      - APPLICATION_UID=${APPLICATION_UID:-501}
+      - APPLICATION_GID=${APPLICATION_GID:-80}
+    working_dir: /app
+
+  web-redirect:
+    image: webdevops/php-apache:7.4
+    restart: always
+    volumes:
+      - ./web-redirect:/app
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - VIRTUAL_HOST=mail.mail-example.org,pop.mail-example.org,imap.mail-example.org,smtp.mail-example.org
+      - VIRTUAL_PROTO=https
+      - VIRTUAL_PORT=443
+      - LETSENCRYPT_HOST=mail.mail-example.org,pop.mail-example.org,imap.mail-example.org,smtp.mail-example.org
+
+      - WEB_DOCUMENT_ROOT=/app
+
+      # SSL: Use default cert from global-nginx-proxy
+      #- CERT_NAME=default
+      # SSL: Do not a redirect in global-nginx-proxy, if you use another port than 443
+      - HTTPS_METHOD=noredirect
+    working_dir: /app
+
+  roundcube:
+    image: roundcube/roundcubemail:latest
+    #container_name: roundcube
+    restart: always
+    volumes:
+      - ./.docker/roundmail:/var/www/html
+    environment:
+      - ROUNDCUBEMAIL_DB_TYPE=mysql
+      - ROUNDCUBEMAIL_DB_HOST=global-db
+      - ROUNDCUBEMAIL_DB_NAME=roundcube
+      - ROUNDCUBEMAIL_DB_USER=roundcube
+      - ROUNDCUBEMAIL_DB_PASSWORD=password
+
+      - ROUNDCUBEMAIL_DEFAULT_HOST=ssl://imap.mail-example.org
+      - ROUNDCUBEMAIL_DEFAULT_PORT=993
+      - ROUNDCUBEMAIL_SMTP_SERVER=ssl://smtp.mail-example.org
+      - ROUNDCUBEMAIL_SMTP_PORT=465
+      # https://github.com/roundcube/roundcubemail/tree/master/plugins
+      - ROUNDCUBEMAIL_PLUGINS=archive,managesieve,markasjunk,newmail_notifier,zipdownload
+
+  mail:
+    image: tvial/docker-mailserver:latest
+    restart: always
+    hostname: mail
+    domainname: mail-example.org
+    ports:
+      # receiving email from other mailservers
+      - "0.0.0.0:25:25"
+      # StartTLS: POP3, IMAP, SMTP
+      - "0.0.0.0:110:110"
+      - "0.0.0.0:143:143"
+      - "0.0.0.0:587:587"
+      # SSL: POP3, IMAP, SMTP
+      - "0.0.0.0:995:995"
+      - "0.0.0.0:993:993"
+      - "0.0.0.0:465:465"
+       # Manage Sieve port
+      - "0.0.0.0:4190:4190"
+    volumes:
+      - ./.docker/mail/config:/tmp/docker-mailserver
+      - ./.docker/mail/data:/var/mail
+      - ./.docker/mail/state:/var/mail-state
+      - ./.docker/mail/logs:/var/log/mail
+      - ./.docker/mail/cron/sa-learn:/etc/cron.d/sa-learn
+      - ../global/.docker/global-nginx-proxy/certs:/etc/letsencrypt/live:ro
+    environment:
+      - OVERRIDE_HOSTNAME=mail-example.org
+      - ENABLE_POP3=1
+      - ENABLE_CLAMAV=0
+      - ENABLE_FAIL2BAN=1
+      - ONE_DIR=1
+      # Debug: Enable debug on startup
+      #- DMS_DEBUG=1
+      - SSL_TYPE=letsencrypt
+
+      - ENABLE_POSTGREY=1
+      # greylist for N seconds
+      - POSTGREY_DELAY=300
+      # delete entries older than N days since the last time that they have been seen
+      - POSTGREY_MAX_AGE=35
+      # response when a mail is greylisted
+      - POSTGREY_TEXT=Delayed by postgrey
+      # whitelist host after N successful deliveries (N=0 to disable whitelisting)
+      - POSTGREY_AUTO_WHITELIST_CLIENTS=5
+
+      - ENABLE_SPAMASSASSIN=1
+      - "SA_SPAM_SUBJECT=[SPAM] "
+      # add spam info headers if at, or above that level
+      - SA_TAG=0.5
+      # add 'spam detected' (SA_SPAM_SUBJECT) headers at that level
+      - SA_TAG2=3.5
+      # triggers spam evasive actions
+      - SA_KILL=6.0
+
+      # Debug: Ignore the failure of this test - Allow other tests to complete
+      #- POSTSCREEN_ACTION=ignore
+      # Enables Managesieve on port 4190
+      - ENABLE_MANAGESIEVE=1
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+
+networks:
+  default:
+    external:
+      name: global

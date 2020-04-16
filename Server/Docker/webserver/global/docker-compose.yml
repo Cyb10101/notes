@@ -1,0 +1,48 @@
+version: '3.6'
+services:
+  global-nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./.docker/global-nginx-proxy/conf:/etc/nginx/conf.d
+      - ./.docker/global-nginx-proxy/vhost.d:/etc/nginx/vhost.d
+      - ./.docker/global-nginx-proxy/certs:/etc/nginx/certs:ro
+      - ./.docker/global-nginx-proxy/html:/usr/share/nginx/html
+      - ./.docker/global-nginx-proxy/dhparam:/etc/nginx/dhparam
+      - ./.docker/global-nginx-proxy/stream:/etc/nginx/stream
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+
+  global-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./.docker/global-nginx-proxy/certs:/etc/nginx/certs:rw
+      - ./.docker/global-nginx-proxy/conf:/etc/nginx/conf.d
+      - ./.docker/global-nginx-proxy/vhost.d:/etc/nginx/vhost.d
+      - ./.docker/global-nginx-proxy/html:/usr/share/nginx/html
+    environment:
+      - DEFAULT_EMAIL=user@example.org
+    depends_on:
+      - global-nginx-proxy
+
+  global-db:
+    image: mariadb:10.4
+    restart: always
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - ./.docker/global-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-allowed-packet=16MB --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+networks:
+  default:
+    external:
+      name: global
