@@ -86,6 +86,7 @@ services:
       - ./.docker/mail/data:/var/mail
       - ./.docker/mail/state:/var/mail-state
       - ./.docker/mail/logs:/var/log/mail
+      - ./.docker/mail/cron:/tmp/cron
       - ./.docker/mail/cron/sa-learn:/etc/cron.d/sa-learn
       - ../global/.docker/global-nginx-proxy/certs:/etc/letsencrypt/live:ro
     environment:
