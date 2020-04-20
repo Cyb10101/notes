@@ -6,10 +6,13 @@ Definition:
 * Host: Your real computer
 * Guest: Your virtual machine
 
+Maybe required: [Secure Boot](../../System/Linux/Secure-Boot/Secure-Boot.md)
+
 ## Configuration
 
+Linux host USB pass through to Windows guest, reboot host:
+
 ```bash
-# Linux host USB pass through to Windows guest, reboot host
 sudo usermod -aG vboxusers ${USER}
 ```
 
@@ -18,19 +21,18 @@ sudo usermod -aG vboxusers ${USER}
 Before converting:
 
 * Remove the graphics driver from Ubuntu.
-* "Zero fill" disk (Makes the image smaller)
+* [Backup Entire Disk](../../System/Linux/Backup-Entire-Disk.md)
 
 ```bash
-sudo zerofree -v /dev/sda1
-sudo dd if=/dev/sda of=sda.img
-sudo VBoxManage convertfromraw sda.img sda.vdi
+# Convert from raw disk
+sudo VBoxManage convertfromraw /dev/sda disk.vdi
 
-# @todo direct untestet:
-#sudo dd if=/dev/sda | VBoxManage convertfromraw stdin sda.vdi
+# Convert from raw image
+sudo VBoxManage convertfromraw disk.img disk.vdi
 
-# @todo direct untestet:
-##sudo dd if=/dev/sda count=1000000 | VBoxManage convertfromraw stdin myimage.vdi 512000000
-##sudo dd .... | VBoxManage convertfromraw stdin outf 40000000 --variant Fixed
+# Convert from compressed image (stupid as fuck)
+sudo apt install pv
+gzip -cd laptop.img.gz | pv | sudo VBoxManage convertfromraw stdin laptop.vdi $(gzip -cd disk.img.gz | pv | wc -c)
 ```
 
 ## UEFI Secure Boot
