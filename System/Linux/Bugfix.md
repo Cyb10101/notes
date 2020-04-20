@@ -32,3 +32,15 @@ sudo apt install lilo
 sudo fdisk -l
 sudo lilo -M /dev/ mbr
 ```
+
+## Time difference in Windows and Linux
+
+Same time for Windows and Linux.
+
+```bash
+# Status
+timedatectl
+
+# Linux use local time instead UTC
+timedatectl set-local-rtc 1 --adjust-system-clock
+```
