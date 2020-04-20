@@ -10,14 +10,14 @@ services:
       - VIRTUAL_HOST=mail-example.org
       - VIRTUAL_PROTO=https
       - VIRTUAL_PORT=443
-      - LETSENCRYPT_HOST=mail-example.org
+      - LETSENCRYPT_HOST=mail-example.org,mail.mail-example.org,pop.mail-example.org,imap.mail-example.org,smtp.mail-example.org
 
       - WEB_DOCUMENT_ROOT=/app
 
       # SSL: Use default cert from global-nginx-proxy
       #- CERT_NAME=default
       # SSL: Do not a redirect in global-nginx-proxy, if you use another port than 443
-      - HTTPS_METHOD=noredirect
+      #- HTTPS_METHOD=noredirect
 
       - APPLICATION_UID=${APPLICATION_UID:-501}
       - APPLICATION_GID=${APPLICATION_GID:-80}
@@ -33,7 +33,6 @@ services:
       - VIRTUAL_HOST=mail.mail-example.org,pop.mail-example.org,imap.mail-example.org,smtp.mail-example.org
       - VIRTUAL_PROTO=https
       - VIRTUAL_PORT=443
-      - LETSENCRYPT_HOST=mail.mail-example.org,pop.mail-example.org,imap.mail-example.org,smtp.mail-example.org
 
       - WEB_DOCUMENT_ROOT=/app
 
@@ -120,6 +119,8 @@ services:
 
       # Debug: Ignore the failure of this test - Allow other tests to complete
       #- POSTSCREEN_ACTION=ignore
+      # Mail spoofing denied - Send mails only from existing mail or alias
+      - SPOOF_PROTECTION=1
       # Enables Managesieve on port 4190
       - ENABLE_MANAGESIEVE=1
     cap_add:

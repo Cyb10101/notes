@@ -1,7 +1,5 @@
 # Docker: Webserver
 
-**I don't really have to mention: Always think what you are doing!**
-
 @todo add fail2ban to ssh docker
 @todo add nginx html pages
 
@@ -186,6 +184,14 @@ timedatectl set-ntp 1
 
 # Status
 timedatectl status
+```
+
+## Let's Encrypt
+
+Force certificates renewal, if needed:
+
+```bash
+~/projects/global/start.sh exec global-letsencrypt /app/force_renew
 ```
 
 ## Git
