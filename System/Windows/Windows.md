@@ -1,22 +1,5 @@
 # Windows
 
-## Switch off hibernation
-
-So that you can also access Windows hard disks on Linux.
-
-```bash
-powercfg.exe /h off
-powercfg.exe /hibernate off
-```
-
-## Complete shutdown
-
-See: [Scripts/Complete-shutdown.lnk](Scripts/Complete-shutdown.lnk)
-
-```bash
-%windir%\system32\shutdown.exe /s /t 0
-```
-
 ## Move window
 
 ALT + spacebar, then press V key.
