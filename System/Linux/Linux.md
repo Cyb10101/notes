@@ -1,5 +1,19 @@
 # Linux
 
+## Speedtest
+
+[Windows IPerv 2 files](https://sourceforge.net/projects/iperf2/files/)
+
+```bash
+sudo apt install iperf
+iperf -s
+iperf -c 192.168.178.21
+```
+
+Activate speedtest on router: http://192.168.178.1/support.lua
+
+Fritz!Box Support > Durchsatzmessungen > Messpunkt für einen Iperf-Client im Heimnetz aktivieren, Port 4711 für TCP und UDP = true
+
 ## Change Terminal window size
 
 ```bash
