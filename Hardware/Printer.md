@@ -2,49 +2,53 @@
 
 ## Brother DCP-9022CDW
 
-[Download Driver](http://support.brother.com/g/b/downloadlist.aspx?c=eu_ot&lang=en&prod=dcp9022cdw_eu&os=128)
+* [Download Driver](https://www.brother.de/support/dcp-9022cdw/downloads)
+* [Printer Web Interface](https://192.168.178.27/)
 
-### Install Printer
+### Without installing drivers
+
+Recommend:
 
 ```bash
+lpadmin -p Brother_DCP-9022CDW_IPP -E -v ipp://BRWACD1B84ED6B9:631/ipp -m everywhere
+lpadmin -d Brother_DCP-9022CDW_IPP
+```
+
+### Alternate driver
+
+Install with GUI: Gutenberg - Brother DCP-9010CN BR-Script3
+
+```bash
+# Find printer driver
+lpinfo --make-and-model 'DCP-9010' -m
+# -> Brother DCP-9010CN BR-Script3
+
+# List devices
+lpinfo -E -l -v
+# -> lpd://BRWACD1B84ED6B9/BINARY_P1
+```
+
+### Install company drivers
+
+Not working:
+
+```bash
+# Bug: dcp9022cdwlpr/opt/brother/Printers/dcp9022cdw/inf/setupPrintcapij:35
+# Solve: mkdir -p $SPOOLER_NAME
+mkdir -p /var/spool/lpd/dcp9022cdw
+
 sudo dpkg -i dcp9022cdwlpr-1.1.3-0.i386.deb
 sudo dpkg -i dcp9022cdwcupswrapper-1.1.4-0.i386.deb
+
+lpadmin -p DCP9022CDW-LPD -E -v lpd://BRWACD1B84ED6B9/BINARY_P1 -P /usr/share/cups/model/Brother/brother_dcp9022cdw_printer_en.ppd
 ```
 
-http://localhost:631/admin
-
-### Install Scanner
+### Install scanner
 
 ```bash
-sudo dpkg -i brscan4-0.4.4-1.amd64.deb
+sudo dpkg -i brscan4-0.4.8-1.amd64.deb
 sudo dpkg -i brscan-skey-0.2.4-1.amd64.deb
-sudo dpkg -i brother-udev-rule-type1-1.0.0-1.all.deb
+sudo dpkg -i brother-udev-rule-type1-1.0.2-0.all.deb
 
-brsaneconfig4 -a name=Brother model=DCP-9022CDW ip=192.168.178.27
+sudo brsaneconfig4 -a name=Brother model=DCP-9022CDW ip=192.168.178.27
 ```
-
-## Brother-DCP-J715W
-
-```bash
-sudo lpinfo --make-and-model 'ip4500' -m
-sudo lpadmin -p 'Brother-DCP-J715W' -m Brother/brother_dcpj715w_printer_en.ppd -v socket://192.168.178.27 -E
-sudo lpadmin -d 'Brother-DCP-J715W'
-```
-
-### Install Printer
-
-```bash
-# Brother DCP-J715W CUPS
-dnssd://Brother%20DCP-J715W._pdl-datastream._tcp.local/
-```
-### Install Scanner
-
-Add `brother3` in `/etc/sane.d/dll.conf`.
-
-Run scan-key-tool (The program will run as a background process.)
-
-```bash
-brscan-skey
-```
-
-Not required: Add `brother4` in `/etc/sane.d/dll.conf`.
