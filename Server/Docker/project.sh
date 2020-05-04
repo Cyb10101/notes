@@ -46,6 +46,9 @@ menu() {
    3>&1 1>&2 2>&3`
   dialog --clear
   echo ""
+  if [[ "${selected}" == "" ]]; then
+    exit 0
+  fi
   ${0} ${selected}
 }
 
