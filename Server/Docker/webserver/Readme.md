@@ -422,6 +422,16 @@ Test spamassassin with E-Mail:
 spamassassin -t -D < "/tmp/mail.eml"
 ```
 
+### Mail: Sieve
+
+Global Sieve spam filter:
+
+```bash
+vim ~/projects/mail/.docker/mail/before.dovecot.sieve
+vim ~/projects/mail/.docker/mail/after.dovecot.sieve
+# Copy and ajust file .docker/mail/*.dovecot.sieve
+```
+
 ### Mail: Roundcube
 
 Create database:
