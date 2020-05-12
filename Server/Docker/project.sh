@@ -35,7 +35,7 @@ printDirectory() {
 }
 
 menu() {
-  selected=`dialog --backtitle "Projects" --no-tags --menu "Menu" 0 0 0 \
+  selected=`dialog --clear --backtitle "Projects" --no-tags --menu "Menu" 0 0 0 \
     "dc-down"         "Shutdown all projects" \
     "dc-pull"         "Download all images from projects" \
     "dc-upgrade"      "Upgrade every docker container" \
@@ -44,7 +44,7 @@ menu() {
     "git-pull"        "Pull all git" \
     "sync"            "Syncronize project folder" \
    3>&1 1>&2 2>&3`
-  dialog --clear
+  clear
   echo ""
   if [[ "${selected}" == "" ]]; then
     exit 0
@@ -60,13 +60,12 @@ syncProjects() {
      serverList="${serverList}\"${item}\" \"${item}\" ";
   done
 
-  selectedServer=`dialog --backtitle "Projects" --no-tags --menu "Sync to SSH Server" 0 0 0 \
+  selectedServer=`dialog --clear --backtitle "Projects" --no-tags --menu "Sync to SSH Server" 0 0 0 \
   $(echo $serverList | tr -d '"') \
    3>&1 1>&2 2>&3`
-  dialog --clear
-  dialog --backtitle "Projects syncronisation" --title "" --yesno "Really sync to Server: ${selectedServer}\n\nWARNING: All Docker should be down!" 0 0
+  dialog --clear --backtitle "Projects syncronisation" --title "" --yesno "Really sync to Server: ${selectedServer}\n\nWARNING: All Docker should be down!" 0 0
   response=$?
-  dialog --clear
+  clear
   echo ""
   if [ ${response} == 0 ]; then
     echo "Create archiv 'global'..."
