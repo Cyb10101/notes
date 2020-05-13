@@ -68,12 +68,14 @@ syncProjects() {
   clear
   echo ""
   if [ ${response} == 0 ]; then
-    echo "Create archiv 'global'..."
+    echo "Stop Docker 'global'..."
     docker-compose -f ~/projects/global/docker-compose.yml down --remove-orphans
     if [ ! -f global.tar.xz ]; then
+      echo "Create archiv 'global'..."
       sudo tar cfJ global.tar.xz global
       sudo chown ${USER}:${USER} global.tar.xz
     fi
+    echo "Start Docker 'global'..."
     docker-compose -f ~/projects/global/docker-compose.yml up -d
 
     echo "Remove remote 'global'..."
