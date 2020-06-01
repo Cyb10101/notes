@@ -54,6 +54,7 @@ Create programm shortcut:
 
 SD card write support:
 
+* Create own folder in Android
 * Format the external SD Card as internal storage
 * `/storage/014A-7323/Android/data/com.nutomic.syncthingandroid/files`
 * Scannable by Android's Media Storage service: `/storage/014A-7323/Android/media/com.nutomic.syncthingandroid/music`
