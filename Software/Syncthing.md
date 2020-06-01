@@ -2,6 +2,7 @@
 
 * [Syncthing](https://syncthing.net/)
 * [Configure Autostart](https://docs.syncthing.net/users/autostart.html)
+* [Android FAQ](https://github.com/syncthing/syncthing-android/wiki/Frequently-Asked-Questions)
 
 ## Firewall
 
@@ -41,6 +42,14 @@ C:\Users\Cyb10101\opt\Syncthing\syncthing.exe -browser-only
 ```
 
 * Run > Minimized
+
+## Android
+
+SD card write support:
+
+* Format the external SD Card as internal storage
+* `/storage/014A-7323/Android/data/com.nutomic.syncthingandroid/files`
+* Scannable by Android's Media Storage service: `/storage/014A-7323/Android/media/com.nutomic.syncthingandroid/music`
 
 ## Docker
 
