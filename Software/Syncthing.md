@@ -24,7 +24,7 @@ wget -O ~/.local/share/applications/syncthing-ui.desktop https://raw.githubuserc
 
 ## Windows
 
-Copy files to `C:\Program Files\Syncthing`.
+Copy files to `C:\opt\Syncthing`.
 
 Open autostart folder:
 
@@ -34,8 +34,8 @@ Open autostart folder:
 Create autostart shortcut:
 
 * Name: Start Syncthing
-* Target: "C:\Program Files\Syncthing\syncthing.exe" -no-console -no-browser
-* Run in: "C:\Program Files\Syncthing"
+* Target: "C:\opt\Syncthing\syncthing.exe" -no-console -no-browser
+* Run in: "C:\opt\Syncthing"
 * Run: Minimized
 
 Open programm folder:
@@ -46,8 +46,8 @@ Open programm folder:
 Create programm shortcut:
 
 * Name: Syncthing GUI
-* Target: "C:\Program Files\Syncthing\syncthing.exe" -browser-only
-* Run in: "C:\Program Files\Syncthing"
+* Target: "C:\opt\Syncthing\syncthing.exe" -browser-only
+* Run in: "C:\opt\Syncthing"
 * Run: Minimized
 
 ## Android
