@@ -34,13 +34,13 @@ user    ALL=(ALL:ALL) NOPASSWD:ALL      # For a user
 
 ```bash
 # Get icon file
-gvfs-info -a metadata::custom-icon {folder}
+gio info -a metadata::custom-icon ${HOME}/folder
 
 # Set icon file
-gvfs-set-attribute {folder} metadata::custom-icon file:///usr/share/pixmaps/firefox.png
+gio set ${HOME}/folder metadata::custom-icon file:///usr/share/icons/Yaru/256x256/emblems/emblem-favorite.png
 
 # Set icon to standard
-gvfs-set-attribute {folder} -t unset metadata::custom-icon
+gio set ${HOME}/folder -t unset metadata::custom-icon
 ```
 
 ## Convert files
@@ -60,6 +60,15 @@ sudo apt install soundconverter gstreamer0.10-plugins-ugly gstreamer0.10-ffmpeg 
 ```
 
 ## Restore deleted files
+
+Photorec: FAT, NTFS, Ext filesystem:
+
+```bash
+sudo apt install testdisk
+sudo photorec -d /resored-files/ /dev/sda
+```
+
+Ext filesystem:
 
 ```bash
 sudo extundelete --restore-file '/home/user/logo.png' /dev/sda1

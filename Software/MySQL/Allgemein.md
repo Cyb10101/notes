@@ -1,7 +1,5 @@
 # MySQL
 
-[HeidiSQL](https://www.heidisql.com/)
-
 ## User configuration
 
 File `~/.my.cnf`:

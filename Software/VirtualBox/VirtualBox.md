@@ -6,7 +6,8 @@ Definition:
 * Host: Your real computer
 * Guest: Your virtual machine
 
-Maybe required: [Secure Boot](../../System/Linux/Secure-Boot/Secure-Boot.md)
+* [VirtualBox installation](Installation.md)
+* Maybe required: [Secure Boot](../../System/Linux/Secure-Boot/Secure-Boot.md)
 
 ## Configuration
 
@@ -32,7 +33,7 @@ sudo VBoxManage convertfromraw disk.img disk.vdi
 
 # Convert from compressed image (stupid as fuck)
 sudo apt install pv
-gzip -cd laptop.img.gz | pv | sudo VBoxManage convertfromraw stdin laptop.vdi $(gzip -cd disk.img.gz | pv | wc -c)
+gzip -cd disk.img.gz | pv | VBoxManage convertfromraw stdin disk.vdi $(gzip -cd disk.img.gz | wc -c)
 ```
 
 ## UEFI Secure Boot
