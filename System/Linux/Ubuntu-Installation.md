@@ -67,6 +67,40 @@ sudo apt -y install conky-all flameshot
 sudo apt -y install gparted
 ```
 
+## FSTAB (File system table)
+
+Create folder, find drive with UUID:
+
+```bash
+sudo mkdir -p /mnt/linux-ext4
+sudo blkid /dev/sd*
+```
+
+Edit `/etc/fstab`:
+
+```bash
+# Linux ext4
+UUID=ec1e223d-b680-44f4-87de-4bba9fdf47e0	/mnt/linux-ext4	ext4	errors=remount-ro	0	1
+
+# Windows ntfs
+/dev/sdb1	/mnt/windows	ntfs	rw,user,auto,uid=1000,gid=1000,umask=0077	0	0
+```
+
+### FSTAB: SSH
+
+Create folder and make sure that ssh connection work as root:
+
+```bash
+sudo mkdir -p /mnt/ssh/server
+sudo ssh -i /home/username/.ssh/id_rsa admin@192.168.178.21
+```
+
+Edit `/etc/fstab`:
+
+```bash
+admin@192.168.178.21:/share/folder	/mnt/ssh/server		fuse.sshfs	defaults,auto,delay_connect,default_permissions,allow_other,reconnect,_netdev,uid=1000,gid=1000,umask=0077,IdentityFile=/home/username/.ssh/id_rsa	0	0
+```
+
 ## Driver & Codecs
 
 ```bash
@@ -84,8 +118,6 @@ Gnome tweaks:
 
 ```bash
 sudo apt -y install gnome-tweaks
-# Gnome Tweak Tool: Extensions > Dash to panel = true (or later below in configuration)
-sudo apt -y install gnome-shell-extension-dash-to-panel
 ```
 
 * [Variety - Background changer](https://peterlevi.com/variety/)
@@ -299,6 +331,10 @@ sudo apt -y install deluge
 * [HTTrack](../../Software/HTTrack.md)
 
 * [Google Chrome](https://www.google.com/intl/de_de/chrome/)
+
+* [Syncthing](../../Software/Syncthing.md)
+* [Samba - Windows sharing](../../Software/Samba.md)
+
 * [Insync](https://www.insynchq.com/downloads)
 * [Synergy](https://members.symless.com/synergy/downloads/list/s1)
 
@@ -353,6 +389,7 @@ rsync -av ./.config/spotify/ ~/.config/spotify/
 rsync -av ./.config/variety/ ~/.config/variety/
 rsync -av ./.config/VirtualBox/ ~/.config/VirtualBox/
 rsync -av ./.config/vlc/ ~/.config/vlc/
+rsync -av ./.config/xnviewmp/ ~/.config/xnviewmp/
 
 rsync -av ./.atom/ ~/.atom/
 rsync -av ./.config/Atom/ ~/.config/Atom/
@@ -397,10 +434,6 @@ gsettings set org.gnome.mutter workspaces-only-on-primary false
 gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
 gsettings set org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 32
 gsettings set org.gnome.shell.extensions.dash-to-dock multi-monitor true
-
-# Gnome tweak: Enable extensions (Requires restart)
-gsettings set org.gnome.shell enabled-extensions "['dash-to-panel@jderose9.github.com']"
-gsettings set org.gnome.shell.extensions.dash-to-panel appicon-margin 4
 ```
 
 ### Keyboard Binding

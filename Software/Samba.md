@@ -1,7 +1,7 @@
 # Samba - Windows sharing
 
 ```bash
-sudo apt install samba samba-common system-config-samba
+sudo apt install samba
 
 # Add Samba user
 sudo smbpasswd -a cyb10101
