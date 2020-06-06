@@ -73,9 +73,6 @@ func splitFiles(max int, addFolder string, dirName string) {
     if !(isDir(splitFolder)) {
       fsCreateDirectory(splitFolder)
     }
-    if (addFolder != "" && !isDir(splitFolder + "/" + addFolder)) {
-      fsCreateDirectory(splitFolder + "/" + addFolder)
-    }
 
     // Read directory
     files, err := ioutil.ReadDir(basePath + baseName)
@@ -97,6 +94,11 @@ func splitFiles(max int, addFolder string, dirName string) {
       if (filesCurrent >= max) {
         break;
       }
+    }
+
+    // Add a extra folder in directory
+    if (addFolder != "" && !isDir(splitFolder + "/" + addFolder)) {
+      fsCreateDirectory(splitFolder + "/" + addFolder)
     }
 
     if (len(files) - filesCurrent) <= 0 {
