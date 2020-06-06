@@ -5,6 +5,12 @@ Split a `folder` with 6000 files to seperate folder like:
 * folder_1 (5000 files)
 * folder_2 (1000 files)
 
+Test in development:
+
+```bash
+go run split-files.go -max 10 -addfolder '0-viewed' aaa
+```
+
 Compile and move to binary folder:
 
 ```bash
