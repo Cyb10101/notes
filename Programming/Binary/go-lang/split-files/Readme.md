@@ -14,8 +14,7 @@ go run split-files.go -max 10 -addfolder '0-viewed' aaa
 Compile and move to binary folder:
 
 ```bash
-go build
-sudo mv split-files /usr/local/bin/
+go build -o /usr/local/bin/split-files
 ```
 
 Execute:
