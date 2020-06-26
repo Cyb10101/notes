@@ -36,13 +36,14 @@ printDirectory() {
 
 menu() {
   selected=`dialog --clear --backtitle "Projects" --no-tags --menu "Menu" 0 0 0 \
-    "dc-down"         "Shutdown all projects" \
-    "dc-pull"         "Download all images from projects" \
-    "dc-upgrade"      "Upgrade every docker container" \
-    "dc-up"           "Start all projects" \
-    "dc-pull-images"  "Download all docker images" \
-    "git-pull"        "Pull all git" \
-    "sync"            "Syncronize project folder" \
+    "dc-down"         "Docker: Shutdown all projects" \
+    "git-dirty"       "Git: Show dirty git" \
+    "dc-pull"         "Docker: Download all images from projects" \
+    "dc-upgrade"      "Docker: Upgrade every docker container" \
+    "dc-up"           "Docker: Start all projects" \
+    "dc-pull-images"  "Docker: Download all docker images" \
+    "git-pull"        "Git: Pull all git" \
+    "sync"            "Sync: Syncronize project folder" \
    3>&1 1>&2 2>&3`
   clear
   echo ""
@@ -129,8 +130,11 @@ case "${1}" in
     docker pull cyb10101/php-dev:nginx-7.3
     docker pull cyb10101/php-dev:nginx-7.4
   ;;
+  git-dirty)
+    find ~/projects/ -maxdepth 2 -path '*docker-global' -prune -o -path '*global' -prune -o -type d -name '.git' -exec bash -c '(printDirectory "{}"; cd "$(dirname {})"; checkGitMaster && checkGit; (cd - > /dev/null 2>&1))' \;
+  ;;
   git-pull)
-    find ~/projects/ -maxdepth 2 -path '*docker-global' -prune -o -path '*global' -prune -o -type d -name '.git' -exec bash -c '(printDirectory "{}"; cd "$(dirname {})"; checkGitMaster && checkGit && git pull origin master; cd -)' \;
+    find ~/projects/ -maxdepth 2 -path '*docker-global' -prune -o -path '*global' -prune -o -type d -name '.git' -exec bash -c '(printDirectory "{}"; cd "$(dirname {})"; checkGitMaster && checkGit && git pull origin master; (cd - > /dev/null 2>&1))' \;
   ;;
   sync)
     syncProjects
