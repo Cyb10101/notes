@@ -18,11 +18,51 @@ echo "deb https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sourc
 sudo apt update
 sudo apt install syncthing
 
-wget -O ~/.config/autostart/syncthing-start.desktop https://raw.githubusercontent.com/syncthing/syncthing/master/etc/linux-desktop/syncthing-start.desktop
-wget -O ~/.local/share/applications/syncthing-ui.desktop https://raw.githubusercontent.com/syncthing/syncthing/master/etc/linux-desktop/syncthing-ui.desktop
+wget -O ~/.config/autostart/syncthing-start.desktop https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-start.desktop
+wget -O ~/.local/share/applications/syncthing-ui.desktop https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-ui.desktop
 ```
 
 ## Windows
+
+Install via powershell or manually.
+
+### Powershell method
+
+Start `powershell`:
+
+```powershell
+# Add unzip function
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+function Unzip {
+    param([string]$zipfile, [string]$outpath)
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
+}
+
+# Download and extract files
+mkdir C:\opt
+Invoke-WebRequest https://github.com/syncthing/syncthing/releases/download/v1.6.1/syncthing-windows-amd64-v1.6.1.zip -OutFile C:\opt\syncthing.zip
+Unzip "C:\opt\syncthing.zip" "C:\opt"
+del C:\opt\syncthing.zip
+ren C:\opt\syncthing-windows-amd64-v1.6.1 C:\opt\Syncthing
+
+# Create shortcut (Startup)
+$s=(New-Object -ComObject WScript.Shell).CreateShortcut($env:APPDATA + "\Microsoft\Windows\Start Menu\Programs\Startup\Start Syncthing.lnk");
+$s.TargetPath="C:\opt\Syncthing\syncthing.exe";
+$s.WorkingDirectory="C:\opt\Syncthing";
+$s.Arguments="-no-console -no-browser";
+$s.WindowStyle=7;
+$s.Save();
+
+# Create shortcut (Programs)
+$s=(New-Object -ComObject WScript.Shell).CreateShortcut($env:APPDATA + "\Microsoft\Windows\Start Menu\Programs\Syncthing Web UI.lnk");
+$s.TargetPath="C:\opt\Syncthing\syncthing.exe";
+$s.WorkingDirectory="C:\opt\Syncthing";
+$s.Arguments="-browser-only";
+$s.WindowStyle=7;
+$s.Save();
+```
+
+### Manually
 
 Copy files to `C:\opt\Syncthing`.
 
@@ -45,7 +85,7 @@ Open programm folder:
 
 Create programm shortcut:
 
-* Name: Syncthing GUI
+* Name: Syncthing Web UI
 * Target: "C:\opt\Syncthing\syncthing.exe" -browser-only
 * Run in: "C:\opt\Syncthing"
 * Run: Minimized
