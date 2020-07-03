@@ -224,12 +224,14 @@ sudo apt -y install k3b xfburn brasero
 ## Social
 
 * [Telegram](https://telegram.org/)
+* [Signal](https://signal.org/)
 * [Slack](https://slack.com/)
 * [Skype](https://www.skype.com/)
 * [Discord](https://discordapp.com/)
 
 ```bash
 sudo snap install telegram-desktop
+sudo snap install signal-desktop
 sudo snap install slack --classic
 sudo snap install skype --classic
 
