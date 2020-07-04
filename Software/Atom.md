@@ -40,6 +40,11 @@ apm install markdown-preview-plus
 apm install show-invisibles-plus
 ```
 
+## Settings
+
+* Atom > Settings > Autocomplete plus > Settings
+  - Keymap for confirming a suggestion = Tab always, enter when suggestion explicitly selected
+
 ### Windows Compile C/C++
 
 ```bash
