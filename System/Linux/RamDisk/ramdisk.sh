@@ -6,52 +6,52 @@ ramSize='2G'
 ramUser='cyb10101'
 
 isRamDiskMounted() {
-	if grep -qs ${ramDisk} /proc/mounts; then
-		return 0; # true
-	else
-		return 1; # false
-	fi
+    if grep -qs ${ramDisk} /proc/mounts; then
+        return 0; # true
+    else
+        return 1; # false
+    fi
 }
 
 start() {
-	if ! isRamDiskMounted; then
-		mkdir -p ${ramDisk} && \
-			mkdir -p ${ramDiskBackup} && \
-			mount -t tmpfs -o rw,size=${ramSize} tmpfs ${ramDisk} && \
-			chown -Rf ${ramUser} ${ramDisk}
-	fi
-	if ! isRamDiskMounted; then
-		echo '[ERROR] Can not create RAM Disk'
-		exit 1;
-	fi
+    if ! isRamDiskMounted; then
+        mkdir -p ${ramDisk} && \
+            mkdir -p ${ramDiskBackup} && \
+            mount -t tmpfs -o rw,size=${ramSize} tmpfs ${ramDisk} && \
+            chown -Rf ${ramUser} ${ramDisk}
+    fi
+    if ! isRamDiskMounted; then
+        echo '[ERROR] Can not create RAM Disk'
+        exit 1;
+    fi
 
-	if [ -d ${ramDiskBackup} ]; then
-		rsync -a ${ramDiskBackup}'/' ${ramDisk}'/'
-		chown -Rf ${ramUser} ${ramDisk}
-	fi
+    if [ -d ${ramDiskBackup} ]; then
+        rsync -a ${ramDiskBackup}'/' ${ramDisk}'/'
+        chown -Rf ${ramUser} ${ramDisk}
+    fi
 }
 
 stop() {
-	if isRamDiskMounted; then
-		if [ -d ${ramDiskBackup} ]; then
-			rsync -a --delete ${ramDisk}'/' ${ramDiskBackup}'/'
-			chown -Rf ${ramUser} ${ramDiskBackup}
-		fi
-		umount ${ramDisk}
-	fi
+    if isRamDiskMounted; then
+        if [ -d ${ramDiskBackup} ]; then
+            rsync -a --delete ${ramDisk}'/' ${ramDiskBackup}'/'
+            chown -Rf ${ramUser} ${ramDiskBackup}
+        fi
+        umount ${ramDisk}
+    fi
 
-	if isRamDiskMounted; then
-		echo '[ERROR] Can not remove RAM Disk'
-		exit 1;
-	fi
+    if isRamDiskMounted; then
+        echo '[ERROR] Can not remove RAM Disk'
+        exit 1;
+    fi
 }
 
 status() {
-	if isRamDiskMounted; then
-		echo 'RAM Disk is mounted.';
-	else
-		echo 'RAM Disk is not mounted.';
-	fi
+    if isRamDiskMounted; then
+        echo 'RAM Disk is mounted.';
+    else
+        echo 'RAM Disk is not mounted.';
+    fi
 }
 
 case "$1" in
