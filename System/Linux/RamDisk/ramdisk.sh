@@ -34,7 +34,7 @@ start() {
 stop() {
 	if isRamDiskMounted; then
 		if [ -d ${ramDiskBackup} ]; then
-			rsync -a ${ramDisk}'/' ${ramDiskBackup}'/'
+			rsync -a --delete ${ramDisk}'/' ${ramDiskBackup}'/'
 			chown -Rf ${ramUser} ${ramDiskBackup}
 		fi
 		umount ${ramDisk}
