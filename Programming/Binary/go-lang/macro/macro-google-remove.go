@@ -69,70 +69,34 @@ func main() {
   robotgo.SetMouseDelay(100)
 
   // Editor [text]
-  coordsEditor := coordinates {x: 2772, y: 278}
+  coordsEditor := coordinates {x: 2775, y: 270}
 
   // Firefox tab
   coordsFirefoxTab := []coordinates {
-    {x: 111, y: 46},
-    {x: 338, y: 46},
-    {x: 575, y: 46},
-    {x: 805, y: 46},
-    {x: 1001, y: 46},
-    {x: 1238, y: 46},
-    {x: 1460, y: 46},
-    {x: 1689, y: 46},
+    {x: 110, y: 55},
+    {x: 343, y: 55},
+    {x: 572, y: 55},
+    {x: 796, y: 55},
+    {x: 1023, y: 55},
+    {x: 1251, y: 55},
+    {x: 1468, y: 55},
+    {x: 1694, y: 55},
   }
 
   // Firefox address bar
-  coordsFirefoxAddressBar := []coordinates {
-    {x: 900, y: 80},
-    {x: 900, y: 80},
-    {x: 900, y: 80},
-    {x: 900, y: 80},
-    {x: 900, y: 80},
-    {x: 900, y: 80},
-    {x: 900, y: 80},
-    {x: 900, y: 80},
-  }
+  coordsFirefoxAddressBar := coordinates {x: 800, y: 90}
 
   // Search console: Remove url field
-  coordsSearchConsoleUrl := []coordinates {
-    {x: 547, y: 533},
-    {x: 547, y: 533},
-    {x: 547, y: 533},
-    {x: 547, y: 533},
-    {x: 547, y: 533},
-    {x: 547, y: 533},
-    {x: 547, y: 533},
-    {x: 547, y: 533},
-  }
+  coordsSearchConsoleUrl := coordinates {x: 346, y: 547}
 
   // Search console: Entfernung beantragen
-  coordsSearchConsoleButton1 := []coordinates {
-    {x: 740, y: 533},
-    {x: 740, y: 533},
-    {x: 740, y: 533},
-    {x: 740, y: 533},
-    {x: 740, y: 533},
-    {x: 740, y: 533},
-    {x: 740, y: 533},
-    {x: 740, y: 533},
-  }
+  coordsSearchConsoleButton1 := coordinates {x: 737, y: 548}
 
   // Search console: Entfernung beantragen (Bestätigung)
-  coordsSearchConsoleButton2 := []coordinates {
-    {x: 775, y: 685},
-    {x: 775, y: 685},
-    {x: 775, y: 685},
-    {x: 775, y: 685},
-    {x: 775, y: 685},
-    {x: 775, y: 685},
-    {x: 775, y: 685},
-    {x: 775, y: 685},
-  }
+  coordsSearchConsoleButton2 := coordinates {x: 773, y: 693}
 
   // Terminal
-  coordsTerminal := coordinates {x: 2282, y: 758}
+  coordsTerminal := coordinates {x: 2046, y: 814}
 
   for i := 0; i < int(repeat); i++ {
     fmt.Printf("\nRunning query %d of %d:\n", i + 1, repeat)
@@ -145,7 +109,7 @@ func main() {
       robotgo.MouseClick()
       sleepMilliSeconds(200)
 
-      robotgo.MoveMouse(coordsFirefoxAddressBar[i].x, coordsFirefoxAddressBar[i].y)
+      robotgo.MoveMouse(coordsFirefoxAddressBar.x, coordsFirefoxAddressBar.y)
       robotgo.MouseClick()
       sleepMilliSeconds(200)
       robotgo.KeyTap("a", "ctrl")
@@ -183,14 +147,14 @@ func main() {
       robotgo.MouseClick()
       sleepMilliSeconds(200)
 
-      robotgo.MoveMouse(coordsSearchConsoleUrl[i].x, coordsSearchConsoleUrl[i].y)
+      robotgo.MoveMouse(coordsSearchConsoleUrl.x, coordsSearchConsoleUrl.y)
       robotgo.MouseClick()
       sleepMilliSeconds(100)
       robotgo.KeyTap("v", "ctrl")
       sleepMilliSeconds(100)
 
       // Search console: Entfernung beantragen
-      robotgo.MoveMouse(coordsSearchConsoleButton1[i].x, coordsSearchConsoleButton1[i].y)
+      robotgo.MoveMouse(coordsSearchConsoleButton1.x, coordsSearchConsoleButton1.y)
       robotgo.MouseClick()
     }
 
@@ -207,7 +171,7 @@ func main() {
       robotgo.MouseClick()
       sleepMilliSeconds(200)
 
-      robotgo.MoveMouse(coordsSearchConsoleButton2[i].x, coordsSearchConsoleButton2[i].y)
+      robotgo.MoveMouse(coordsSearchConsoleButton2.x, coordsSearchConsoleButton2.y)
       robotgo.MouseClick()
     }
 
