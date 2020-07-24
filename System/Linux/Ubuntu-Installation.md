@@ -137,6 +137,9 @@ sudo apt -y install libreoffice libreoffice-base
 sudo apt -y install pdfarranger
 ```
 
+LibreOffice: Change standard template
+* File > Templates > Save / Organize
+
 # Internet
 sudo apt -y install mariadb-client
 sudo apt -y install filezilla
