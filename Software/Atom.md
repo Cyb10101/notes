@@ -55,7 +55,12 @@ http://www.mingw.org/
 
 ```text
 MingGW installer > Basic Setup > Packages: mingw32-base, mingw32-gcc-g++
-
-Start > Control Panel\System and Security\System > Advanced System Settings > Environment Variables
-> Path = C:\MinGW\bin
 ```
+
+```bash
+# Set environment variables: Start > Control Panel\System and Security\System > Advanced System Settings > Environment Variables > Path
+setx PATH "%PATH%;C:\MinGW\bin"
+```
+
+* Restart system
+* Press F5 to compile script
