@@ -6,7 +6,7 @@ ramSize='2G'
 ramUser='cyb10101'
 
 isRamDiskMounted() {
-    if grep -qs ${ramDisk} /proc/mounts; then
+    if mountpoint -q ${ramDisk}; then
         return 0; # true
     else
         return 1; # false
