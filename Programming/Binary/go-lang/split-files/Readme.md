@@ -8,7 +8,7 @@ Split a `folder` with 6000 files to seperate folder like:
 Test in development:
 
 ```bash
-go run split-files.go -max 10 -addfolder '0-viewed' aaa
+go run split-files.go -max 10 -addfolder '0-viewed' directory
 ```
 
 Compile and move to binary folder:
