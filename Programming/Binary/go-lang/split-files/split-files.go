@@ -3,10 +3,12 @@ package main
 import (
   "flag"
   "fmt"
-  "strconv"
-  "os"
   "io/ioutil"
+  "os"
   "path"
+  "strconv"
+  "strings"
+
   "./packages"
 )
 
@@ -59,7 +61,7 @@ func fsRename(oldLocation string, newLocation string) {
 
 func splitFiles(max int, addFolder string, dirName string) {
   var currentIndex int = 1
-  basePath := path.Dir(dirName) + "/"
+  basePath := path.Dir(strings.TrimRight(dirName, "/")) + "/"
   baseName := path.Base(dirName)
 
   for {
