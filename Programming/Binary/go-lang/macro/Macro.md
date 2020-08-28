@@ -15,5 +15,5 @@ go get github.com/go-vgo/robotgo
 ## Execute
 
 ```bash
-go run get-mouse-position.go
+go run get-mouse-position.go --format '{x: %x, y: %y}'
 ```
