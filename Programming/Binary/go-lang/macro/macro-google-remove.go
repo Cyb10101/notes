@@ -3,8 +3,8 @@ package main
 import (
   "flag"
   "fmt"
-  "time"
   "os"
+  "time"
 
   "github.com/go-vgo/robotgo"
   "github.com/go-vgo/robotgo/clipboard"
@@ -69,7 +69,7 @@ func main() {
   robotgo.SetMouseDelay(100)
 
   // Editor [text]
-  coordsEditor := coordinates {x: 2775, y: 270}
+  coordsEditor := coordinates {x: 2794, y: 274}
 
   // Firefox tab
   coordsFirefoxTab := []coordinates {
@@ -84,19 +84,19 @@ func main() {
   }
 
   // Firefox address bar
-  coordsFirefoxAddressBar := coordinates {x: 800, y: 90}
+  coordsFirefoxAddressBar := coordinates {x: 764, y: 90}
 
   // Search console: Remove url field
-  coordsSearchConsoleUrl := coordinates {x: 346, y: 547}
+  coordsSearchConsoleUrl := coordinates {x: 624, y: 540}
 
   // Search console: Entfernung beantragen
-  coordsSearchConsoleButton1 := coordinates {x: 737, y: 548}
+  coordsSearchConsoleButton1 := coordinates {x: 755, y: 542}
 
   // Search console: Entfernung beantragen (Bestätigung)
-  coordsSearchConsoleButton2 := coordinates {x: 773, y: 693}
+  coordsSearchConsoleButton2 := coordinates {x: 773, y: 686}
 
   // Terminal
-  coordsTerminal := coordinates {x: 2046, y: 814}
+  coordsTerminal := coordinates {x: 2180, y: 547}
 
   for i := 0; i < int(repeat); i++ {
     fmt.Printf("\nRunning query %d of %d:\n", i + 1, repeat)
