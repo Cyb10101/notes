@@ -29,16 +29,16 @@ func readClipboard() string {
 
 func writeClipboard(text string) {
   if err := clipboard.WriteAll(text); err != nil {
-		panic(err)
-	}
+    panic(err)
+  }
 }
 
 func sleepSeconds(second uint) {
-	time.Sleep(time.Duration(second) * time.Second)
+  time.Sleep(time.Duration(second) * time.Second)
 }
 
 func sleepMilliSeconds(milliSecond uint) {
-	time.Sleep(time.Duration(milliSecond) * time.Millisecond)
+  time.Sleep(time.Duration(milliSecond) * time.Millisecond)
 }
 
 func ifTenaryUint(condition bool, ifTrue uint, ifFalse uint) uint {
@@ -50,7 +50,7 @@ func ifTenaryUint(condition bool, ifTrue uint, ifFalse uint) uint {
 
 func main() {
   // Fix: Invalid MIT-MAGIC-COOKIE-1 key
-	robotgo.SetXDisplayName(os.Getenv("DISPLAY"))
+  robotgo.SetXDisplayName(os.Getenv("DISPLAY"))
 
   var timeStart int64
   var timeDiff int64
