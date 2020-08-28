@@ -233,10 +233,15 @@ sudo apt -y install k3b xfburn brasero
 * [Discord](https://discordapp.com/)
 
 ```bash
-sudo snap install telegram-desktop
 sudo snap install signal-desktop
 sudo snap install slack --classic
 sudo snap install skype --classic
+
+# Problems with file permissions
+#sudo snap install telegram-desktop
+aria2c --download-result=hide --dir=/tmp -o telegram.tar.xz https://telegram.org/dl/desktop/linux
+sudo tar -C /opt -xf /tmp/telegram.tar.xz
+sudo chown -R root:root /opt/Telegram
 
 aria2c --download-result=hide --dir=/tmp -o discord.deb https://dl.discordapp.net/apps/linux/0.0.10/discord-0.0.10.deb
 sudo dpkg -i /tmp/discord.deb
@@ -289,9 +294,14 @@ sudo dpkg -i /tmp/nomachine.deb
 * [PhpStorm](https://www.jetbrains.com/phpstorm/)
 
 ```bash
-aria2c --download-result=hide --dir=/tmp -o atom.deb https://atom.io/download/deb
-sudo dpkg -i /tmp/atom.deb
-sudo apt -f install
+wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+sudo apt update
+sudo apt install atom
+
+#aria2c --download-result=hide --dir=/tmp -o atom.deb https://atom.io/download/deb
+#sudo dpkg -i /tmp/atom.deb
+#sudo apt -f install
 
 sudo snap install code --classic
 sudo snap install phpstorm --classic
@@ -307,6 +317,7 @@ sudo snap install go --classic
 sudo apt install golang-go
 
 # Or manually
+# Uninstall: sudo rm -rf /usr/local/go
 aria2c --download-result=hide --dir=/tmp -o golang.tar.gz https://dl.google.com/go/go1.14.3.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf /tmp/golang.tar.gz
 sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" > /etc/profile'
