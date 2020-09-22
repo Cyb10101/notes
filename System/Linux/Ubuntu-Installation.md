@@ -240,8 +240,7 @@ sudo snap install skype --classic
 # Problems with file permissions
 #sudo snap install telegram-desktop
 aria2c --download-result=hide --dir=/tmp -o telegram.tar.xz https://telegram.org/dl/desktop/linux
-sudo tar -C /opt -xf /tmp/telegram.tar.xz
-sudo chown -R root:root /opt/Telegram
+tar -C ~/opt -xf /tmp/telegram.tar.xz
 
 aria2c --download-result=hide --dir=/tmp -o discord.deb https://dl.discordapp.net/apps/linux/0.0.10/discord-0.0.10.deb
 sudo dpkg -i /tmp/discord.deb
@@ -337,6 +336,15 @@ timedatectl set-local-rtc 1 --adjust-system-clock
 
 ```bash
 sudo apt -y install deluge
+```
+
+# Download
+
+* [Dropbox](../../Software/Syncthing.md)
+
+```bash
+aria2c --download-result=hide --dir=/tmp -o dropbox.deb https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb
+sudo dpkg -i /tmp/dropbox.deb
 ```
 
 ## Additional
