@@ -42,4 +42,5 @@ checkGit
 askDeploy
 
 git pull origin master
-composer --working-dir=public install
+composer install
+#composer --working-dir=public install

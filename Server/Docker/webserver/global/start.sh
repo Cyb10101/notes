@@ -5,7 +5,11 @@ SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 # Select docker compose file
 DOCKER_COMPOSE_FILE=docker-compose.yml
 
-function startFunction {
+dockerCompose() {
+    docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" "${@:1}"
+}
+
+startFunction() {
     case ${1} in
         upgrade)
             git fetch && git checkout master && git pull
@@ -16,7 +20,7 @@ function startFunction {
             startFunction up
         ;;
         up)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" up -d
+            dockerCompose up -d
         ;;
         stopOther)
             containers=$(docker ps --filter network=global -q)
@@ -26,20 +30,20 @@ function startFunction {
         ;;
         down)
             startFunction stopOther
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" down --remove-orphans
+            dockerCompose down --remove-orphans
         ;;
         stop)
             startFunction stopOther
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" stop --remove-orphans
+            dockerCompose stop --remove-orphans
         ;;
         mysql)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" exec global-db mysql -p
+            dockerCompose exec global-db mysql -p
         ;;
         mariadb)
             startFunction mysql
         ;;
         *)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" "${@:1}"
+            dockerCompose "${@:1}"
         ;;
     esac
 }

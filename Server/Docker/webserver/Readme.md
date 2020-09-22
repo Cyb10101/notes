@@ -9,11 +9,46 @@ Example structure of a Webserver:
 * mail: Mail System + Roundmail website
 * user_cyb10101: Shares SSH & Composer data, SSH/SFTP Server
 * website_www: Website only
+* Based on Ubuntu 20.04
 
-## Change SSH Port
+## Security
+
+Copy local ssh id to server:
 
 ```bash
-sudo vim /etc/ssh/sshd_config
+ssh-copy-id -i ~/.ssh/id_rsa.pub root@server
+```
+
+Login to server with ssh key, change root password and create new user:
+
+```bash
+ssh root@server.com
+passwd root
+adduser username
+```
+
+### SSH root login
+
+```bash
+vim /etc/ssh/sshd_config
+```
+
+```text
+# Disable passwort login
+PermitRootLogin prohibit-password
+
+# Disable all
+PermitRootLogin no
+```
+
+```bash
+systemctl restart ssh
+```
+
+### Change SSH Port
+
+```bash
+vim /etc/ssh/sshd_config
 ```
 
 ```text
@@ -23,17 +58,23 @@ ListenAddress ::
 ```
 
 ```bash
-sudo systemctl restart ssh
+systemctl restart ssh
 ssh user@server.com -p2200
 ```
 
 ## Motd (Message of the day)
 
+To disable all messages:
+
+```bash
+touch ${HOME}/.hushlogin
+```
+
 Disable last ssh login with `PrintLastLog no`:
 
 ```bash
 vim /etc/ssh/sshd_config
-sudo systemctl restart ssh
+systemctl restart ssh
 ```
 
 Disable motd's (Message of the day):
@@ -49,8 +90,8 @@ chmod -x /etc/update-motd.d/80-livepatch
 ## Fail2Ban
 
 ```bash
-sudo apt install fail2ban
-sudo vim /etc/fail2ban/jail.d/jail.local
+apt install fail2ban
+vim /etc/fail2ban/jail.d/jail.local
 ```
 
 ```text
@@ -65,14 +106,16 @@ bantime = 600
 ```
 
 ```bash
-sudo service fail2ban restart
-sudo fail2ban-client status
-sudo fail2ban-client status sshd
+service fail2ban restart
+fail2ban-client status
+fail2ban-client status sshd
 ```
 
 ## Docker
 
 * [Docker Installation](../Installation.md)
+
+Copy files and configure it. But don't start yet.
 
 ## Server: DNS
 
@@ -144,6 +187,8 @@ HELO example.org
 QUIT
 ```
 
+*Note: Test this after mail started.*
+
 ## Server: Open ports
 
 Sometimes it seems necessary that Docker has an IPv4 so that it is available on the network.
@@ -209,8 +254,8 @@ Generate a standard certificate for websites. This will replace Let's Encrypt la
 Execute in `global` Container.
 
 ```bash
-sudo mkdir -p ~/projects/global/.docker/global-nginx-proxy/certs
-sudo openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
+mkdir -p ~/projects/global/.docker/global-nginx-proxy/certs
+openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
     -keyout ~/projects/global/.docker/global-nginx-proxy/certs/default.key \
     -out ~/projects/global/.docker/global-nginx-proxy/certs/default.crt
 ```
@@ -224,6 +269,12 @@ chown -R 1000:1000 .
 ```
 
 **Security note:** If you connect other instances with same volumes, for example a global read only SSH key or a Composer cache directory, other users can have access to private content. If you really need it, it is safer to store it in your own instance.
+
+## Start global
+
+```bash
+~/projects/global/start.sh up
+```
 
 ## MySQL / MariaDB
 
@@ -277,6 +328,30 @@ You should have these domains:
 * pop.server.com
 * imap.server.com
 * smtp.server.com
+
+
+### Mail: Roundcube
+
+Create database:
+
+```bash
+~/projects/global/start.sh mysql
+```
+
+```sql
+CREATE DATABASE `roundcube`;
+CREATE USER 'roundcube'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON `roundcube`.* TO 'roundcube'@'%';
+FLUSH PRIVILEGES;
+```
+
+*Note: If you change roundcube plugins or configuration, you maybe need to delete this folder `.docker/roundmail`. But be careful! Manual configurations could have been written in `.docker/roundmail/config/config.inc.php`.*
+
+### Start mail
+
+```bash
+~/projects/mail/start.sh up
+```
 
 ### Mail: Configure
 
@@ -430,21 +505,6 @@ Global Sieve spam filter:
 vim ~/projects/mail/.docker/mail/before.dovecot.sieve
 vim ~/projects/mail/.docker/mail/after.dovecot.sieve
 # Copy and ajust file .docker/mail/*.dovecot.sieve
-```
-
-### Mail: Roundcube
-
-Create database:
-
-```bash
-~/projects/global/start.sh mysql
-```
-
-```sql
-CREATE DATABASE `roundcube`;
-CREATE USER 'roundcube'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON `roundcube`.* TO 'roundcube'@'%';
-FLUSH PRIVILEGES;
 ```
 
 ### Mail: Roundmcube - ManageSieve (Filter)

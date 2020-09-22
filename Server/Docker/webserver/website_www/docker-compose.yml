@@ -1,9 +1,10 @@
-version: '3.6'
+version: '3.8'
 
 services:
   web:
     image: webdevops/php-apache:7.4
     restart: always
+    hostname: cyb10101
     volumes:
       - .:/app
       - /var/run/docker.sock:/var/run/docker.sock:ro

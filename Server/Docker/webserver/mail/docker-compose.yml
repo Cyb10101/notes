@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.8'
 services:
   web:
     image: webdevops/php-apache:7.4
@@ -43,7 +43,8 @@ services:
     working_dir: /app
 
   roundcube:
-    image: roundcube/roundcubemail:latest
+    build: ./build-roundcubemail
+    #image: roundcube/roundcubemail:latest
     #container_name: roundcube
     restart: always
     volumes:
@@ -59,8 +60,9 @@ services:
       - ROUNDCUBEMAIL_DEFAULT_PORT=993
       - ROUNDCUBEMAIL_SMTP_SERVER=ssl://smtp.mail-example.org
       - ROUNDCUBEMAIL_SMTP_PORT=465
-      # https://github.com/roundcube/roundcubemail/tree/master/plugins
-      - ROUNDCUBEMAIL_PLUGINS=archive,managesieve,markasjunk,newmail_notifier,zipdownload
+      # Internal: https://github.com/roundcube/roundcubemail/tree/master/plugins
+      # External see Dockerfile: https://plugins.roundcube.net/
+      - ROUNDCUBEMAIL_PLUGINS=archive,carddav,managesieve,markasjunk,newmail_notifier,zipdownload
 
   mail:
     image: tvial/docker-mailserver:latest

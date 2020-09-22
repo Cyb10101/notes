@@ -16,28 +16,31 @@ fi
 # Select docker compose file
 DOCKER_COMPOSE_FILE=docker-compose.yml
 
+dockerCompose() {
+    docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" "${@:1}"
+}
+
 function startFunction {
     case ${1} in
         start)
             startFunction pull && \
             startFunction build && \
-            startFunction up && \
-            startFunction login
+            startFunction up
         ;;
         up)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" up -d
+            dockerCompose up -d
         ;;
         down)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" down --remove-orphans
+            dockerCompose down --remove-orphans
         ;;
         login)
             startFunction bash
         ;;
         bash)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" exec web bash
+            dockerCompose exec web bash
         ;;
         *)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" "${@:1}"
+            dockerCompose "${@:1}"
         ;;
     esac
 }

@@ -20,6 +20,17 @@ if [ -f .env.local ]; then
   source .env.local
 fi
 
+# Select docker compose file
+ENV_DOCKER_CONTEXT=${ENV_DOCKER_CONTEXT:-}
+DOCKER_COMPOSE_FILE=docker-compose.yml
+if [ "${ENV_DOCKER_CONTEXT:0:11}" == "Development" ]; then
+  DOCKER_COMPOSE_FILE=docker-compose.dev.yml
+fi
+
+dockerCompose() {
+    docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" "${@:1}"
+}
+
 checkRoot() {
     if [[ $EUID -ne 0 ]]; then
         echo 'You must be a root user!' 2>&1
@@ -63,42 +74,38 @@ runDeploy() {
     chown -R ${APPLICATION_UID}:${APPLICATION_GID} .
 
     # Git: Deploy as user in container (SSH-Key for private repositories needed)
-    #./start.sh exec-web git pull origin master
+    #startFunction exec-web git pull origin master
 
     # Deploy as user in container
-    ./start.sh exec-web composer --working-dir=public install
-    #./start.sh exec-web composer --working-dir=public install --ignore-platform-reqs
+    startFunction start
+    startFunction exec-web composer install
+    #startFunction exec-web composer --working-dir=public install --ignore-platform-reqs
 }
 
-# Select docker compose file
-DOCKER_CONTEXT=${DOCKER_CONTEXT:-}
-DOCKER_COMPOSE_FILE=docker-compose.yml
-if [ "${DOCKER_CONTEXT:0:11}" == "Development" ]; then
-  DOCKER_COMPOSE_FILE=docker-compose.dev.yml
-fi
-
-function startFunction {
+startFunction() {
     case ${1} in
         start)
             startFunction pull && \
             startFunction build && \
-            startFunction up && \
-            startFunction login
+            startFunction up
         ;;
         up)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" up -d
+            dockerCompose up -d
         ;;
         down)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" down --remove-orphans
+            dockerCompose down --remove-orphans
+        ;;
+        login-root)
+            dockerCompose exec web bash
         ;;
         login)
             startFunction bash
         ;;
         bash)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" exec -u ${APPLICATION_USER} web bash
+            dockerCompose exec -u ${APPLICATION_USER} web bash
         ;;
         exec-web)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" exec -u ${APPLICATION_USER} web "${@:2}"
+            dockerCompose exec -u ${APPLICATION_USER} web "${@:2}"
         ;;
         deploy)
             checkRoot
@@ -108,7 +115,7 @@ function startFunction {
             runDeploy
         ;;
         *)
-            docker-compose --project-directory "${SCRIPTPATH}" -f "${SCRIPTPATH}/${DOCKER_COMPOSE_FILE}" "${@:1}"
+            dockerCompose "${@:1}"
         ;;
     esac
 }
