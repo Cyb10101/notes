@@ -30,6 +30,6 @@ sudo zerofree -v /dev/sda1
 ## Windows partitions (NTFS):
 
 ```bash
-sudo apt install ntfswipe
+#sudo apt install ntfsprogs
 sudo ntfswipe -a /dev/sda1
 ```
