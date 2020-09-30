@@ -4,7 +4,9 @@ require_once('ImapUtility.php');
 
 error_reporting(E_ALL | E_STRICT);
 
-echo 'Imap Sync' . PHP_EOL;
+$header = 'IMAP Sync';
+$headerHash = str_repeat('#', (int)(80 - strlen($header) - 2) / 2);
+echo $headerHash . ' ' . $header . ' ' . $headerHash . PHP_EOL;
 
 if (PHP_SAPI !== 'cli') {
     echo 'This script needs to be ran in CLI mode.' . PHP_EOL;
