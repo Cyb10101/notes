@@ -91,7 +91,7 @@ services:
       - ./.docker/mail/cron/sa-learn:/etc/cron.d/sa-learn
       - ../global/.docker/global-nginx-proxy/certs:/etc/letsencrypt/live:ro
     environment:
-      - OVERRIDE_HOSTNAME=mail-example.org
+      #- OVERRIDE_HOSTNAME=mail-example.org
       - ENABLE_POP3=1
       - ENABLE_CLAMAV=0
       - ENABLE_FAIL2BAN=1
@@ -99,6 +99,9 @@ services:
       # Debug: Enable debug on startup
       #- DMS_DEBUG=1
       - SSL_TYPE=letsencrypt
+
+      # Message size 100 MB
+      - POSTFIX_MESSAGE_SIZE_LIMIT=104857600
 
       - ENABLE_POSTGREY=1
       # greylist for N seconds
