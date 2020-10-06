@@ -2,6 +2,7 @@
 
 @todo add fail2ban to ssh docker
 @todo add nginx html pages
+@todo apt install mariadb-client
 
 Example structure of a Webserver:
 
@@ -278,6 +279,8 @@ chown -R 1000:1000 .
 
 ## MySQL / MariaDB
 
+*Note: Database username, up to 16 alphanumeric characters, underscore and dash are allowed.*
+
 ```bash
 ~/projects/global/start.sh mysql
 ```
@@ -408,7 +411,7 @@ German: Plesk > Kunde > E-Mail > E-Mail Einstellungen > website.com
 Extract DKIM Key via OpenSSL:
 
 ```bash
-openssl rsa -in /etc/domainkeys/website.comg/default -pubout
+openssl rsa -in /etc/domainkeys/website.com/default -pubout
 ```
 
 #### Get DKIM for Docker tvial/docker-mailserver
@@ -416,11 +419,9 @@ openssl rsa -in /etc/domainkeys/website.comg/default -pubout
 Generate DKIM keys:
 
 ```bash
-? @todo ~/projects/mail/config/opendkim/keys/website.com
-
 ./setup.sh config dkim
-docker-compose exec mail cat /tmp/docker-mailserver/opendkim/keys/website.com/mail.txt
-./start.sh restart
+cat ~/projects/mail/.docker/mail/config/opendkim/keys/website.com/mail.txt
+~/projects/mail/start.sh down && ~/projects/mail/start.sh up
 ```
 
 The quotes must be combined:
