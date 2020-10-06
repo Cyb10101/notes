@@ -518,3 +518,23 @@ Edit `~/projects/mail/.docker/roundmail/config/config.inc.php` and add:
     $config['managesieve_host'] = 'mail.server.com';
     $config['managesieve_usetls'] = true;
 ```
+
+## Nextcloud
+
+* [Thunderbird: CardBook](https://addons.thunderbird.net/de/thunderbird/addon/cardbook/)
+
+Create database:
+
+```sql
+CREATE DATABASE `nextcloud`;
+CREATE USER 'nextcloud'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON `nextcloud`.* TO 'nextcloud'@'%';
+FLUSH PRIVILEGES;
+```
+
+Start Docker and remove or ajust skeleton for new users:
+
+```bash
+~/projects/nextcloud/start.sh up
+rm -rf ~/projects/nextcloud/.docker/nextcloud/core/skeleton/*
+```

@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  nextcloud:
+    image: nextcloud
+    restart: always
+    volumes:
+      - ./.docker/nextcloud:/var/www/html
+    environment:
+      - VIRTUAL_HOST=nextcloud.server.org
+      #- VIRTUAL_PROTO=https
+      #- VIRTUAL_PORT=443
+      - LETSENCRYPT_HOST=nextcloud.server.org
+
+      - WEB_DOCUMENT_ROOT=/app
+    working_dir: /app
+
+
+networks:
+  default:
+    external:
+      name: global
