@@ -396,7 +396,7 @@ sudo apt install wine
 
 ```bash
 mkdir -p ~/Dokumente/HeidiSQL
-ln -s ../../Schreibtisch/notes/Programmierung/SQL ~/Dokumente/HeidiSQL/Snippets
+ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
 
 aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.0.0.5919_Setup.exe
 wine /tmp/heidisql.exe
