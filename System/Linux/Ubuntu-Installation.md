@@ -196,7 +196,7 @@ sudo apt -y install mkvtoolnix mkvtoolnix-gui
 * [Balena Etcher](https://www.balena.io/etcher/)
 
 ```bash
-aria2c --download-result=hide --dir=/tmp -o etcher.zip https://github.com/balena-io/etcher/releases/download/v1.5.89/balena-etcher-electron-1.5.89-linux-x64.zip
+aria2c --download-result=hide --dir=/tmp -o etcher.zip https://github.com/balena-io/etcher/releases/download/v1.5.109/balena-etcher-electron-1.5.109-linux-x64.zip
 unzip /tmp/etcher.zip -d /tmp/etcher
 sudo mv /tmp/etcher/balenaEtcher-*-x64.AppImage /usr/local/bin/balenaEtcher.AppImage
 
@@ -245,6 +245,28 @@ tar -C ~/opt -xf /tmp/telegram.tar.xz
 aria2c --download-result=hide --dir=/tmp -o discord.deb https://dl.discordapp.net/apps/linux/0.0.10/discord-0.0.10.deb
 sudo dpkg -i /tmp/discord.deb
 sudo apt -f install
+```
+
+## Linphone
+
+* [Linphone](https://www.linphone.org/)
+
+```bash
+sudo aria2c --download-result=hide --dir=/usr/local/bin -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.3.AppImage
+
+cat <<EOF | sudo tee /usr/share/applications/Linphone.desktop
+#!/bin/bash
+[Desktop Entry]
+Name=Linphone
+Comment=Linphone is an open source SIP phone for voice/video calls and instant messaging.
+Exec="/usr/local/bin/Linphone.AppImage"
+Terminal=false
+Type=Application
+Icon=/usr/share/icons/Yaru/scalable/actions/call-start-symbolic.svg
+StartupWMClass=Linphone
+Categories=Utility;
+TryExec=/usr/local/bin/Linphone.AppImage
+EOF
 ```
 
 # Games
