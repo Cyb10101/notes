@@ -373,7 +373,6 @@ sudo dpkg -i /tmp/dropbox.deb
 
 * [VirtualBox](../../Software/VirtualBox/Installation.md)
 * [Docker](../../Server/Docker/Installation.md)
-* [LinkChecker](https://github.com/wummel/linkchecker/releases)
 * [HTTrack](../../Software/HTTrack.md)
 
 * [Google Chrome](https://www.google.com/intl/de_de/chrome/)
