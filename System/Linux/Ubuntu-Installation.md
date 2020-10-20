@@ -254,6 +254,9 @@ sudo apt -f install
 ```bash
 sudo aria2c --download-result=hide --dir=/usr/local/bin -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.3.AppImage
 
+sudo mkdir -p /usr/local/share/icons
+sudo aria2c --download-result=hide --dir=/usr/local/share/icons -o linphone.png https://github.com/BelledonneCommunications/linphone-desktop/raw/master/linphone-app/assets/icons/hicolor/64x64/apps/icon.png
+
 cat <<EOF | sudo tee /usr/share/applications/Linphone.desktop
 #!/bin/bash
 [Desktop Entry]
@@ -262,8 +265,9 @@ Comment=Linphone is an open source SIP phone for voice/video calls and instant m
 Exec="/usr/local/bin/Linphone.AppImage"
 Terminal=false
 Type=Application
-Icon=/usr/share/icons/Yaru/scalable/actions/call-start-symbolic.svg
-StartupWMClass=Linphone
+#Icon=/usr/share/icons/Yaru/scalable/actions/call-start-symbolic.svg
+Icon=/usr/local/share/icons/linphone.png
+StartupWMClass=linphone
 Categories=Utility;
 TryExec=/usr/local/bin/Linphone.AppImage
 EOF
