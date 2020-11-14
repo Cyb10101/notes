@@ -252,7 +252,9 @@ sudo apt -f install
 * [Linphone](https://www.linphone.org/)
 
 ```bash
-sudo aria2c --download-result=hide --dir=/usr/local/bin -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.3.AppImage
+aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.3.AppImage
+chmod +x /tmp/Linphone.AppImage
+sudo mv /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
 sudo mkdir -p /usr/local/share/icons
 sudo aria2c --download-result=hide --dir=/usr/local/share/icons -o linphone.png https://github.com/BelledonneCommunications/linphone-desktop/raw/master/linphone-app/assets/icons/hicolor/64x64/apps/icon.png
@@ -401,7 +403,7 @@ sudo apt install wine
 mkdir -p ~/Dokumente/HeidiSQL
 ln -s ../../Schreibtisch/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
 
-aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.0.0.5919_Setup.exe
+aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.1.0.6116_Setup.exe
 wine /tmp/heidisql.exe
 ```
 
