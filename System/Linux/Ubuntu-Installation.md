@@ -252,7 +252,7 @@ sudo apt -f install
 * [Linphone](https://www.linphone.org/)
 
 ```bash
-aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.3.AppImage
+aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.4.AppImage
 chmod +x /tmp/Linphone.AppImage
 sudo mv /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
@@ -292,6 +292,29 @@ sudo apt -y install playonlinux
 
 ```bash
 sudo flatpak install flathub org.phoenicis.playonlinux
+```
+
+## Tor Browser
+
+```bash
+# Download
+curl -L -o /tmp/tor-browser.tar.xz https://www.torproject.org/dist/torbrowser/10.0.5/tor-browser-linux64-10.0.5_de.tar.xz
+
+# Optional: Verify download
+curl -L -o /tmp/tor-browser.asc https://www.torproject.org/dist/torbrowser/10.0.5/tor-browser-linux64-10.0.5_de.tar.xz.asc
+gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
+gpg --output /tmp/tor.keyring --export 0xEF6E286DDA85EA2A4BA7DE684E2C6E8793298290
+gpgv --keyring /tmp/tor.keyring /tmp/tor-browser.asc /tmp/tor-browser.tar.xz
+
+# Extract
+mkdir -p /home/${USER}/opt
+tar -C /home/${USER}/opt -xf /tmp/tor-browser.tar.xz
+mv /home/${USER}/opt/tor-browser_* /home/${USER}/opt/tor-browser
+chmod +rx /home/${USER}/opt/tor-browser/start-tor-browser.desktop
+
+# Run first and then copy file to applications
+/home/${USER}/opt/tor-browser/start-tor-browser.desktop
+cp /home/${USER}/opt/tor-browser/start-tor-browser.desktop /home/${USER}/.local/share/applications/tor-browser.desktop
 ```
 
 ## Remote Desktop
