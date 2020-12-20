@@ -132,6 +132,26 @@ services:
       - NET_ADMIN
       - SYS_PTRACE
 
+  autodiscover:
+    image: monogramm/autodiscover-email-settings:latest
+    environment:
+      - VIRTUAL_HOST=autoconfig.mail-example.org,autodiscover.mail-example.org,autoconfig.website.org,autodiscover.website.org
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=autoconfig.mail-example.org,autodiscover.mail-example.org,autoconfig.website.org,autodiscover.website.org
+
+      - COMPANY_NAME=MyCompany
+      - SUPPORT_URL=https://autodiscover.mail-example.org
+      - DOMAIN=mail-example.org
+      - IMAP_HOST=mail.mail-example.org
+      - IMAP_PORT=993
+      - IMAP_SOCKET=SSL
+      - POP_HOST=mail.mail-example.org
+      - POP_PORT=993
+      - POP_SOCKET=SSL
+      - SMTP_HOST=mail.mail-example.org
+      - SMTP_PORT=587
+      - SMTP_SOCKET=SSL
+
 networks:
   default:
     external:

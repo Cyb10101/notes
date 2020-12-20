@@ -332,7 +332,6 @@ You should have these domains:
 * imap.server.com
 * smtp.server.com
 
-
 ### Mail: Roundcube
 
 Create database:
@@ -349,6 +348,15 @@ FLUSH PRIVILEGES;
 ```
 
 *Note: If you change roundcube plugins or configuration, you maybe need to delete this folder `.docker/roundmail`. But be careful! Manual configurations could have been written in `.docker/roundmail/config/config.inc.php`.*
+
+### Mail: Autoconfig & AutoDiscover
+
+This service is optional and is used to ensure that the mail programs receive the configuration automatically.
+
+Configure service `autodiscover` in `mail/docker-compose.yml`.
+
+* [Monogramm/autodiscover-email-settings](https://github.com/Monogramm/autodiscover-email-settings)
+* [Mozilla Autoconfig](https://developer.mozilla.org/en-US/docs/Mozilla/Thunderbird/Autoconfiguration/FileFormat/HowTo)
 
 ### Start mail
 
