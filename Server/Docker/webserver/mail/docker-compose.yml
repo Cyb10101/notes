@@ -149,7 +149,7 @@ services:
       - POP_PORT=993
       - POP_SOCKET=SSL
       - SMTP_HOST=mail.mail-example.org
-      - SMTP_PORT=587
+      - SMTP_PORT=465
       - SMTP_SOCKET=SSL
 
 networks:
