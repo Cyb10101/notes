@@ -21,6 +21,5 @@ del "%LOCALAPPDATA%\Temp\flameshot.zip"
 powershell -Command "$s=(New-Object -COM WScript.Shell).CreateShortcut(\"$env:homedrive$env:homepath\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\FlameShot.lnk\");$s.TargetPath=\"$env:homedrive$env:homepath\opt\flameshot\bin\flameshot.exe\";$s.Save()"
 
 # Create shortcut in program folder (explorer "shell:programs")
-C:\Users\User\AppData\Roaming\Microsoft\Windows\Start Menu\Programs
 powershell -Command "$s=(New-Object -COM WScript.Shell).CreateShortcut(\"$env:homedrive$env:homepath\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FlameShot.lnk\");$s.TargetPath=\"$env:homedrive$env:homepath\opt\flameshot\bin\flameshot.exe\";$s.Save()"
 ```
