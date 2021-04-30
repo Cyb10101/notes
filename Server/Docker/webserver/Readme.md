@@ -516,6 +516,14 @@ vim ~/projects/mail/.docker/mail/after.dovecot.sieve
 # Copy and ajust file .docker/mail/*.dovecot.sieve
 ```
 
+### Mail: Roundcube - Configure
+
+Edit `~/projects/mail/.docker/roundmail/config/config.inc.php` and add:
+
+```php
+  $config['htmleditor'] = 4; // always compose html formatted messages, except when replying to plain text message
+```
+
 ### Mail: Roundmcube - ManageSieve (Filter)
 
 Enable `ENABLE_MANAGESIEVE` and add RoundCube plugin `ROUNDCUBEMAIL_PLUGINS=managesieve` in `docker-compose.yaml`.
