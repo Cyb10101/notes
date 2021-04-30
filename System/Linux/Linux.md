@@ -65,7 +65,7 @@ Photorec: FAT, NTFS, Ext filesystem:
 
 ```bash
 sudo apt install testdisk
-sudo photorec -d /resored-files/ /dev/sda
+sudo photorec -d /restored-files/ /dev/sda
 ```
 
 Ext filesystem:
