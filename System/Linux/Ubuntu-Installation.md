@@ -53,6 +53,7 @@ sudo apt -y install openssh-server
 
 # File system tools
 sudo apt -y install cifs-utils nfs-common sshfs ncdu
+sudo apt -y install exa
 
 # Recover files
 sudo apt -y install testdisk extundelete
@@ -129,8 +130,6 @@ sudo apt -y install variety
 
 ## Office
 
-* [Tor Browser](https://www.torproject.org/)
-
 ```bash
 sudo apt -y install firefox thunderbird
 sudo apt -y install libreoffice libreoffice-base
@@ -149,7 +148,6 @@ sudo apt -y install filezilla
 
 * [Kodi (XBMC)](https://kodi.tv/)
 * [Handbrake](https://handbrake.fr/)
-* [OBS - Open Broadcaster Software](https://obsproject.com/)
 
 ```bash
 # Audio: Snap no emoji support, Debian package offline
@@ -168,8 +166,15 @@ sudo apt -y install handbrake kdenlive flowblade openshot pitivi
 sudo apt -y install peek
 
 # Screencast
-sudo apt -y install obs-studio ffmpeg
 sudo apt -y install vokoscreen
+```
+
+* [OBS - Open Broadcaster Software](https://obsproject.com/)
+
+```bash
+# Optional: sudo add-apt-repository ppa:obsproject/obs-studio
+sudo apt update
+sudo apt install obs-studio v4l2loopback-dkms ffmpeg
 ```
 
 * [XnView](https://www.xnview.com/)
@@ -250,11 +255,10 @@ sudo apt -f install
 ## Linphone
 
 * [Linphone](https://www.linphone.org/)
+* [Linphone: Download](https://www.linphone.org/releases/linux/app/)
 
 ```bash
-aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.4.AppImage
-chmod +x /tmp/Linphone.AppImage
-sudo mv /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
+aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.5.AppImage && chmod +x /tmp/Linphone.AppImage && sudo mv /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
 sudo mkdir -p /usr/local/share/icons
 sudo aria2c --download-result=hide --dir=/usr/local/share/icons -o linphone.png https://github.com/BelledonneCommunications/linphone-desktop/raw/master/linphone-app/assets/icons/hicolor/64x64/apps/icon.png
@@ -296,25 +300,12 @@ sudo flatpak install flathub org.phoenicis.playonlinux
 
 ## Tor Browser
 
+* [Tor Browser](https://www.torproject.org/)
+
 ```bash
-# Download
-curl -L -o /tmp/tor-browser.tar.xz https://www.torproject.org/dist/torbrowser/10.0.5/tor-browser-linux64-10.0.5_de.tar.xz
-
-# Optional: Verify download
-curl -L -o /tmp/tor-browser.asc https://www.torproject.org/dist/torbrowser/10.0.5/tor-browser-linux64-10.0.5_de.tar.xz.asc
-gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
-gpg --output /tmp/tor.keyring --export 0xEF6E286DDA85EA2A4BA7DE684E2C6E8793298290
-gpgv --keyring /tmp/tor.keyring /tmp/tor-browser.asc /tmp/tor-browser.tar.xz
-
-# Extract
-mkdir -p /home/${USER}/opt
-tar -C /home/${USER}/opt -xf /tmp/tor-browser.tar.xz
-mv /home/${USER}/opt/tor-browser_* /home/${USER}/opt/tor-browser
-chmod +rx /home/${USER}/opt/tor-browser/start-tor-browser.desktop
-
-# Run first and then copy file to applications
-/home/${USER}/opt/tor-browser/start-tor-browser.desktop
-cp /home/${USER}/opt/tor-browser/start-tor-browser.desktop /home/${USER}/.local/share/applications/tor-browser.desktop
+source ~/Downloads/install-scripts.sh
+aptUpdate
+installTorBrowser
 ```
 
 ## Remote Desktop
@@ -333,8 +324,14 @@ sudo sh -c 'echo "deb http://deb.anydesk.com/ all main" > /etc/apt/sources.list.
 sudo apt update
 sudo apt install anydesk
 
-aria2c --download-result=hide --dir=/tmp -o nomachine.deb https://download.nomachine.com/download/6.9/Linux/nomachine_6.9.2_1_amd64.deb
-sudo dpkg -i /tmp/nomachine.deb
+NOMACHINE_OS="Linux"
+NOMACHINE_VERSION="7.0"
+NOMACHINE_PACKAGE_NAME="nomachine_7.0.211_4_amd64.deb"
+NOMACHINE_MD5="7608b1b4b7fd9cc993f5eb1601d42882"
+curl -fSL "https://download.nomachine.com/download/${NOMACHINE_VERSION}/${NOMACHINE_OS}/${NOMACHINE_PACKAGE_NAME}" -o /tmp/nomachine.deb && \
+    echo "${NOMACHINE_MD5} /tmp/nomachine.deb" | md5sum -c - && \
+    sudo dpkg -i /tmp/nomachine.deb
+
 ```
 
 ## Development
@@ -357,6 +354,14 @@ sudo snap install code --classic
 sudo snap install phpstorm --classic
 
 sudo apt -y install meld
+```
+
+* [jq: JSON processor](https://stedolan.github.io/jq/)
+* [yq, xq: YAML/XML processor](https://github.com/kislyuk/yq)
+
+```bash
+sudo apt install -y jq python3 python3-pip
+sudo pip3 install yq
 ```
 
 * [Go-Lang](https://golang.org/)
