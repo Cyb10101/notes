@@ -119,6 +119,13 @@ xmacrorec2 > /tmp/xmacro.txt
 xmacroplay -d 50 < /tmp/xmacro.txt
 ```
 
+## Set Date & Time
+
+```bash
+sudo ntpdate time.nist.gov
+sudo ntpdate pool.ntp.org
+```
+
 ## Ubuntu 16.04
 
 ### NumLock bei Login

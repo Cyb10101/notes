@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+# sudo install ~/Sync/notes/System/Linux/Scripts/create-ramdisk.sh /usr/local/bin/create-ramdisk
+# test -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+# ln -s /usr/local/bin/create-ramdisk ${XDG_DESKTOP_DIR:-${HOME}/Desktop}/create-ramdisk
+
 ramDisk='/mnt/ramdisk'
 
 guiSudo() {

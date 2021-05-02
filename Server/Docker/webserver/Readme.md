@@ -444,14 +444,13 @@ You need to create a subdomain named `mail._domainkey`. The full domain is then 
 
 The code `v=DKIM1; h=sha256; k=rsa; p=MII/Long+Code/V1wIDAQAB` must then be entered as a `TXT` entry.
 
-
 ### Mail: SPF & DKIM test
 
 You can check this on this page: https://www.mail-tester.com/spf-dkim-check
 
 ```text
 Domain: website.com
-Selector: mail
+Selector: mail (Standard is maybe 'default')
 ```
 
 or manually:

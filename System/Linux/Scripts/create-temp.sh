@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# sudo install ~/Sync/notes/System/Linux/Scripts/create-temp.sh /usr/local/bin/create-temp
+# test -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+# ln -s /usr/local/bin/create-temp ${XDG_DESKTOP_DIR:-${HOME}/Desktop}/create-temp
+
 # Variant 1 - Date and time
 createTempDateTime() {
   VAR_DATE=`date +%F`

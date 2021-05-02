@@ -139,7 +139,8 @@ sudo apt -y install pdfarranger
 LibreOffice: Change standard template
 * File > Templates > Save / Organize
 
-# Internet
+## Internet
+
 sudo apt -y install mariadb-client
 sudo apt -y install filezilla
 
@@ -194,6 +195,13 @@ sudo sh -c 'echo "deb-src https://mkvtoolnix.download/ubuntu/ focal main" >> /et
 
 # Install
 sudo apt -y install mkvtoolnix mkvtoolnix-gui
+```
+
+Duplicate image finder
+
+```bash
+wget -O /tmp/czkawka-gui https://github.com/qarmin/czkawka/releases/download/3.0.0/linux_czkawka_gui
+sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
 ```
 
 ## Burning USB: Balena Etcher
