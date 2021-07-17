@@ -5,37 +5,36 @@ rem reg export HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explo
 rem robocopy "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar" "%USERPROFILE%\Desktop\Sandbox\deploy\TaskBar" /MIR
 
 set "DIR_DOWNLOADS=%USERPROFILE%\Desktop\Downloads"
-set "DIR_SANDBOX=%USERPROFILE%\Desktop\Sandbox"
+set "DIR_DEPLOY=%USERPROFILE%\Desktop\Sandbox\deploy"
 
 call :configureSandbox
 call :installFirefox
-call :installVisualStudioCode
+rem call :installVisualStudioCode
 
 explorer.exe %DIR_DOWNLOADS%
-explorer.exe %DIR_SANDBOX%
 start cmd.exe /K "cd /d %DIR_DOWNLOADS%"
-start cmd.exe /K "cd /d %DIR_SANDBOX%"
 
 exit /b
 
 :configureSandbox
   del "%USERPROFILE%\Desktop\Microsoft Edge.lnk"
-  rem robocopy "%DIR_SANDBOX%\deploy\TaskBar" "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar" /MIR
+  rem robocopy "%DIR_DEPLOY%\TaskBar" "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar" /MIR
 
   reg import C:\Users\WDAGUtilityAccount\Desktop\Sandbox\deploy\config.reg
   rem reg import C:\Users\WDAGUtilityAccount\Desktop\Sandbox\deploy\taskbar.reg
 exit /b
 
 :installFirefox
-  if not exist "%DIR_SANDBOX%\deploy\firefox.exe" (
-    curl -L "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=de" --output %DIR_SANDBOX%\deploy\firefox.exe
+  if not exist "%DIR_DEPLOY%\firefox.exe" (
+    curl -L "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=de" --output %DIR_DEPLOY%\firefox.exe
   )
-  %DIR_SANDBOX%\deploy\firefox.exe /S
+  rem START /WAIT %DIR_DEPLOY%\firefox.exe /S
+  %DIR_DEPLOY%\firefox.exe /S
 exit /b
 
 :installVisualStudioCode
-  if not exist "%DIR_SANDBOX%\deploy\vscode.exe" (
-    curl -L "https://update.code.visualstudio.com/latest/win32-x64-user/stable" --output %DIR_SANDBOX%\deploy\vscode.exe
+  if not exist "%DIR_DEPLOY%\vscode.exe" (
+    curl -L "https://update.code.visualstudio.com/latest/win32-x64-user/stable" --output %DIR_DEPLOY%\vscode.exe
   )
-  %DIR_SANDBOX%\deploy\vscode.exe /verysilent /suppressmsgboxes /MERGETASKS=!runcode
+  %DIR_DEPLOY%\vscode.exe /verysilent /suppressmsgboxes /MERGETASKS=!runcode
 exit /b
