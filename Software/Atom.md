@@ -23,9 +23,10 @@ apm install tool-bar tool-bar-main
 apm install file-icons file-watcher
 apm install sort-lines
 apm install atom-beautify
+apm install markdown-preview-enhanced
 
 # Programming languages
-apm install language-batchfile
+apm install language-batchfile language-powershell
 ```
 
 ## Optional plugins
