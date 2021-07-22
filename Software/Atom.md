@@ -23,6 +23,8 @@ apm install tool-bar tool-bar-main
 apm install file-icons file-watcher
 apm install sort-lines
 apm install atom-beautify
+
+# Package Settings > Open preview pane automatically when opening a markdown file = false
 apm install markdown-preview-enhanced
 
 # Programming languages
