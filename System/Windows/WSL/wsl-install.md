@@ -17,8 +17,8 @@ Install Windows Subsystem for Linux in PowerShell as Administrator:
 ```powershell
 #Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+dism.exe /Online /Enable-Feature /featurename:Microsoft-Windows-Subsystem-Linux /All /NoRestart
+dism.exe /Online /Enable-Feature /featurename:VirtualMachinePlatform /All /NoRestart
 wsl --set-default-version 2
 ```
 
