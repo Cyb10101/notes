@@ -45,14 +45,19 @@ function searchCalendarEvents() {
       for (var i = 0; i < columnValues.length; i++) {
         var eventName = columnValues[i][0];
         if (eventName !== '') {
-          var fromDate = sheet.getRange(searchEvents + 1 + i, 2).getValue();
+          var fromDate = sheet.getRange(searchEvents + 1 + i, 2).setHorizontalAlignment('center').getValue();
           if (!isValidDate(fromDate)) {
             fromDate = new Date();
             sheet.getRange(searchEvents + 1 + i, 2).setValue(fromDate);
           }
 
           var eventsInTime = getCalendarEventsInTime(myCalendarId, eventName, fromDate, new Date());
-          sheet.getRange(searchEvents + 1 + i, 3).setValue(countEvents(eventsInTime));
+          sheet.getRange(searchEvents + 1 + i, 3).setValue(countEvents(eventsInTime)).setHorizontalAlignment('center');
+
+          sheet.getRange(searchEvents + 1 + i, 4).setHorizontalAlignment('center');
+
+          var updated = Utilities.formatDate(new Date(), "GMT+1", "dd.MM.yyyy");
+          sheet.getRange(searchEvents + 1 + i, 5).setValue(updated).setHorizontalAlignment('center');
         }
       }
     } else {
@@ -76,24 +81,28 @@ function addDefaultFields(sheet) {
 
   // Table header
   if (sheet.getRange('A3').getValue() === '') {
-    sheet.getRange('A3').setValue('Event').setFontWeight('bold').setHorizontalAlignment('left');
+    sheet.getRange('A3').setValue('Event').setFontWeight('bold').setHorizontalAlignment('center');
   }
   if (sheet.getRange('B3').getValue() === '') {
-    sheet.getRange('B3').setValue('Start date').setFontWeight('bold').setHorizontalAlignment('left');
+    sheet.getRange('B3').setValue('Start date').setFontWeight('bold').setHorizontalAlignment('center');
   }
   if (sheet.getRange('C3').getValue() === '') {
-    sheet.getRange('C3').setValue('Current count').setFontWeight('bold').setHorizontalAlignment('left');
+    sheet.getRange('C3').setValue('Current count').setFontWeight('bold').setHorizontalAlignment('center');
   }
   if (sheet.getRange('D3').getValue() === '') {
-    sheet.getRange('D3').setValue('Maximum count').setFontWeight('bold').setHorizontalAlignment('left');
+    sheet.getRange('D3').setValue('Maximum count').setFontWeight('bold').setHorizontalAlignment('center');
+  }
+  if (sheet.getRange('E3').getValue() === '') {
+    sheet.getRange('E3').setValue('Updated').setFontWeight('bold').setHorizontalAlignment('center');
   }
 
   // Table example data
   if (sheet.getRange('A4').getValue() === '') {
     sheet.getRange('A4').setValue('Event name').setHorizontalAlignment('left');
-    sheet.getRange('B4').setValue('01.01.2020').setHorizontalAlignment('right');
-    sheet.getRange('C4').setValue(0).setHorizontalAlignment('right');
-    sheet.getRange('D4').setValue(10).setHorizontalAlignment('right');
+    sheet.getRange('B4').setValue('01.01.2020').setHorizontalAlignment('center');
+    sheet.getRange('C4').setValue(0).setHorizontalAlignment('center');
+    sheet.getRange('D4').setValue(10).setHorizontalAlignment('center');
+    sheet.getRange('E4').setValue(Utilities.formatDate(new Date(), "GMT+1", "dd.MM.yyyy")).setHorizontalAlignment('center');
   }
 }
 
