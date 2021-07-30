@@ -1,0 +1,3225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Version 1.7.5 https://fearlessrevolution.com/viewtopic.php?t=5338#p23487 -->
+<CheatTable CheatEngineTableVersion="26">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>5</ID>
+      <Description>"Vol1 Script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+
+local function hex(a, c)
+  if a == nil then
+    return "(nil)"
+  end
+  local fmt = "%X"
+  if type(c) == "number" then
+    fmt = "%0"..c.."X"
+  end
+  return string.format(fmt, a)
+end
+
+local function pointerSize()
+  if targetIs64Bit() then
+    return 8
+  end
+  return 4
+end
+
+local function readSignedInteger(a)
+  local v = readInteger(a)
+  if v ~= nil then
+    if v &gt; 0x7FFFFFFF then
+      v = -(0x100000000 - v)
+    end
+  end
+  return v
+end
+
+local function findRecord(parent, desc)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local found
+  if parent ~= nil and parent.Count &gt; 0 then
+    local i
+    for i = 0, parent.Count-1 do
+      if parent.Child[i].Description == desc then
+        found = parent.Child[i]
+      end
+    end
+  end
+  return found
+end
+
+local function updateRecord(parent, desc, type, addr, offsets)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local rec = findRecord(parent,desc)
+  if rec == nil then
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.VarType = type
+    if addr ~= nil then
+      rec.setAddress(addr, offsets)
+    end
+    if parent ~= nil then
+      rec.appendToEntry(parent)
+    end
+  else
+    local a = rec.Address
+    if addr ~= a then
+      rec.setAddress(addr, offsets)
+    end
+  end
+  return rec
+end
+
+local cached = {}
+
+local function updatePath(path, desc, type, addr, offsets)
+  if memrec == nil then
+    return nil
+  end
+  local fullpath = ""
+  if path ~= nil and path ~= "" then
+    fullpath = path.."\\"..desc
+  else
+    fullpath = desc
+  end
+  local rec
+  if cached[fullpath] == nil or cached[fullpath].Parent == nil then
+    local i
+    local arr = {}
+    local parent
+    for i in string.gmatch(path, "[^\\]+") do
+      table.insert(arr, i)
+    end
+    if #arr &gt; 0 then
+      local item = table.remove(arr)
+      parent = updatePath(table.concat(arr, '\\'), item, "vtCustom", 0, {})
+    else
+      parent = memrec
+    end
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.VarType = type
+    rec.setAddress(addr, offsets)
+    rec.appendToEntry(parent)
+    if type == "vtCustom" then
+      rec.IsGroupHeader = true
+    end
+    cached[fullpath] = rec
+  else
+    rec = cached[fullpath]
+    local a = rec.Address
+    if addr ~= a then
+      rec.setAddress(addr, offsets)
+    end
+  end
+  return cached[fullpath]
+end
+
+local function getPath(path)
+  if cached[path] ~= nil then
+    return cached[path]
+  end
+  return nil
+end
+
+local function removePath(path)
+  local result = false
+  if cached[path] ~= nil then
+    if cached[path].getAddress() ~= "" then
+      cached[path]:Delete()
+      result = true
+    end
+    cached[path] = nil
+  end
+  return result
+end
+
+local function cleanupPath(path, list)
+  local pathlist = {}
+  local i,v
+  for i,v in pairs(list) do
+    table.insert(pathlist, path.."\\"..i)
+  end
+  for i,v in pairs(cached) do
+    if string.sub(i,1,string.len(path)+1) == path.."\\" then
+      local r,z
+      local found = false
+      for r,z in ipairs(pathlist) do
+        if i == z or string.sub(i,1,string.len(z)+1) == z.."\\" then
+          found = true
+          break
+        end
+      end
+      if not found then
+        removePath(i)
+      end
+    end
+  end
+end
+
+local function getHeader(parent, desc)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local rec = findRecord(parent,desc)
+  if rec == nil then
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.IsGroupHeader = true
+    if parent ~= nil then
+      rec.appendToEntry(parent)
+    end
+  end
+  return rec
+end
+
+local function getFlag(desc)
+  local result = false
+  if memrec ~= nil then
+    local rec = findRecord(memrec, desc)
+    if rec == nil then
+      rec = getAddressList().createMemoryRecord()
+      rec.Description = desc
+      rec.IsGroupHeader = true
+      rec.appendToEntry(memrec)
+    end
+    result = rec.Active
+  end
+  return result
+end
+
+local function getCodeOffset(addr, off)
+  if addr == nil or addr == 0 then
+    return nil
+  end
+  local o = readSignedInteger(addr + off)
+  if o ~= nil then
+    return addr + o + off + 4
+  end
+  return nil
+end
+
+local function followAddress(addr, offs, debug)
+  local i
+  for i = 1,#offs do
+    if addr ~= nil then
+      local ot = type(offs[i])
+      if ot == "table" then
+        if type(offs[i]["offset"]) ~= "number" then
+          return nil
+        end
+        if offs[i]["rc"] == true then
+          addr = getCodeOffset(addr, offs[i]["offset"])
+        elseif offs[i]["r32"] == true then
+          addr = readInteger(addr + offs[i]["offset"])
+        else
+          addr = readPointer(addr + offs[i]["offset"])
+        end
+      elseif ot == "number" then
+        addr = readPointer(addr + offs[i])
+      else
+        return nil
+      end
+      if debug then
+        print("  "..hex(addr))
+      end
+    end
+  end
+  return addr
+end
+
+if timers == nil then
+  timers = {}
+end
+if aobscans == nil then
+  aobscans = {}
+end
+
+local function getTimer()
+  if memrec ~= nil then
+    local id = memrec.id
+    if timers[id] == nil then
+      timers[id] = createTimer()
+      timers[id].Enabled = false
+      timers[id].Interval = getFreezeTimer().Interval
+    end
+    return timers[id]
+  end
+  return nil
+end
+
+local function killTimer()
+  if memrec ~= nil then
+    local id = memrec.id
+    if timers[id] ~= nil then
+      timers[id]:Destroy()
+      timers[id] = nil
+    end
+  end
+end
+
+local function setScan(name, opts)
+  if memrec == nil then
+    return false
+  end
+  if aobscans[memrec.id] ~= nil then
+    aobscans[memrec.id][name] = nil
+  end
+  if opts["bytes"] == nil then
+    return false
+  end
+  local perm = opts["perm"]
+  if perm == nil then
+    perm = "-C-W+X" -- Not CopyOnWrite, Not Writable, but executable by default
+  end
+  local startaddress = 0
+  local endaddress = 0x7FFFFFFFFFFFFFFF
+  if opts["module"] ~= nil then
+    startaddress = getAddress(opts["module"])
+    endaddress = startaddress + getModuleSize(opts["module"])
+  end
+  local bytes = opts["bytes"]
+  local ms = createMemScan()
+  local success = false
+  if aobscans[memrec.id] == nil then
+    aobscans[memrec.id] = {}
+  end
+  if ms ~= nil then
+    ms.firstScan(soExactValue, vtByteArray, 0, bytes, "", startaddress, endaddress, perm, fsmNotAligned, "1", true, false, false, false)
+    ms.waitTillDone()
+    local fl = createFoundList(ms)
+    if fl ~= nil then
+      fl.initialize()
+      if fl.Count &gt; 0 then
+        aobscans[memrec.id][name] = {}
+        local i
+        for i=0,fl.Count-1 do
+          table.insert(aobscans[memrec.id][name], tonumber("0x"..fl.Address[i]))
+        end
+      end
+      fl:Destroy()
+    end
+    ms:Destroy()
+    if success then
+      return true
+    end
+  end
+  return false
+end
+
+local function setScans(list, perm)
+  local k,v
+  for k,v in pairs(list) do
+    setScan(k, v, perm)
+  end
+end
+
+local function getScan(name)
+  if memrec ~= nil then
+    local id = memrec.id
+    if aobscans[id] ~= nil then
+      if aobscans[id][name] ~= nil then
+        return aobscans[id][name]
+      end
+    end
+  end
+  return nil
+end
+
+local function forEach(startaddress, toaddress, itemsize, func)
+  if startaddress &lt; toaddress then
+    local addr = startaddress
+    while addr &lt; toaddress do
+      local r = func(addr)
+      if r == false then
+        break
+      end
+      addr = addr + itemsize
+    end
+  end
+end
+
+function readWord(addr)
+  if addr ~= 0 and addr ~= nil then
+    return bAnd(readInteger(addr), 0xFFFF)
+  end
+  return nil
+end
+
+function writeWord(addr, value)
+  if addr ~= 0 and addr ~= nil and value ~= nil then
+    local v1 = bAnd(value, 0xFF)
+    local v2 = bShr(bAnd(value, 0xFF00), 8)
+    writeBytes(addr, v1, v2)
+  end
+end
+
+if syntaxcheck then
+  return
+end
+
+[ENABLE]
+
+--[[
+-- For Debugging
+local le = getLuaEngine()
+le.mOutput.Lines:Clear()
+le.cbShowOnPrint.Checked = false
+le:Show()
+]]--
+
+-- AOBScans here
+
+setScans({
+  main = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 41 83 CF",
+    module = "hackGU_vol1.dll"
+  },
+  main2 = {
+    bytes = "4C 8B 35 ?? ?? ?? ?? 8B B5 ?? ?? ?? ?? C6 85",
+    module = "hackGU_vol1.dll"
+  },
+  main3 = {
+    bytes = "48 8B 0D ?? ?? ?? ?? 48 63 41",
+    module = "hackGU_vol1.dll"
+  },
+  itemids = {
+    bytes = "77 41 48 8B 1D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B 1C FB",
+    module = "hackGU_vol1.dll"
+  },
+  strings1 = {
+    bytes = "E8 ?? ?? ?? ?? 48 8D 1C DD 00 00 00 00",
+    module = "hackGU_vol1.dll"
+  },
+  hashdata = {
+    bytes = "48 8D 3D ?? ?? ?? ?? 0F 1F 84 00 00 00 00 00 43",
+    module = "hackGU_vol1.dll"
+  },
+  battleinfo = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 0F B6 48 28",
+    module = "hackGU_vol1.dll"
+  },
+  bookinfo = {
+    bytes = "4C 8D 2D ?? ?? ?? ?? 4C 8D A1",
+    module = "hackGU_vol1.dll"
+  },
+  bookstrings = {
+    bytes = "48 8B 15 ?? ?? ?? ?? 4C 8D 34 FD",
+    module = "hackGU_vol1.dll"
+  },
+  cards = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 4C 8B 40 ?? 48 8B D5",
+    module = "hackGU_vol1.dll"
+  },
+  carddata = {
+    bytes = "48 8B 3D ?? ?? ?? ?? 0F B7 F0 48 8B 17 48 8B 9A",
+    module = "hackGU_vol1.dll"
+  },
+  skeith = {
+    bytes = "48 8B 05 ?? ?? ?? ?? C7 03",
+    module = "hackGU_vol1.dll"
+  }
+})
+
+local function hashstr(hashaddr, hashstr)
+  if hashstr ~= nil and string.len(hashstr)&gt;0 then
+    local result = 0xFFFFFFFF
+    local i
+    for i=1,string.len(hashstr) do
+      local rv = string.byte(hashstr, i)
+      rv = bXor(rv, bShr(result, 0x18))
+      result = bXor(bAnd(bShl(result, 0x8), 0xFFFFFFFF), readInteger(hashaddr + rv * 4))
+    end
+    result = bAnd(bNot(result),0xFFFFFFFF)
+    return result
+  end
+  return 0
+end
+
+local function findstr(hashaddr, hashid)
+  local inithash = followAddress(hashaddr, { 0x8 })
+  local counter = 0
+  while inithash ~= nil and inithash ~= 0 and inithash ~= hashaddr do
+    local chash = readInteger(inithash + 0x20)
+    if chash &gt; hashid then
+      inithash = followAddress(inithash, { 0x0 })
+    elseif chash &lt; hashid then
+      inithash = followAddress(inithash, { 0x10 })
+    else
+      local naddr = followAddress(inithash, { 0x28, 0x10 })
+      if naddr ~= nil then
+        local str = readString(naddr, 200)
+        if str ~= nil then
+          return str
+        end
+      end
+      return ""
+    end
+    counter = counter + 1
+    if counter == 1000 then
+      return ""
+    end
+  end
+  return ""
+end
+
+local itemstrings = {}
+
+local bookdata = {
+  -- Book 1
+  {
+    opts = {
+      {
+        offset = 0x210,
+        type = "vtWord"
+      },
+      {
+        offset = 0x212,
+        type = "vtWord"
+      },
+      {
+        offset = 0x20E,
+        type = "vtWord"
+      },
+      {
+        offset = 0x20C,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 2
+  {
+  },
+  -- Book 3
+  {
+    opts = {
+      {
+        offset = 0x214,
+        type = "vtWord"
+      },
+      {
+        offset = 0x216,
+        type = "vtWord"
+      },
+      {
+        offset = 0x218,
+        type = "vtWord"
+      },
+      {
+        offset = 0x21A,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 4
+  {
+  },
+  -- Book 5
+  {
+    opts = {
+      {
+      },
+      {
+        offset = 0x21C,
+        type = "vtWord"
+      },
+      {
+        offset = 0x21E,
+        type = "vtWord"
+      },
+      {
+        offset = 0x220,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 6
+  {
+    opts = {
+      {
+        offset = 0x5A6,
+        type = "vtWord"
+      },
+      {
+        offset = 0x5A8,
+        type = "vtWord"
+      },
+      {
+        offset = 0x1C344,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 7
+  {
+  },
+  -- Book 8
+  {
+    opts = {
+      {
+        offset = 0x228,
+        type = "vtDword"
+      },
+      {
+        offset = 0x22A,
+        type = "vtWord"
+      }
+    }
+  }
+}
+
+local hashdataaddr
+local tmpscan = getScan("hashdata")
+if tmpscan ~= nil then
+  hashdataaddr = followAddress(tmpscan[1], { { offset=3, rc=true } })
+end
+local tmpscan = getScan("strings1")
+local stringsaddr
+if tmpscan ~= nil and hashdataaddr ~= nil then
+  local addr = followAddress(tmpscan[1], { { offset=1, rc=true}, { offset=0x62, rc=true }, 0x0, 0x90, 0x0, 0x30, 0x8 })
+  stringsaddr = addr
+  local itemidscan = getScan("itemids")
+  if addr ~= nil and itemidscan ~= nil then
+    local itemidsaddr = followAddress(itemidscan[1], { { offset=0x5, rc=true }, 0x0 })
+    if itemidsaddr ~= nil then
+      local i
+      for i=0x00,0xFC do
+        local itemidaddr = followAddress(itemidsaddr, { i * 8 })
+        if itemidaddr ~= nil then
+          local name = readString(itemidaddr, 200)
+          if name ~= nil and name ~= "" and name ~= "NoStringID" then
+            local rname = findstr(addr,hashstr(hashdataaddr, name))
+            if rname ~= nil and rname ~= "" then
+              itemstrings[i] = rname
+            end
+          end
+        end
+      end
+    end
+  end
+  local bookscan = getScan("bookinfo")
+  local strscan = getScan("bookstrings")
+  if bookscan ~= nil and strscan ~= nil then
+    local bookaddr = followAddress(bookscan[1], { { offset=0x3, rc=true } })
+    local straddr = followAddress(strscan[1], { { offset=0x3, rc=true }, 0x0 })
+    if bookaddr ~= nil and straddr ~= nil then
+      bookaddr = bookaddr - 0x10
+      local i
+      for i=0,7 do
+        local binfoaddr = bookaddr + (0x18 * i)
+        local nid = readInteger(binfoaddr)
+        if nid ~= nil then
+          local idaddr = followAddress(straddr, { nid * 8 })
+          if idaddr ~= nil then
+            local id = readString(idaddr, 200)
+            if id ~= nil and id ~= "" then
+              local rname = findstr(addr, hashstr(hashdataaddr, id))
+              bookdata[i+1]["name"] = rname
+              if bookdata[i+1]["opts"] == null then
+                bookdata[i+1]["opts"] = {}
+              end
+              local subaddr = followAddress(binfoaddr, { 0x10 })
+              if subaddr ~= nil then
+                local good = true
+                local cnt = 0
+                while good do
+                  if cnt &gt; 100 then
+                    good = false
+                  else
+                    local nid = readInteger(subaddr)
+                    if nid ~= 0xFFFFFFFF then
+                      local idaddr = followAddress(straddr, { nid * 8 })
+                      if idaddr ~= nil then
+                        local id = readString(idaddr, 200)
+                        if id ~= nil and id ~= "" then
+                          local rname = findstr(addr, hashstr(hashdataaddr, id))
+                          if bookdata[i+1]["opts"][cnt+1] == nil then
+                            bookdata[i+1]["opts"][cnt+1] = {}
+                          end
+                          bookdata[i+1]["opts"][cnt+1]["name"] = rname
+                          bookdata[i+1]["opts"][cnt+1]["per"] = subaddr + 0x8
+                        end
+                      end
+                    else
+                      good = false
+                    end
+                  end
+                  subaddr = subaddr + 0x10
+                  cnt = cnt + 1
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+local function Run()
+  -- Refresh code here
+  local mainscan = getScan("main")
+  local main2scan = getScan("main2")
+  local main3scan = getScan("main3")
+  local freezehp = getFlag("Freeze HP")
+  local freezesp = getFlag("Freeze SP")
+  local freezesk = getFlag("Freeze Skill Timer")
+  local freezemb = getFlag("Freeze Moral Bar")
+  if mainscan ~= nil and main2scan ~= nil and main3scan ~= nil then
+    local mainaddr = followAddress(mainscan[1], { { offset=0x3, rc=true }, 0x0, 0x0, 0x18 })
+    local main2addr = followAddress(main2scan[1], { { offset=0x3, rc=true }, 0x0 })
+    local main3addr = followAddress(main3scan[1], { { offset=0x3, rc=true }, 0x0 })
+    local battlescan = getScan("battleinfo")
+    if battlescan ~= nil then
+      local battleaddr = followAddress(battlescan[1], { { offset=3, rc=true }, 0x0} )
+      if battleaddr ~= nil then
+        updatePath("", "Moral Bar", "vtWord", hex(battleaddr + 0x3C), {})
+        if freezemb then
+          writeWord(battleaddr + 0x3C, 100)
+        end
+      end
+    end
+    if mainaddr ~= nil and main2addr ~= nil and main3addr ~= nil then
+      updatePath("", "Mission Battles", "vtWord", hex(main3addr + 0x15360), {})
+      updatePath("", "Mission Surprise Battles", "vtWord", hex(main3addr + 0x15364), {})
+      updatePath("", "Mission Destroyed Objects", "vtWord", hex(main3addr + 0x1536C), {})
+      updatePath("", "Mission Chim Acquired", "vtWord", hex(main3addr + 0x15370), {})
+      updatePath("", "Mission Open Chests", "vtByte", hex(main2addr + 0x160D3), {})
+      updatePath("", "WP", "vtWord", hex(main2addr + 0x1C344), {})
+      updatePath("", "Chim", "vtWord", hex(main2addr + 0x1B6D0), {})
+      local skeithscan = getScan("skeith")
+      if skeithscan ~= nil then
+        local skeithaddr = followAddress(skeithscan[1], { { offset=3, rc=true }, 0x0 })
+        if skeithaddr ~= nil and skeithaddr ~= 0 then
+          updatePath("", "SKeith Health", "vtSingle", hex(skeithaddr+0x18), {})
+          updatePath("", "SKeith Enemy Health", "vtSingle", hex(skeithaddr+0x80), {})
+          if freezehp then
+            writeFloat(skeithaddr+0x18, 1)
+          end
+        end
+      end
+      local addr = mainaddr
+      local names = {}
+      while addr ~= nil and addr ~= 0 do
+        local id = readWord(addr + 0x2C)
+        local name = readString(addr + 0x48, 0x20)
+        if name ~= nil then
+          names[name] = true
+          local doff = main2addr + 4*(0x170+(id*9))
+          updatePath("Characters\\"..name, "HP", "vtWord", hex(addr + 0x1E4), {})
+          updatePath("Characters\\"..name, "Max HP", "vtDword", hex(addr + 0x1C0), { 0x8 })
+          updatePath("Characters\\"..name, "SP", "vtWord", hex(addr + 0x1E6), {})
+          updatePath("Characters\\"..name, "Max SP", "vtWord", hex(addr + 0x1C0), { 0xC })
+          updatePath("Characters\\"..name, "P-ATK", "vtWord", hex(addr + 0x1C0), { 0x10 })
+          updatePath("Characters\\"..name, "P-DEF", "vtWord", hex(addr + 0x1C0), { 0x12 })
+          updatePath("Characters\\"..name, "M-ATK", "vtWord", hex(addr + 0x1C0), { 0x14 })
+          updatePath("Characters\\"..name, "M-DEF", "vtWord", hex(addr + 0x1C0), { 0x16 })
+          updatePath("Characters\\"..name, "Fire", "vtWord", hex(addr + 0x1C0), { 0x18 })
+          updatePath("Characters\\"..name, "Water", "vtWord", hex(addr + 0x1C0), { 0x1A })
+          updatePath("Characters\\"..name, "Wind", "vtWord", hex(addr + 0x1C0), { 0x1C })
+          updatePath("Characters\\"..name, "Earth", "vtWord", hex(addr + 0x1C0), { 0x1E })
+          updatePath("Characters\\"..name, "Light", "vtWord", hex(addr + 0x1C0), { 0x20 })
+          updatePath("Characters\\"..name, "Dark", "vtWord", hex(addr + 0x1C0), { 0x22 })
+          updatePath("Characters\\"..name, "Skill Timer", "vtWord", hex(addr + 0x2DC), {})
+          updatePath("Characters\\"..name, "Skill Timer Start", "vtWord", hex(addr + 0x2DE), {})
+          updatePath("Characters\\"..name, "Level", "vtWord", hex(doff), {})
+          updatePath("Characters\\"..name, "EXP", "vtWord", hex(doff+2), {})
+          updatePath("Characters\\"..name, "Money", "vtDword", hex(doff+4), {})
+          if freezehp then
+            writeWord(addr + 0x1E4, readWord(addr + 0x1F0))
+          end
+          if freezesp then
+            writeWord(addr + 0x1E6, readWord(addr + 0x1F4))
+          end
+          if freezesk then
+            writeWord(addr + 0x2DC, 0)
+          end
+        end
+        addr = followAddress(addr, { 0x18 })
+      end
+      --[[
+      local cpath = getPath("Characters")
+      if cpath ~= nil then
+        local i
+        for i=cpath.Count-1,0,-1 do
+          if names[cpath.Child[i].Description] == nil then
+            if not removePath("Characters\\"..cpath.Child[i].Description) then
+              cpath.Child[i]:Delete()
+            end
+          end
+        end
+      end
+      ]]--
+      if main2addr ~= nil then
+        local i,v
+        local j,w
+        for i,v in ipairs(bookdata) do
+          for j,w in ipairs(v["opts"]) do
+            updatePath("Book\\"..v["name"].."\\"..w["name"], "Points Per", "vtDword", hex(w["per"]), {})
+            if w["offset"] ~= nil then
+              updatePath("Book\\"..v["name"].."\\"..w["name"], "Value", w["type"], hex(main2addr + w["offset"]), {})
+            end
+          end
+        end
+      end
+      if main2addr ~= nil then
+        local i
+        for i=0x00,0x59 do
+          local iaddr = main2addr + 0x16A0 + i*4
+          local tmr = updatePath("Items\\"..i,"Type","vtWord", hex(iaddr), {})
+          updatePath("Items\\"..i,"Count","vtByte", hex(iaddr+2), {})
+          updatePath("Items\\"..i,"Position","vtByte", hex(iaddr+3), {})
+          if tmr.DropDownList.Text == "" then
+            local k,v
+            local str = ""
+            for k,v in pairs(itemstrings) do
+              str = str .. k..":"..v.."\r\n"
+            end
+            str = str .. "65535:Empty\r\n"
+            tmr.DropDownList.Text = str
+            tmr.DropDownReadOnly = true
+            tmr.DropDownDescriptionOnly = true
+            tmr.DisplayAsDropDownListItem = true
+          end
+        end
+      end
+    end
+  end
+  local cardscan = getScan("cards")
+  local datascan = getScan("carddata")
+  if cardscan ~= nil and datascan ~= nil then
+    local cardsaddr = followAddress(cardscan[1], { { offset=3, rc=true }, 0x0, 0x180, 0x5F98 })
+    local dataaddr = followAddress(datascan[1], { { offset=3, rc=true }, 0x0 })
+    if cardsaddr ~= nil and dataaddr ~= nil then
+      local initcard = followAddress(cardsaddr, { 0x0 })
+      local count = 0
+      while initcard ~= nil and initcard ~= 0 and initcard ~= cardsaddr do
+        local cardaddr = followAddress(initcard, { 0x10 })
+        local idaddr = followAddress(cardaddr, { 0x8 })
+        if idaddr ~= nil then
+          local daddr = dataaddr + 0x16EE0 + readInteger(cardaddr)
+          local id = readString(idaddr, 200)
+          local name = findstr(stringsaddr, hashstr(hashdataaddr, id))
+          updatePath("Cards", name, "vtByte", hex(daddr), {})
+        end
+        count = count + 1
+        initcard = followAddress(initcard, { 0x0 })
+        if count &gt; 0x27 then
+          break
+        end
+      end
+    end
+  end
+  collectgarbage()
+  collectgarbage()
+end
+
+if memrec ~= nil then
+  local t = getTimer()
+  t.OnTimer = Run
+  Run()
+  t.Enabled = true -- Enable timer ONLY after first run in case of error
+end
+
+[DISABLE]
+if memrec ~= nil then
+  killTimer()
+  while memrec.Count &gt; 0 do
+    memrec.Child[0]:Delete()
+  end
+end
+cached = {}
+collectgarbage()
+collectgarbage()
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>11</ID>
+      <Description>"Vol2 Script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+
+local function hex(a, c)
+  if a == nil then
+    return "(nil)"
+  end
+  local fmt = "%X"
+  if type(c) == "number" then
+    fmt = "%0"..c.."X"
+  end
+  return string.format(fmt, a)
+end
+
+local function pointerSize()
+  if targetIs64Bit() then
+    return 8
+  end
+  return 4
+end
+
+local function readSignedInteger(a)
+  local v = readInteger(a)
+  if v ~= nil then
+    if v &gt; 0x7FFFFFFF then
+      v = -(0x100000000 - v)
+    end
+  end
+  return v
+end
+
+local function findRecord(parent, desc)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local found
+  if parent ~= nil and parent.Count &gt; 0 then
+    local i
+    for i = 0, parent.Count-1 do
+      if parent.Child[i].Description == desc then
+        found = parent.Child[i]
+      end
+    end
+  end
+  return found
+end
+
+local function updateRecord(parent, desc, type, addr, offsets)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local rec = findRecord(parent,desc)
+  if rec == nil then
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.VarType = type
+    if addr ~= nil then
+      rec.setAddress(addr, offsets)
+    end
+    if parent ~= nil then
+      rec.appendToEntry(parent)
+    end
+  else
+    local a = rec.Address
+    if addr ~= a then
+      rec.setAddress(addr, offsets)
+    end
+  end
+  return rec
+end
+
+local cached = {}
+
+local function updatePath(path, desc, type, addr, offsets)
+  if memrec == nil then
+    return nil
+  end
+  local fullpath = ""
+  if path ~= nil and path ~= "" then
+    fullpath = path.."\\"..desc
+  else
+    fullpath = desc
+  end
+  local rec
+  if cached[fullpath] == nil or cached[fullpath].Parent == nil then
+    local i
+    local arr = {}
+    local parent
+    for i in string.gmatch(path, "[^\\]+") do
+      table.insert(arr, i)
+    end
+    if #arr &gt; 0 then
+      local item = table.remove(arr)
+      parent = updatePath(table.concat(arr, '\\'), item, "vtCustom", 0, {})
+    else
+      parent = memrec
+    end
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.VarType = type
+    rec.setAddress(addr, offsets)
+    rec.appendToEntry(parent)
+    if type == "vtCustom" then
+      rec.IsGroupHeader = true
+    end
+    cached[fullpath] = rec
+  else
+    rec = cached[fullpath]
+    local a = rec.Address
+    if addr ~= a then
+      rec.setAddress(addr, offsets)
+    end
+  end
+  return cached[fullpath]
+end
+
+local function getPath(path)
+  if cached[path] ~= nil then
+    return cached[path]
+  end
+  return nil
+end
+
+local function removePath(path)
+  if cached[path] ~= nil then
+    if cached[path].getAddress() ~= "" then
+      cached[path]:Delete()
+    end
+    cached[path] = nil
+  end
+end
+
+local function cleanupPath(path, list)
+  local pathlist = {}
+  local i,v
+  for i,v in pairs(list) do
+    table.insert(pathlist, path.."\\"..i)
+  end
+  for i,v in pairs(cached) do
+    if string.sub(i,1,string.len(path)+1) == path.."\\" then
+      local r,z
+      local found = false
+      for r,z in ipairs(pathlist) do
+        if i == z or string.sub(i,1,string.len(z)+1) == z.."\\" then
+          found = true
+          break
+        end
+      end
+      if not found then
+        removePath(i)
+      end
+    end
+  end
+end
+
+local function getHeader(parent, desc)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local rec = findRecord(parent,desc)
+  if rec == nil then
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.IsGroupHeader = true
+    if parent ~= nil then
+      rec.appendToEntry(parent)
+    end
+  end
+  return rec
+end
+
+local function getFlag(desc)
+  local result = false
+  if memrec ~= nil then
+    local rec = findRecord(memrec, desc)
+    if rec == nil then
+      rec = getAddressList().createMemoryRecord()
+      rec.Description = desc
+      rec.IsGroupHeader = true
+      rec.appendToEntry(memrec)
+    end
+    result = rec.Active
+  end
+  return result
+end
+
+local function getCodeOffset(addr, off)
+  if addr == nil or addr == 0 then
+    return nil
+  end
+  local o = readSignedInteger(addr + off)
+  if o ~= nil then
+    return addr + o + off + 4
+  end
+  return nil
+end
+
+local function followAddress(addr, offs, debug)
+  local i
+  for i = 1,#offs do
+    if addr ~= nil then
+      local ot = type(offs[i])
+      if ot == "table" then
+        if type(offs[i]["offset"]) ~= "number" then
+          return nil
+        end
+        if offs[i]["rc"] == true then
+          addr = getCodeOffset(addr, offs[i]["offset"])
+        elseif offs[i]["r32"] == true then
+          addr = readInteger(addr + offs[i]["offset"])
+        else
+          addr = readPointer(addr + offs[i]["offset"])
+        end
+      elseif ot == "number" then
+        addr = readPointer(addr + offs[i])
+      else
+        return nil
+      end
+      if debug then
+        print("  "..hex(addr))
+      end
+    end
+  end
+  return addr
+end
+
+if timers == nil then
+  timers = {}
+end
+if aobscans == nil then
+  aobscans = {}
+end
+
+local function getTimer()
+  if memrec ~= nil then
+    local id = memrec.id
+    if timers[id] == nil then
+      timers[id] = createTimer()
+      timers[id].Enabled = false
+      timers[id].Interval = getFreezeTimer().Interval
+    end
+    return timers[id]
+  end
+  return nil
+end
+
+local function killTimer()
+  if memrec ~= nil then
+    local id = memrec.id
+    if timers[id] ~= nil then
+      timers[id]:Destroy()
+      timers[id] = nil
+    end
+  end
+end
+
+local function setScan(name, opts)
+  if memrec == nil then
+    return false
+  end
+  if aobscans[memrec.id] ~= nil then
+    aobscans[memrec.id][name] = nil
+  end
+  if opts["bytes"] == nil then
+    return false
+  end
+  local perm = opts["perm"]
+  if perm == nil then
+    perm = "-C-W+X" -- Not CopyOnWrite, Not Writable, but executable by default
+  end
+  local startaddress = 0
+  local endaddress = 0x7FFFFFFFFFFFFFFF
+  if opts["module"] ~= nil then
+    startaddress = getAddress(opts["module"])
+    endaddress = startaddress + getModuleSize(opts["module"])
+  end
+  local bytes = opts["bytes"]
+  local ms = createMemScan()
+  local success = false
+  if aobscans[memrec.id] == nil then
+    aobscans[memrec.id] = {}
+  end
+  if ms ~= nil then
+    ms.firstScan(soExactValue, vtByteArray, 0, bytes, "", startaddress, endaddress, perm, fsmNotAligned, "1", true, false, false, false)
+    ms.waitTillDone()
+    local fl = createFoundList(ms)
+    if fl ~= nil then
+      fl.initialize()
+      if fl.Count &gt; 0 then
+        aobscans[memrec.id][name] = {}
+        local i
+        for i=0,fl.Count-1 do
+          table.insert(aobscans[memrec.id][name], tonumber("0x"..fl.Address[i]))
+        end
+      end
+      fl:Destroy()
+    end
+    ms:Destroy()
+    if success then
+      return true
+    end
+  end
+  return false
+end
+
+local function setScans(list, perm)
+  local k,v
+  for k,v in pairs(list) do
+    setScan(k, v, perm)
+  end
+end
+
+local function getScan(name)
+  if memrec ~= nil then
+    local id = memrec.id
+    if aobscans[id] ~= nil then
+      if aobscans[id][name] ~= nil then
+        return aobscans[id][name]
+      end
+    end
+  end
+  return nil
+end
+
+local function forEach(startaddress, toaddress, itemsize, func)
+  if startaddress &lt; toaddress then
+    local addr = startaddress
+    while addr &lt; toaddress do
+      local r = func(addr)
+      if r == false then
+        break
+      end
+      addr = addr + itemsize
+    end
+  end
+end
+
+function readWord(addr)
+  if addr ~= 0 and addr ~= nil then
+    return bAnd(readInteger(addr), 0xFFFF)
+  end
+  return nil
+end
+
+function writeWord(addr, value)
+  if addr ~= 0 and addr ~= nil and value ~= nil then
+    local v1 = bAnd(value, 0xFF)
+    local v2 = bShr(bAnd(value, 0xFF00), 8)
+    writeBytes(addr, v1, v2)
+  end
+end
+
+if syntaxcheck then
+  return
+end
+
+[ENABLE]
+
+--[[
+-- For Debugging
+local le = getLuaEngine()
+le.mOutput.Lines:Clear()
+le.cbShowOnPrint.Checked = false
+le:Show()
+]]--
+
+-- AOBScans here
+
+setScans({
+  main = {
+    bytes = "48 8B 0D ?? ?? ?? ?? 41 8B C7 48",
+    module = "hackGU_vol2.dll"
+  },
+  main2 = {
+    bytes = "4C 8B 35 ?? ?? ?? ?? 8B B5 ?? ?? ?? ?? C6 85",
+    module = "hackGU_vol2.dll"
+  },
+  main3 = {
+    bytes = "48 8B 0D ?? ?? ?? ?? 48 63 41 ??",
+    module = "hackGU_vol2.dll"
+  },
+  itemids = {
+    bytes = "77 47 48 8B 3D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B F3 48",
+    module = "hackGU_vol2.dll"
+  },
+  strings1 = {
+    bytes = "E8 ?? ?? ?? ?? 48 8D 1C DD 00 00 00 00",
+    module = "hackGU_vol2.dll"
+  },
+  hashdata = {
+    bytes = "48 8D 3D ?? ?? ?? ?? 0F 1F 84 00 00 00 00 00 43",
+    module = "hackGU_vol2.dll"
+  },
+  bookstrings = {
+    bytes = "48 8B 15 ?? ?? ?? ?? 4C 8D 34 FD",
+    module = "hackGU_vol2.dll"
+  },
+  bookinfo = {
+    bytes = "4C 8D 35 ?? ?? ?? ?? 48 89 74 24 ?? 4C 89",
+    module = "hackGU_vol2.dll"
+  },
+  battleinfo = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 0F B6 48 28",
+    module = "hackGU_vol2.dll"
+  },
+})
+
+local function hashstr(hashaddr, hashstr)
+  if hashstr ~= nil and string.len(hashstr)&gt;0 then
+    local result = 0xFFFFFFFF
+    local i
+    for i=1,string.len(hashstr) do
+      local rv = string.byte(hashstr, i)
+      rv = bXor(rv, bShr(result, 0x18))
+      result = bXor(bAnd(bShl(result, 0x8), 0xFFFFFFFF), readInteger(hashaddr + rv * 4))
+    end
+    result = bAnd(bNot(result),0xFFFFFFFF)
+    return result
+  end
+  return 0
+end
+
+local function findstr(hashaddr, hashid)
+  local inithash = followAddress(hashaddr, { 0x8 })
+  local counter = 0
+  while inithash ~= nil and inithash ~= 0 and inithash ~= hashaddr do
+    local chash = readInteger(inithash + 0x20)
+    if chash &gt; hashid then
+      inithash = followAddress(inithash, { 0x0 })
+    elseif chash &lt; hashid then
+      inithash = followAddress(inithash, { 0x10 })
+    else
+      local naddr = followAddress(inithash, { 0x28, 0x10 })
+      if naddr ~= nil then
+        local str = readString(naddr, 200)
+        if str ~= nil then
+          return str
+        end
+      end
+      return ""
+    end
+    counter = counter + 1
+    if counter == 1000 then
+      return ""
+    end
+  end
+  return ""
+end
+
+local itemstrings = {}
+
+local bookdata = {
+  -- Book 1
+  {
+    opts = {
+      {
+        offset = 0x20C,
+        type = "vtWord"
+      },
+      {
+        offset = 0x212,
+        type = "vtWord"
+      },
+      {
+        offset = 0x20E,
+        type = "vtWord"
+      },
+      {
+        offset = 0x210,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 2
+  {
+  },
+  -- Book 3
+  {
+    opts = {
+      {
+        offset = 0x214,
+        type = "vtWord"
+      },
+      {
+        offset = 0x216,
+        type = "vtWord"
+      },
+      {
+        offset = 0x218,
+        type = "vtWord"
+      },
+      {
+        offset = 0x21A,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 4
+  {
+  },
+  -- Book 5
+  {
+    opts = {
+      {
+      },
+      {
+        offset = 0x21C,
+        type = "vtWord"
+      },
+      {
+        offset = 0x21E,
+        type = "vtWord"
+      },
+      {
+        offset = 0x220,
+        type = "vtWord"
+      },
+      {
+        offset = 0x222,
+        type = "vtWord"
+      },
+      {
+        offset = 0x1D422,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 6
+  {
+    opts = {
+      {
+        offset = 0x5A6,
+        type = "vtWord"
+      },
+      {
+        offset = 0x5A8,
+        type = "vtWord"
+      },
+      {
+        offset = 0x1C344,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 7
+  {
+  },
+  -- Book 8
+  {
+    opts = {
+      {
+        offset = 0x228,
+        type = "vtDword"
+      },
+      {
+        offset = 0x22C,
+        type = "vtWord"
+      }
+    }
+  }
+}
+
+local hashdataaddr
+local tmpscan = getScan("hashdata")
+if tmpscan ~= nil then
+  hashdataaddr = followAddress(tmpscan[1], { { offset=3, rc=true } })
+end
+local tmpscan = getScan("strings1")
+if tmpscan ~= nil and hashdataaddr ~= nil then
+  local addr = followAddress(tmpscan[1], { { offset=1, rc=true}, { offset=0x62, rc=true }, 0x0, 0x90, 0x0, 0x30, 0x8 })
+  local itemidscan = getScan("itemids")
+  if addr ~= nil and itemidscan ~= nil then
+    local itemidsaddr = followAddress(itemidscan[1], { { offset=0x5, rc=true }, 0x0 })
+    if itemidsaddr ~= nil then
+      local i
+      for i=0x00,0x10E do
+        local itemidaddr = followAddress(itemidsaddr, { i * 8 })
+        if itemidaddr ~= nil then
+          local name = readString(itemidaddr, 200)
+          if name ~= nil and name ~= "" and name ~= "NoStringID" then
+            local rname = findstr(addr,hashstr(hashdataaddr, name))
+            if rname ~= nil and rname ~= "" then
+              itemstrings[i] = rname
+            end
+          end
+        end
+      end
+    end
+  end
+  local bookscan = getScan("bookinfo")
+  local strscan = getScan("bookstrings")
+  if bookscan ~= nil and strscan ~= nil then
+    local bookaddr = followAddress(bookscan[1], { { offset=0x3, rc=true } })
+    local straddr = followAddress(strscan[1], { { offset=0x3, rc=true }, 0x0 })
+    if bookaddr ~= nil and straddr ~= nil then
+      bookaddr = bookaddr - 0x10
+      local i
+      for i=0,7 do
+        local binfoaddr = bookaddr + (0x18 * i)
+        local nid = readInteger(binfoaddr)
+        if nid ~= nil then
+          local idaddr = followAddress(straddr, { nid * 8 })
+          if idaddr ~= nil then
+            local id = readString(idaddr, 200)
+            if id ~= nil and id ~= "" then
+              local rname = findstr(addr, hashstr(hashdataaddr, id))
+              bookdata[i+1]["name"] = rname
+              if bookdata[i+1]["opts"] == null then
+                bookdata[i+1]["opts"] = {}
+              end
+              local subaddr = followAddress(binfoaddr, { 0x10 })
+              if subaddr ~= nil then
+                local good = true
+                local cnt = 0
+                while good do
+                  if cnt &gt; 100 then
+                    good = false
+                  else
+                    local nid = readInteger(subaddr)
+                    if nid ~= 0xFFFFFFFF then
+                      local idaddr = followAddress(straddr, { nid * 8 })
+                      if idaddr ~= nil then
+                        local id = readString(idaddr, 200)
+                        if id ~= nil and id ~= "" then
+                          local rname = findstr(addr, hashstr(hashdataaddr, id))
+                          if bookdata[i+1]["opts"][cnt+1] == nil then
+                            bookdata[i+1]["opts"][cnt+1] = {}
+                          end
+                          bookdata[i+1]["opts"][cnt+1]["name"] = rname
+                          bookdata[i+1]["opts"][cnt+1]["per"] = subaddr + 0x8
+                        end
+                      end
+                    else
+                      good = false
+                    end
+                  end
+                  subaddr = subaddr + 0x10
+                  cnt = cnt + 1
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+local function Run()
+  -- Refresh code here
+  local mainscan = getScan("main")
+  local main2scan = getScan("main2")
+  local main3scan = getScan("main3")
+  local freezehp = getFlag("Freeze HP")
+  local freezesp = getFlag("Freeze SP")
+  local freezesk = getFlag("Freeze Skill Timer")
+  local freezemb = getFlag("Freeze Moral Bar")
+  if mainscan ~= nil and main2scan ~= nil and main3scan ~= nil then
+    local mainaddr = followAddress(mainscan[1], { { offset=0x3, rc=true }, 0x0, 0x0, 0x18 })
+    local main2addr = followAddress(main2scan[1], { { offset=0x3, rc=true }, 0x0 })
+    local main3addr = followAddress(main3scan[1], { { offset=0x3, rc=true }, 0x0 })
+    local battlescan = getScan("battleinfo")
+    if battlescan ~= nil then
+      local battleaddr = followAddress(battlescan[1], { { offset=3, rc=true }, 0x0} )
+      if battleaddr ~= nil then
+        updatePath("", "Moral Bar", "vtWord", hex(battleaddr + 0x3C), {})
+        if freezemb then
+          writeWord(battleaddr + 0x3C, 100)
+        end
+      end
+    end
+    if mainaddr ~= nil and main2addr ~= nil and main3addr ~= nil then
+      updatePath("", "Mission Battles", "vtWord", hex(main3addr + 0x15404), {})
+      updatePath("", "Mission Surprise Battles", "vtWord", hex(main3addr + 0x15408), {})
+      updatePath("", "Mission Destroyed Objects", "vtWord", hex(main3addr + 0x15410), {})
+      updatePath("", "Mission Chim Acquired", "vtWord", hex(main3addr + 0x15414), {})
+      updatePath("", "WP", "vtWord", hex(main2addr + 0x1C344), {})
+      updatePath("", "Chim", "vtWord", hex(main2addr + 0x1B6D0), {})
+      local addr = mainaddr
+      local names = {}
+      while addr ~= nil and addr ~= 0 do
+        local naddr = followAddress(addr, { 0x40 })
+        if naddr ~= nil then
+          local id = readWord(addr + 0x2C)
+          local name = readString(naddr, 0x20)
+          if name ~= nil then
+            names[name] = true
+            local doff = main2addr + 4*(0x170+(id*9))
+            updatePath("Characters\\"..name, "HP", "vtWord", hex(addr + 0x224), {})
+            updatePath("Characters\\"..name, "Max HP", "vtWord", hex(addr + 0x1B0), {})
+            updatePath("Characters\\"..name, "SP", "vtWord", hex(addr + 0x1A6), {})
+            updatePath("Characters\\"..name, "Max SP", "vtWord", hex(addr + 0x1B4), {})
+            updatePath("Characters\\"..name, "P-ATK", "vtWord", hex(addr + 0x1B8), {})
+            updatePath("Characters\\"..name, "P-DEF", "vtWord", hex(addr + 0x1BA), {})
+            updatePath("Characters\\"..name, "M-ATK", "vtWord", hex(addr + 0x1BC), {})
+            updatePath("Characters\\"..name, "M-DEF", "vtWord", hex(addr + 0x1BE), {})
+            updatePath("Characters\\"..name, "Fire", "vtWord", hex(addr + 0x1C0), {})
+            updatePath("Characters\\"..name, "Water", "vtWord", hex(addr + 0x1C2), {})
+            updatePath("Characters\\"..name, "Wind", "vtWord", hex(addr + 0x1C2), {})
+            updatePath("Characters\\"..name, "Earth", "vtWord", hex(addr + 0x1C4), {})
+            updatePath("Characters\\"..name, "Light", "vtWord", hex(addr + 0x1C6), {})
+            updatePath("Characters\\"..name, "Dark", "vtWord", hex(addr + 0x1C8), {})
+            updatePath("Characters\\"..name, "Skill Timer", "vtWord", hex(addr + 0x2D0), {})
+            updatePath("Characters\\"..name, "Skill Timer Start", "vtWord", hex(addr + 0x2D2), {})
+            updatePath("Characters\\"..name, "Level", "vtWord", hex(doff), {})
+            updatePath("Characters\\"..name, "EXP", "vtWord", hex(doff+2), {})
+            updatePath("Characters\\"..name, "Money", "vtDword", hex(doff+4), {})
+            if freezehp then
+              writeWord(addr + 0x1A4, readWord(addr + 0x1B0))
+            end
+            if freezesp then
+              writeWord(addr + 0x1A6, readWord(addr + 0x1B4))
+            end
+            if freezesk then
+              writeWord(addr + 0x2D0, 0)
+            end
+          end
+        end
+        addr = followAddress(addr, { 0x18 })
+      end
+      --[[
+      local cpath = getPath("Characters")
+      if cpath ~= nil then
+        local i=cpath.Count-1,0,-1 do
+          if names[cpath.Child[i].Description] == nil then
+            removePath("Characters\\"..cpath.Child[i].Description)
+          end
+        end
+      end
+      ]]--
+      if main2addr ~= nil then
+        local i,v
+        local j,w
+        for i,v in ipairs(bookdata) do
+          for j,w in ipairs(v["opts"]) do
+            updatePath("Book\\"..v["name"].."\\"..w["name"], "Points Per", "vtDword", hex(w["per"]), {})
+            if w["offset"] ~= nil then
+              updatePath("Book\\"..v["name"].."\\"..w["name"], "Value", w["type"], hex(main2addr + w["offset"]), {})
+            end
+          end
+        end
+      end
+      if main2addr ~= nil then
+        local i
+        for i=0x00,0x59 do
+          local iaddr = main2addr + 0x16A0 + i*4
+          local tmr = updatePath("Items\\"..i,"Type","vtWord", hex(iaddr), {})
+          updatePath("Items\\"..i,"Count","vtByte", hex(iaddr+2), {})
+          updatePath("Items\\"..i,"Position","vtByte", hex(iaddr+3), {})
+          if tmr.DropDownList.Text == "" then
+            local k,v
+            local str = ""
+            for k,v in pairs(itemstrings) do
+              str = str .. k..":"..v.."\r\n"
+            end
+            str = str .. "65535:Empty\r\n"
+            tmr.DropDownList.Text = str
+            tmr.DropDownReadOnly = true
+            tmr.DropDownDescriptionOnly = true
+            tmr.DisplayAsDropDownListItem = true
+          end
+        end
+      end
+    end
+  end
+  collectgarbage()
+  collectgarbage()
+end
+
+if memrec ~= nil then
+  local t = getTimer()
+  t.OnTimer = Run
+  Run()
+  t.Enabled = true -- Enable timer ONLY after first run in case of error
+end
+
+[DISABLE]
+if memrec ~= nil then
+  killTimer()
+  while memrec.Count &gt; 0 do
+    memrec.Child[0]:Delete()
+  end
+end
+cached = {}
+collectgarbage()
+collectgarbage()
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>12</ID>
+      <Description>"Vol3 Script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+
+local function hex(a, c)
+  if a == nil then
+    return "(nil)"
+  end
+  local fmt = "%X"
+  if type(c) == "number" then
+    fmt = "%0"..c.."X"
+  end
+  return string.format(fmt, a)
+end
+
+local function pointerSize()
+  if targetIs64Bit() then
+    return 8
+  end
+  return 4
+end
+
+local function readSignedInteger(a)
+  local v = readInteger(a)
+  if v ~= nil then
+    if v &gt; 0x7FFFFFFF then
+      v = -(0x100000000 - v)
+    end
+  end
+  return v
+end
+
+local function findRecord(parent, desc)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local found
+  if parent ~= nil and parent.Count &gt; 0 then
+    local i
+    for i = 0, parent.Count-1 do
+      if parent.Child[i].Description == desc then
+        found = parent.Child[i]
+      end
+    end
+  end
+  return found
+end
+
+local function updateRecord(parent, desc, type, addr, offsets)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local rec = findRecord(parent,desc)
+  if rec == nil then
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.VarType = type
+    if addr ~= nil then
+      rec.setAddress(addr, offsets)
+    end
+    if parent ~= nil then
+      rec.appendToEntry(parent)
+    end
+  else
+    local a = rec.Address
+    if addr ~= a then
+      rec.setAddress(addr, offsets)
+    end
+  end
+  return rec
+end
+
+local cached = {}
+
+local function updatePath(path, desc, type, addr, offsets)
+  if memrec == nil then
+    return nil
+  end
+  local fullpath = ""
+  if path ~= nil and path ~= "" then
+    fullpath = path.."\\"..desc
+  else
+    fullpath = desc
+  end
+  local rec
+  if cached[fullpath] == nil or cached[fullpath].Parent == nil then
+    local i
+    local arr = {}
+    local parent
+    for i in string.gmatch(path, "[^\\]+") do
+      table.insert(arr, i)
+    end
+    if #arr &gt; 0 then
+      local item = table.remove(arr)
+      parent = updatePath(table.concat(arr, '\\'), item, "vtCustom", 0, {})
+    else
+      parent = memrec
+    end
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.VarType = type
+    rec.setAddress(addr, offsets)
+    rec.appendToEntry(parent)
+    if type == "vtCustom" then
+      rec.IsGroupHeader = true
+    end
+    cached[fullpath] = rec
+  else
+    rec = cached[fullpath]
+    local a = rec.Address
+    if addr ~= a then
+      rec.setAddress(addr, offsets)
+    end
+  end
+  return cached[fullpath]
+end
+
+local function getPath(path)
+  if cached[path] ~= nil then
+    return cached[path]
+  end
+  return nil
+end
+
+local function removePath(path)
+  if cached[path] ~= nil then
+    if cached[path].getAddress() ~= "" then
+      cached[path]:Delete()
+    end
+    cached[path] = nil
+  end
+end
+
+local function cleanupPath(path, list)
+  local pathlist = {}
+  local i,v
+  for i,v in pairs(list) do
+    table.insert(pathlist, path.."\\"..i)
+  end
+  for i,v in pairs(cached) do
+    if string.sub(i,1,string.len(path)+1) == path.."\\" then
+      local r,z
+      local found = false
+      for r,z in ipairs(pathlist) do
+        if i == z or string.sub(i,1,string.len(z)+1) == z.."\\" then
+          found = true
+          break
+        end
+      end
+      if not found then
+        removePath(i)
+      end
+    end
+  end
+end
+
+local function getHeader(parent, desc)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local rec = findRecord(parent,desc)
+  if rec == nil then
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.IsGroupHeader = true
+    if parent ~= nil then
+      rec.appendToEntry(parent)
+    end
+  end
+  return rec
+end
+
+local function getFlag(desc)
+  local result = false
+  if memrec ~= nil then
+    local rec = findRecord(memrec, desc)
+    if rec == nil then
+      rec = getAddressList().createMemoryRecord()
+      rec.Description = desc
+      rec.IsGroupHeader = true
+      rec.appendToEntry(memrec)
+    end
+    result = rec.Active
+  end
+  return result
+end
+
+local function getCodeOffset(addr, off)
+  if addr == nil or addr == 0 then
+    return nil
+  end
+  local o = readSignedInteger(addr + off)
+  if o ~= nil then
+    return addr + o + off + 4
+  end
+  return nil
+end
+
+local function followAddress(addr, offs, debug)
+  local i
+  for i = 1,#offs do
+    if addr ~= nil then
+      local ot = type(offs[i])
+      if ot == "table" then
+        if type(offs[i]["offset"]) ~= "number" then
+          return nil
+        end
+        if offs[i]["rc"] == true then
+          addr = getCodeOffset(addr, offs[i]["offset"])
+        elseif offs[i]["r32"] == true then
+          addr = readInteger(addr + offs[i]["offset"])
+        else
+          addr = readPointer(addr + offs[i]["offset"])
+        end
+      elseif ot == "number" then
+        addr = readPointer(addr + offs[i])
+      else
+        return nil
+      end
+      if debug then
+        print("  "..hex(addr))
+      end
+    end
+  end
+  return addr
+end
+
+if timers == nil then
+  timers = {}
+end
+if aobscans == nil then
+  aobscans = {}
+end
+
+local function getTimer()
+  if memrec ~= nil then
+    local id = memrec.id
+    if timers[id] == nil then
+      timers[id] = createTimer()
+      timers[id].Enabled = false
+      timers[id].Interval = getFreezeTimer().Interval
+    end
+    return timers[id]
+  end
+  return nil
+end
+
+local function killTimer()
+  if memrec ~= nil then
+    local id = memrec.id
+    if timers[id] ~= nil then
+      timers[id]:Destroy()
+      timers[id] = nil
+    end
+  end
+end
+
+local function setScan(name, opts)
+  if memrec == nil then
+    return false
+  end
+  if aobscans[memrec.id] ~= nil then
+    aobscans[memrec.id][name] = nil
+  end
+  if opts["bytes"] == nil then
+    return false
+  end
+  local perm = opts["perm"]
+  if perm == nil then
+    perm = "-C-W+X" -- Not CopyOnWrite, Not Writable, but executable by default
+  end
+  local startaddress = 0
+  local endaddress = 0x7FFFFFFFFFFFFFFF
+  if opts["module"] ~= nil then
+    startaddress = getAddress(opts["module"])
+    endaddress = startaddress + getModuleSize(opts["module"])
+  end
+  local bytes = opts["bytes"]
+  local ms = createMemScan()
+  local success = false
+  if aobscans[memrec.id] == nil then
+    aobscans[memrec.id] = {}
+  end
+  if ms ~= nil then
+    ms.firstScan(soExactValue, vtByteArray, 0, bytes, "", startaddress, endaddress, perm, fsmNotAligned, "1", true, false, false, false)
+    ms.waitTillDone()
+    local fl = createFoundList(ms)
+    if fl ~= nil then
+      fl.initialize()
+      if fl.Count &gt; 0 then
+        aobscans[memrec.id][name] = {}
+        local i
+        for i=0,fl.Count-1 do
+          table.insert(aobscans[memrec.id][name], tonumber("0x"..fl.Address[i]))
+        end
+      end
+      fl:Destroy()
+    end
+    ms:Destroy()
+    if success then
+      return true
+    end
+  end
+  return false
+end
+
+local function setScans(list, perm)
+  local k,v
+  for k,v in pairs(list) do
+    setScan(k, v, perm)
+  end
+end
+
+local function getScan(name)
+  if memrec ~= nil then
+    local id = memrec.id
+    if aobscans[id] ~= nil then
+      if aobscans[id][name] ~= nil then
+        return aobscans[id][name]
+      end
+    end
+  end
+  return nil
+end
+
+local function forEach(startaddress, toaddress, itemsize, func)
+  if startaddress &lt; toaddress then
+    local addr = startaddress
+    while addr &lt; toaddress do
+      local r = func(addr)
+      if r == false then
+        break
+      end
+      addr = addr + itemsize
+    end
+  end
+end
+
+function readWord(addr)
+  if addr ~= 0 and addr ~= nil then
+    return bAnd(readInteger(addr), 0xFFFF)
+  end
+  return nil
+end
+
+function writeWord(addr, value)
+  if addr ~= 0 and addr ~= nil and value ~= nil then
+    local v1 = bAnd(value, 0xFF)
+    local v2 = bShr(bAnd(value, 0xFF00), 8)
+    writeBytes(addr, v1, v2)
+  end
+end
+
+if syntaxcheck then
+  return
+end
+
+[ENABLE]
+
+--[[
+-- For Debugging
+local le = getLuaEngine()
+le.mOutput.Lines:Clear()
+le.cbShowOnPrint.Checked = false
+le:Show()
+]]--
+
+-- AOBScans here
+
+setScans({
+  main = {
+    bytes = "48 8B 0D ?? ?? ?? ?? 41 8B C7 48",
+    module = "hackGU_vol3.dll"
+  },
+  main2 = {
+    bytes = "4C 8B 35 ?? ?? ?? ?? 8B B5 ?? ?? ?? ?? C6 85",
+    module = "hackGU_vol3.dll"
+  },
+  main3 = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 48 8B 44 D0",
+    module = "hackGU_vol3.dll"
+  },
+  itemids = {
+    bytes = "77 47 48 8B 3D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B F3 48",
+    module = "hackGU_vol3.dll"
+  },
+  strings1 = {
+    bytes = "E8 ?? ?? ?? ?? 48 8D 1C DD 00 00 00 00",
+    module = "hackGU_vol3.dll"
+  },
+  hashdata = {
+    bytes = "48 8D 3D ?? ?? ?? ?? 0F 1F 84 00 00 00 00 00 43",
+    module = "hackGU_vol3.dll"
+  },
+  bookstrings = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 48 8B 1C 07",
+    module = "hackGU_vol3.dll"
+  },
+  bookinfo = {
+    bytes = "4C 8D 35 ?? ?? ?? ?? 48 89 74 24 ?? 4C 89",
+    module = "hackGU_vol3.dll"
+  },
+  battleinfo = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 0F B6 48 28",
+    module = "hackGU_vol3.dll"
+  },
+})
+
+local function hashstr(hashaddr, hashstr)
+  if hashstr ~= nil and string.len(hashstr)&gt;0 then
+    local result = 0xFFFFFFFF
+    local i
+    for i=1,string.len(hashstr) do
+      local rv = string.byte(hashstr, i)
+      rv = bXor(rv, bShr(result, 0x18))
+      result = bXor(bAnd(bShl(result, 0x8), 0xFFFFFFFF), readInteger(hashaddr + rv * 4))
+    end
+    result = bAnd(bNot(result),0xFFFFFFFF)
+    return result
+  end
+  return 0
+end
+
+local function findstr(hashaddr, hashid)
+  local inithash = followAddress(hashaddr, { 0x8 })
+  local counter = 0
+  while inithash ~= nil and inithash ~= 0 and inithash ~= hashaddr do
+    local chash = readInteger(inithash + 0x20)
+    if chash &gt; hashid then
+      inithash = followAddress(inithash, { 0x0 })
+    elseif chash &lt; hashid then
+      inithash = followAddress(inithash, { 0x10 })
+    else
+      local naddr = followAddress(inithash, { 0x28, 0x10 })
+      if naddr ~= nil then
+        local str = readString(naddr, 200)
+        if str ~= nil then
+          return str
+        end
+      end
+      return ""
+    end
+    counter = counter + 1
+    if counter == 1000 then
+      return ""
+    end
+  end
+  return ""
+end
+
+local itemstrings = {}
+
+local bookdata = {
+  -- Book 1
+  {
+    opts = {
+      {
+        offset = 0x20C,
+        type = "vtWord"
+      },
+      {
+        offset = 0x212,
+        type = "vtWord"
+      },
+      {
+        offset = 0x20E,
+        type = "vtWord"
+      },
+      {
+        offset = 0x210,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 2
+  {
+  },
+  -- Book 3
+  {
+    opts = {
+      {
+        offset = 0x214,
+        type = "vtWord"
+      },
+      {
+        offset = 0x216,
+        type = "vtWord"
+      },
+      {
+        offset = 0x218,
+        type = "vtWord"
+      },
+      {
+        offset = 0x21A,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 4
+  {
+  },
+  -- Book 5
+  {
+    opts = {
+      {
+      },
+      {
+        offset = 0x21C,
+        type = "vtWord"
+      },
+      {
+        offset = 0x21E,
+        type = "vtWord"
+      },
+      {
+        offset = 0x220,
+        type = "vtWord"
+      },
+      {
+        offset = 0x222,
+        type = "vtWord"
+      },
+      {
+        offset = 0x1D422,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 6
+  {
+    opts = {
+      {
+        offset = 0x5A6,
+        type = "vtWord"
+      },
+      {
+        offset = 0x5A8,
+        type = "vtWord"
+      },
+      {
+        offset = 0x1C344,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 7
+  {
+  },
+  -- Book 8
+  {
+    opts = {
+      {
+        offset = 0x228,
+        type = "vtDword"
+      },
+      {
+        offset = 0x22C,
+        type = "vtWord"
+      }
+    }
+  }
+}
+
+local hashdataaddr
+local tmpscan = getScan("hashdata")
+if tmpscan ~= nil then
+  hashdataaddr = followAddress(tmpscan[1], { { offset=3, rc=true } })
+end
+local tmpscan = getScan("strings1")
+if tmpscan ~= nil and hashdataaddr ~= nil then
+  local addr = followAddress(tmpscan[1], { { offset=1, rc=true}, { offset=0x62, rc=true }, 0x0, 0x90, 0x0, 0x30, 0x8 })
+  local itemidscan = getScan("itemids")
+  if addr ~= nil and itemidscan ~= nil then
+    local itemidsaddr = followAddress(itemidscan[1], { { offset=0x5, rc=true }, 0x0 })
+    if itemidsaddr ~= nil then
+      local i
+      for i=0x00,0x10E do
+        local itemidaddr = followAddress(itemidsaddr, { i * 8 })
+        if itemidaddr ~= nil then
+          local name = readString(itemidaddr, 200)
+          if name ~= nil and name ~= "" and name ~= "NoStringID" then
+            local rname = findstr(addr,hashstr(hashdataaddr, name))
+            if rname ~= nil and rname ~= "" then
+              itemstrings[i] = rname
+            end
+          end
+        end
+      end
+    end
+  end
+  local bookscan = getScan("bookinfo")
+  local strscan = getScan("bookstrings")
+  if bookscan ~= nil and strscan ~= nil then
+    local bookaddr = followAddress(bookscan[1], { { offset=0x3, rc=true } })
+    local straddr = followAddress(strscan[1], { { offset=0x3, rc=true }, 0x0 })
+    if bookaddr ~= nil and straddr ~= nil then
+      bookaddr = bookaddr - 0x10
+      local i
+      for i=0,7 do
+        local binfoaddr = bookaddr + (0x18 * i)
+        local nid = readInteger(binfoaddr)
+        if nid ~= nil then
+          local idaddr = followAddress(straddr, { nid * 8 })
+          if idaddr ~= nil then
+            local id = readString(idaddr, 200)
+            if id ~= nil and id ~= "" then
+              local rname = findstr(addr, hashstr(hashdataaddr, id))
+              bookdata[i+1]["name"] = rname
+              if bookdata[i+1]["opts"] == null then
+                bookdata[i+1]["opts"] = {}
+              end
+              local subaddr = followAddress(binfoaddr, { 0x10 })
+              if subaddr ~= nil then
+                local good = true
+                local cnt = 0
+                while good do
+                  if cnt &gt; 100 then
+                    good = false
+                  else
+                    local nid = readInteger(subaddr)
+                    if nid ~= 0xFFFFFFFF then
+                      local idaddr = followAddress(straddr, { nid * 8 })
+                      if idaddr ~= nil then
+                        local id = readString(idaddr, 200)
+                        if id ~= nil and id ~= "" then
+                          local rname = findstr(addr, hashstr(hashdataaddr, id))
+                          if bookdata[i+1]["opts"][cnt+1] == nil then
+                            bookdata[i+1]["opts"][cnt+1] = {}
+                          end
+                          bookdata[i+1]["opts"][cnt+1]["name"] = rname
+                          bookdata[i+1]["opts"][cnt+1]["per"] = subaddr + 0x8
+                        end
+                      end
+                    else
+                      good = false
+                    end
+                  end
+                  subaddr = subaddr + 0x10
+                  cnt = cnt + 1
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+local function Run()
+  -- Refresh code here
+  local mainscan = getScan("main")
+  local main2scan = getScan("main2")
+  local main3scan = getScan("main3")
+  local freezehp = getFlag("Freeze HP")
+  local freezesp = getFlag("Freeze SP")
+  local freezesk = getFlag("Freeze Skill Timer")
+  local freezemb = getFlag("Freeze Moral Bar")
+  if mainscan ~= nil and main2scan ~= nil then
+    local mainaddr = followAddress(mainscan[1], { { offset=0x3, rc=true }, 0x0, 0x0, 0x18 })
+    local main2addr = followAddress(main2scan[1], { { offset=0x3, rc=true }, 0x0 })
+    local main3addr = followAddress(main3scan[1], { { offset=0x3, rc=true }, 0x0 })
+    local battlescan = getScan("battleinfo")
+    if battlescan ~= nil then
+      local battleaddr = followAddress(battlescan[1], { { offset=3, rc=true }, 0x0} )
+      if battleaddr ~= nil then
+        updatePath("", "Moral Bar", "vtWord", hex(battleaddr + 0x3C), {})
+        if freezemb then
+          writeWord(battleaddr + 0x3C, 100)
+        end
+      end
+    end
+    if mainaddr ~= nil and main2addr ~= nil and main3addr ~= nil then
+      updatePath("", "Mission Battles", "vtWord", hex(main3addr + 0x14EFC), {})
+      updatePath("", "Mission Surprise Battles", "vtWord", hex(main3addr + 0x14F00), {})
+      updatePath("", "Mission Destroyed Objects", "vtWord", hex(main3addr + 0x14F08), {})
+      updatePath("", "Mission Chim Acquired", "vtWord", hex(main3addr + 0x14F0C), {})
+      updatePath("", "WP", "vtWord", hex(main2addr + 0x1C344), {})
+      updatePath("", "Chim", "vtWord", hex(main2addr + 0x1B6D0), {})
+      local addr = mainaddr
+      local names = {}
+      while addr ~= nil and addr ~= 0 do
+        local naddr = followAddress(addr, { 0x40 })
+        if naddr ~= nil then
+          local id = readWord(addr + 0x2C)
+          local name = readString(naddr, 0x20)
+          if name ~= nil then
+            names[name] = true
+            local doff = main2addr + 4*(0x170+(id*9))
+            updatePath("Characters\\"..name, "HP", "vtWord", hex(addr + 0x224), {})
+            updatePath("Characters\\"..name, "Max HP", "vtWord", hex(addr + 0x230), {})
+            updatePath("Characters\\"..name, "SP", "vtWord", hex(addr + 0x226), {})
+            updatePath("Characters\\"..name, "Max SP", "vtWord", hex(addr + 0x234), {})
+            updatePath("Characters\\"..name, "P-ATK", "vtWord", hex(addr + 0x238), {})
+            updatePath("Characters\\"..name, "P-DEF", "vtWord", hex(addr + 0x23A), {})
+            updatePath("Characters\\"..name, "M-ATK", "vtWord", hex(addr + 0x23C), {})
+            updatePath("Characters\\"..name, "M-DEF", "vtWord", hex(addr + 0x23E), {})
+            updatePath("Characters\\"..name, "Fire", "vtWord", hex(addr + 0x240), {})
+            updatePath("Characters\\"..name, "Water", "vtWord", hex(addr + 0x242), {})
+            updatePath("Characters\\"..name, "Wind", "vtWord", hex(addr + 0x242), {})
+            updatePath("Characters\\"..name, "Earth", "vtWord", hex(addr + 0x244), {})
+            updatePath("Characters\\"..name, "Light", "vtWord", hex(addr + 0x246), {})
+            updatePath("Characters\\"..name, "Dark", "vtWord", hex(addr + 0x248), {})
+            updatePath("Characters\\"..name, "Skill Timer", "vtWord", hex(addr + 0x35C), {})
+            updatePath("Characters\\"..name, "Skill Timer Start", "vtWord", hex(addr + 0x35E), {})
+            updatePath("Characters\\"..name, "Level", "vtWord", hex(doff), {})
+            updatePath("Characters\\"..name, "EXP", "vtWord", hex(doff+2), {})
+            updatePath("Characters\\"..name, "Money", "vtDword", hex(doff+4), {})
+            if freezehp then
+              writeWord(addr + 0x224, readWord(addr + 0x230))
+            end
+            if freezesp then
+              writeWord(addr + 0x226, readWord(addr + 0x234))
+            end
+            if freezesk then
+              writeWord(addr + 0x35C, 0)
+            end
+          end
+        end
+        addr = followAddress(addr, { 0x18 })
+      end
+      --[[
+      local cpath = getPath("Characters")
+      if cpath ~= nil then
+        local i=cpath.Count-1,0,-1 do
+          if names[cpath.Child[i].Description] == nil then
+            removePath("Characters\\"..cpath.Child[i].Description)
+          end
+        end
+      end
+      ]]--
+      if main2addr ~= nil then
+        local i,v
+        local j,w
+        for i,v in ipairs(bookdata) do
+          for j,w in ipairs(v["opts"]) do
+            updatePath("Book\\"..v["name"].."\\"..w["name"], "Points Per", "vtDword", hex(w["per"]), {})
+            if w["offset"] ~= nil then
+              updatePath("Book\\"..v["name"].."\\"..w["name"], "Value", w["type"], hex(main2addr + w["offset"]), {})
+            end
+          end
+        end
+      end
+      --[[
+      ]]--
+      if main2addr ~= nil then
+        local i
+        for i=0x00,0x59 do
+          local iaddr = main2addr + 0x16A0 + i*4
+          local tmr = updatePath("Items\\"..i,"Type","vtWord", hex(iaddr), {})
+          updatePath("Items\\"..i,"Count","vtByte", hex(iaddr+2), {})
+          updatePath("Items\\"..i,"Position","vtByte", hex(iaddr+3), {})
+          if tmr.DropDownList.Text == "" then
+            local k,v
+            local str = ""
+            for k,v in pairs(itemstrings) do
+              str = str .. k..":"..v.."\r\n"
+            end
+            str = str .. "65535:Empty\r\n"
+            tmr.DropDownList.Text = str
+            tmr.DropDownReadOnly = true
+            tmr.DropDownDescriptionOnly = true
+            tmr.DisplayAsDropDownListItem = true
+          end
+        end
+      end
+    end
+  end
+  collectgarbage()
+  collectgarbage()
+end
+
+if memrec ~= nil then
+  local t = getTimer()
+  t.OnTimer = Run
+  Run()
+  t.Enabled = true -- Enable timer ONLY after first run in case of error
+end
+
+[DISABLE]
+if memrec ~= nil then
+  killTimer()
+  while memrec.Count &gt; 0 do
+    memrec.Child[0]:Delete()
+  end
+end
+cached = {}
+collectgarbage()
+collectgarbage()
+</AssemblerScript>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>14</ID>
+      <Description>"Vol4 Script"</Description>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{$lua}
+
+local function hex(a, c)
+  if a == nil then
+    return "(nil)"
+  end
+  local fmt = "%X"
+  if type(c) == "number" then
+    fmt = "%0"..c.."X"
+  end
+  return string.format(fmt, a)
+end
+
+local function pointerSize()
+  if targetIs64Bit() then
+    return 8
+  end
+  return 4
+end
+
+local function readSignedInteger(a)
+  local v = readInteger(a)
+  if v ~= nil then
+    if v &gt; 0x7FFFFFFF then
+      v = -(0x100000000 - v)
+    end
+  end
+  return v
+end
+
+local function findRecord(parent, desc)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local found
+  if parent ~= nil and parent.Count &gt; 0 then
+    local i
+    for i = 0, parent.Count-1 do
+      if parent.Child[i].Description == desc then
+        found = parent.Child[i]
+      end
+    end
+  end
+  return found
+end
+
+local function updateRecord(parent, desc, type, addr, offsets)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local rec = findRecord(parent,desc)
+  if rec == nil then
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.VarType = type
+    if addr ~= nil then
+      rec.setAddress(addr, offsets)
+    end
+    if parent ~= nil then
+      rec.appendToEntry(parent)
+    end
+  else
+    local a = rec.Address
+    if addr ~= a then
+      rec.setAddress(addr, offsets)
+    end
+  end
+  return rec
+end
+
+local cached = {}
+
+local function updatePath(path, desc, type, addr, offsets)
+  if memrec == nil then
+    return nil
+  end
+  local fullpath = ""
+  if path ~= nil and path ~= "" then
+    fullpath = path.."\\"..desc
+  else
+    fullpath = desc
+  end
+  local rec
+  if cached[fullpath] == nil or cached[fullpath].Parent == nil then
+    local i
+    local arr = {}
+    local parent
+    for i in string.gmatch(path, "[^\\]+") do
+      table.insert(arr, i)
+    end
+    if #arr &gt; 0 then
+      local item = table.remove(arr)
+      parent = updatePath(table.concat(arr, '\\'), item, "vtCustom", 0, {})
+    else
+      parent = memrec
+    end
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.VarType = type
+    rec.setAddress(addr, offsets)
+    rec.appendToEntry(parent)
+    if type == "vtCustom" then
+      rec.IsGroupHeader = true
+    end
+    cached[fullpath] = rec
+  else
+    rec = cached[fullpath]
+    local a = rec.Address
+    if addr ~= a then
+      rec.setAddress(addr, offsets)
+    end
+  end
+  return cached[fullpath]
+end
+
+local function getPath(path)
+  if cached[path] ~= nil then
+    return cached[path]
+  end
+  return nil
+end
+
+local function removePath(path)
+  if cached[path] ~= nil then
+    if cached[path].getAddress() ~= "" then
+      cached[path]:Delete()
+    end
+    cached[path] = nil
+  end
+end
+
+local function cleanupPath(path, list)
+  local pathlist = {}
+  local i,v
+  for i,v in pairs(list) do
+    table.insert(pathlist, path.."\\"..i)
+  end
+  for i,v in pairs(cached) do
+    if string.sub(i,1,string.len(path)+1) == path.."\\" then
+      local r,z
+      local found = false
+      for r,z in ipairs(pathlist) do
+        if i == z or string.sub(i,1,string.len(z)+1) == z.."\\" then
+          found = true
+          break
+        end
+      end
+      if not found then
+        removePath(i)
+      end
+    end
+  end
+end
+
+local function getHeader(parent, desc)
+  if parent == nil and memrec ~= nil then
+    parent = memrec
+  end
+  local rec = findRecord(parent,desc)
+  if rec == nil then
+    rec = getAddressList().createMemoryRecord()
+    rec.Description = desc
+    rec.IsGroupHeader = true
+    if parent ~= nil then
+      rec.appendToEntry(parent)
+    end
+  end
+  return rec
+end
+
+local function getFlag(desc)
+  local result = false
+  if memrec ~= nil then
+    local rec = findRecord(memrec, desc)
+    if rec == nil then
+      rec = getAddressList().createMemoryRecord()
+      rec.Description = desc
+      rec.IsGroupHeader = true
+      rec.appendToEntry(memrec)
+    end
+    result = rec.Active
+  end
+  return result
+end
+
+local function getCodeOffset(addr, off)
+  if addr == nil or addr == 0 then
+    return nil
+  end
+  local o = readSignedInteger(addr + off)
+  if o ~= nil then
+    return addr + o + off + 4
+  end
+  return nil
+end
+
+local function followAddress(addr, offs, debug)
+  local i
+  for i = 1,#offs do
+    if addr ~= nil then
+      local ot = type(offs[i])
+      if ot == "table" then
+        if type(offs[i]["offset"]) ~= "number" then
+          return nil
+        end
+        if offs[i]["rc"] == true then
+          addr = getCodeOffset(addr, offs[i]["offset"])
+        elseif offs[i]["r32"] == true then
+          addr = readInteger(addr + offs[i]["offset"])
+        else
+          addr = readPointer(addr + offs[i]["offset"])
+        end
+      elseif ot == "number" then
+        addr = readPointer(addr + offs[i])
+      else
+        return nil
+      end
+      if debug then
+        print("  "..hex(addr))
+      end
+    end
+  end
+  return addr
+end
+
+if timers == nil then
+  timers = {}
+end
+if aobscans == nil then
+  aobscans = {}
+end
+
+local function getTimer()
+  if memrec ~= nil then
+    local id = memrec.id
+    if timers[id] == nil then
+      timers[id] = createTimer()
+      timers[id].Enabled = false
+      timers[id].Interval = getFreezeTimer().Interval
+    end
+    return timers[id]
+  end
+  return nil
+end
+
+local function killTimer()
+  if memrec ~= nil then
+    local id = memrec.id
+    if timers[id] ~= nil then
+      timers[id]:Destroy()
+      timers[id] = nil
+    end
+  end
+end
+
+local function setScan(name, opts)
+  if memrec == nil then
+    return false
+  end
+  if aobscans[memrec.id] ~= nil then
+    aobscans[memrec.id][name] = nil
+  end
+  if opts["bytes"] == nil then
+    return false
+  end
+  local perm = opts["perm"]
+  if perm == nil then
+    perm = "-C-W+X" -- Not CopyOnWrite, Not Writable, but executable by default
+  end
+  local startaddress = 0
+  local endaddress = 0x7FFFFFFFFFFFFFFF
+  if opts["module"] ~= nil then
+    startaddress = getAddress(opts["module"])
+    endaddress = startaddress + getModuleSize(opts["module"])
+  end
+  local bytes = opts["bytes"]
+  local ms = createMemScan()
+  local success = false
+  if aobscans[memrec.id] == nil then
+    aobscans[memrec.id] = {}
+  end
+  if ms ~= nil then
+    ms.firstScan(soExactValue, vtByteArray, 0, bytes, "", startaddress, endaddress, perm, fsmNotAligned, "1", true, false, false, false)
+    ms.waitTillDone()
+    local fl = createFoundList(ms)
+    if fl ~= nil then
+      fl.initialize()
+      if fl.Count &gt; 0 then
+        aobscans[memrec.id][name] = {}
+        local i
+        for i=0,fl.Count-1 do
+          table.insert(aobscans[memrec.id][name], tonumber("0x"..fl.Address[i]))
+        end
+      end
+      fl:Destroy()
+    end
+    ms:Destroy()
+    if success then
+      return true
+    end
+  end
+  return false
+end
+
+local function setScans(list, perm)
+  local k,v
+  for k,v in pairs(list) do
+    setScan(k, v, perm)
+  end
+end
+
+local function getScan(name)
+  if memrec ~= nil then
+    local id = memrec.id
+    if aobscans[id] ~= nil then
+      if aobscans[id][name] ~= nil then
+        return aobscans[id][name]
+      end
+    end
+  end
+  return nil
+end
+
+local function forEach(startaddress, toaddress, itemsize, func)
+  if startaddress &lt; toaddress then
+    local addr = startaddress
+    while addr &lt; toaddress do
+      local r = func(addr)
+      if r == false then
+        break
+      end
+      addr = addr + itemsize
+    end
+  end
+end
+
+function readWord(addr)
+  if addr ~= 0 and addr ~= nil then
+    return bAnd(readInteger(addr), 0xFFFF)
+  end
+  return nil
+end
+
+function writeWord(addr, value)
+  if addr ~= 0 and addr ~= nil and value ~= nil then
+    local v1 = bAnd(value, 0xFF)
+    local v2 = bShr(bAnd(value, 0xFF00), 8)
+    writeBytes(addr, v1, v2)
+  end
+end
+
+if syntaxcheck then
+--  return
+end
+
+[ENABLE]
+
+-- For Debugging
+local le = getLuaEngine()
+le.mOutput.Lines:Clear()
+le.cbShowOnPrint.Checked = false
+le:Show()
+--[[
+]]--
+
+-- AOBScans here
+
+setScans({
+  main = {
+    bytes = "48 8B 0D ?? ?? ?? ?? 41 8B C7 48",
+    module = "hackGU_vol4.dll"
+  },
+  main2 = {
+    bytes = "4C 8B 35 ?? ?? ?? ?? 8B B5 ?? ?? ?? ?? C6 85",
+    module = "hackGU_vol4.dll"
+  },
+  main3 = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 48 8B 44 D0",
+    module = "hackGU_vol4.dll"
+  },
+  itemids = {
+    bytes = "77 47 48 8B 3D ?? ?? ?? ?? E8 ?? ?? ?? ?? 48 8B F3 48",
+    module = "hackGU_vol4.dll"
+  },
+  strings1 = {
+    bytes = "E8 ?? ?? ?? ?? 48 8D 1C DD 00 00 00 00",
+    module = "hackGU_vol4.dll"
+  },
+  hashdata = {
+    bytes = "48 8D 3D ?? ?? ?? ?? 0F 1F 84 00 00 00 00 00 43",
+    module = "hackGU_vol4.dll"
+  },
+  bookstrings = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 48 8B 1C 07",
+    module = "hackGU_vol4.dll"
+  },
+  bookinfo = {
+    bytes = "4C 8D 35 ?? ?? ?? ?? 48 89 74 24 ?? 4C 89",
+    module = "hackGU_vol4.dll"
+  },
+  battleinfo = {
+    bytes = "48 8B 05 ?? ?? ?? ?? 0F B6 48 28",
+    module = "hackGU_vol4.dll"
+  },
+})
+
+local function hashstr(hashaddr, hashstr)
+  if hashstr ~= nil and string.len(hashstr)&gt;0 then
+    local result = 0xFFFFFFFF
+    local i
+    for i=1,string.len(hashstr) do
+      local rv = string.byte(hashstr, i)
+      rv = bXor(rv, bShr(result, 0x18))
+      result = bXor(bAnd(bShl(result, 0x8), 0xFFFFFFFF), readInteger(hashaddr + rv * 4))
+    end
+    result = bAnd(bNot(result),0xFFFFFFFF)
+    return result
+  end
+  return 0
+end
+
+local function findstr(hashaddr, hashid)
+  local inithash = followAddress(hashaddr, { 0x8 })
+  local counter = 0
+  while inithash ~= nil and inithash ~= 0 and inithash ~= hashaddr do
+    local chash = readInteger(inithash + 0x20)
+    if chash &gt; hashid then
+      inithash = followAddress(inithash, { 0x0 })
+    elseif chash &lt; hashid then
+      inithash = followAddress(inithash, { 0x10 })
+    else
+      local naddr = followAddress(inithash, { 0x28, 0x10 })
+      if naddr ~= nil then
+        local str = readString(naddr, 200)
+        if str ~= nil then
+          return str
+        end
+      end
+      return ""
+    end
+    counter = counter + 1
+    if counter == 1000 then
+      return ""
+    end
+  end
+  return ""
+end
+
+local itemstrings = {}
+
+local bookdata = {
+  -- Book 1
+  {
+    opts = {
+      {
+        offset = 0x20C,
+        type = "vtWord"
+      },
+      {
+        offset = 0x212,
+        type = "vtWord"
+      },
+      {
+        offset = 0x20E,
+        type = "vtWord"
+      },
+      {
+        offset = 0x210,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 2
+  {
+  },
+  -- Book 3
+  {
+    opts = {
+      {
+        offset = 0x214,
+        type = "vtWord"
+      },
+      {
+        offset = 0x216,
+        type = "vtWord"
+      },
+      {
+        offset = 0x218,
+        type = "vtWord"
+      },
+      {
+        offset = 0x21A,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 4
+  {
+  },
+  -- Book 5
+  {
+    opts = {
+      {
+      },
+      {
+        offset = 0x21C,
+        type = "vtWord"
+      },
+      {
+        offset = 0x21E,
+        type = "vtWord"
+      },
+      {
+        offset = 0x220,
+        type = "vtWord"
+      },
+      {
+        offset = 0x222,
+        type = "vtWord"
+      },
+      {
+        offset = 0x1D422,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 6
+  {
+    opts = {
+      {
+        offset = 0x5A6,
+        type = "vtWord"
+      },
+      {
+        offset = 0x5A8,
+        type = "vtWord"
+      },
+      {
+        offset = 0x1C344,
+        type = "vtWord"
+      }
+    }
+  },
+  -- Book 7
+  {
+  },
+  -- Book 8
+  {
+    opts = {
+      {
+        offset = 0x228,
+        type = "vtDword"
+      },
+      {
+        offset = 0x22C,
+        type = "vtWord"
+      }
+    }
+  }
+}
+
+local hashdataaddr
+local tmpscan = getScan("hashdata")
+if tmpscan ~= nil then
+  hashdataaddr = followAddress(tmpscan[1], { { offset=3, rc=true } })
+end
+local tmpscan = getScan("strings1")
+if tmpscan ~= nil and hashdataaddr ~= nil then
+  local addr = followAddress(tmpscan[1], { { offset=1, rc=true}, { offset=0x62, rc=true }, 0x0, 0x90, 0x0, 0x30, 0x8 })
+  local itemidscan = getScan("itemids")
+  if addr ~= nil and itemidscan ~= nil then
+    local itemidsaddr = followAddress(itemidscan[1], { { offset=0x5, rc=true }, 0x0 })
+    if itemidsaddr ~= nil then
+      local i
+      for i=0x00,0x10E do
+        local itemidaddr = followAddress(itemidsaddr, { i * 8 })
+        if itemidaddr ~= nil then
+          local name = readString(itemidaddr, 200)
+          if name ~= nil and name ~= "" and name ~= "NoStringID" then
+            local rname = findstr(addr,hashstr(hashdataaddr, name))
+            if rname ~= nil and rname ~= "" then
+              itemstrings[i] = rname
+            end
+          end
+        end
+      end
+    end
+  end
+  local bookscan = getScan("bookinfo")
+  local strscan = getScan("bookstrings")
+  if bookscan ~= nil and strscan ~= nil then
+    local bookaddr = followAddress(bookscan[1], { { offset=0x3, rc=true } })
+    local straddr = followAddress(strscan[1], { { offset=0x3, rc=true }, 0x0 })
+    if bookaddr ~= nil and straddr ~= nil then
+      bookaddr = bookaddr - 0x10
+      local i
+      for i=0,7 do
+        local binfoaddr = bookaddr + (0x18 * i)
+        local nid = readInteger(binfoaddr)
+        if nid ~= nil then
+          local idaddr = followAddress(straddr, { nid * 8 })
+          if idaddr ~= nil then
+            local id = readString(idaddr, 200)
+            if id ~= nil and id ~= "" then
+              local rname = findstr(addr, hashstr(hashdataaddr, id))
+              bookdata[i+1]["name"] = rname
+              if bookdata[i+1]["opts"] == null then
+                bookdata[i+1]["opts"] = {}
+              end
+              local subaddr = followAddress(binfoaddr, { 0x10 })
+              if subaddr ~= nil then
+                local good = true
+                local cnt = 0
+                while good do
+                  if cnt &gt; 100 then
+                    good = false
+                  else
+                    local nid = readInteger(subaddr)
+                    if nid ~= 0xFFFFFFFF then
+                      local idaddr = followAddress(straddr, { nid * 8 })
+                      if idaddr ~= nil then
+                        local id = readString(idaddr, 200)
+                        if id ~= nil and id ~= "" then
+                          local rname = findstr(addr, hashstr(hashdataaddr, id))
+                          if bookdata[i+1]["opts"][cnt+1] == nil then
+                            bookdata[i+1]["opts"][cnt+1] = {}
+                          end
+                          bookdata[i+1]["opts"][cnt+1]["name"] = rname
+                          bookdata[i+1]["opts"][cnt+1]["per"] = subaddr + 0x8
+                        end
+                      end
+                    else
+                      good = false
+                    end
+                  end
+                  subaddr = subaddr + 0x10
+                  cnt = cnt + 1
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+local function Run()
+  -- Refresh code here
+  local mainscan = getScan("main")
+  local main2scan = getScan("main2")
+  local main3scan = getScan("main3")
+  local freezehp = getFlag("Freeze HP")
+  local freezesp = getFlag("Freeze SP")
+  local freezesk = getFlag("Freeze Skill Timer")
+  local freezemb = getFlag("Freeze Moral Bar")
+  if mainscan ~= nil and main2scan ~= nil then
+    local mainaddr = followAddress(mainscan[1], { { offset=0x3, rc=true }, 0x0, 0x0, 0x18 })
+    local main2addr = followAddress(main2scan[1], { { offset=0x3, rc=true }, 0x0 })
+    local main3addr = followAddress(main3scan[1], { { offset=0x3, rc=true }, 0x0 })
+    local battlescan = getScan("battleinfo")
+    if battlescan ~= nil then
+      local battleaddr = followAddress(battlescan[1], { { offset=3, rc=true }, 0x0} )
+      if battleaddr ~= nil then
+        updatePath("", "Moral Bar", "vtWord", hex(battleaddr + 0x3C), {})
+        if freezemb then
+          writeWord(battleaddr + 0x3C, 100)
+        end
+      end
+    end
+    if mainaddr ~= nil and main2addr ~= nil and main3addr ~= nil then
+      updatePath("", "Mission Battles", "vtWord", hex(main3addr + 0x14EFC), {})
+      updatePath("", "Mission Surprise Battles", "vtWord", hex(main3addr + 0x14F00), {})
+      updatePath("", "Mission Destroyed Objects", "vtWord", hex(main3addr + 0x14F08), {})
+      updatePath("", "Mission Chim Acquired", "vtWord", hex(main3addr + 0x14F0C), {})
+      updatePath("", "WP", "vtWord", hex(main2addr + 0x1C344), {})
+      updatePath("", "Chim", "vtWord", hex(main2addr + 0x1B6D0), {})
+      local addr = mainaddr
+      local names = {}
+      while addr ~= nil and addr ~= 0 do
+        local naddr = followAddress(addr, { 0x40 })
+        if naddr ~= nil then
+          local id = readWord(addr + 0x2C)
+          local name = readString(naddr, 0x20)
+          if name ~= nil then
+            names[name] = true
+            local doff = main2addr + 4*(0x170+(id*9))
+            updatePath("Characters\\"..name, "HP", "vtWord", hex(addr + 0x224), {})
+            updatePath("Characters\\"..name, "Max HP", "vtWord", hex(addr + 0x230), {})
+            updatePath("Characters\\"..name, "SP", "vtWord", hex(addr + 0x226), {})
+            updatePath("Characters\\"..name, "Max SP", "vtWord", hex(addr + 0x234), {})
+            updatePath("Characters\\"..name, "P-ATK", "vtWord", hex(addr + 0x238), {})
+            updatePath("Characters\\"..name, "P-DEF", "vtWord", hex(addr + 0x23A), {})
+            updatePath("Characters\\"..name, "M-ATK", "vtWord", hex(addr + 0x23C), {})
+            updatePath("Characters\\"..name, "M-DEF", "vtWord", hex(addr + 0x23E), {})
+            updatePath("Characters\\"..name, "Fire", "vtWord", hex(addr + 0x240), {})
+            updatePath("Characters\\"..name, "Water", "vtWord", hex(addr + 0x242), {})
+            updatePath("Characters\\"..name, "Wind", "vtWord", hex(addr + 0x242), {})
+            updatePath("Characters\\"..name, "Earth", "vtWord", hex(addr + 0x244), {})
+            updatePath("Characters\\"..name, "Light", "vtWord", hex(addr + 0x246), {})
+            updatePath("Characters\\"..name, "Dark", "vtWord", hex(addr + 0x248), {})
+            updatePath("Characters\\"..name, "Skill Timer", "vtWord", hex(addr + 0x350), {})
+            updatePath("Characters\\"..name, "Skill Timer Start", "vtWord", hex(addr + 0x352), {})
+            updatePath("Characters\\"..name, "Level", "vtWord", hex(doff), {})
+            updatePath("Characters\\"..name, "EXP", "vtWord", hex(doff+2), {})
+            updatePath("Characters\\"..name, "Money", "vtDword", hex(doff+4), {})
+            if freezehp then
+              writeWord(addr + 0x224, readWord(addr + 0x230))
+            end
+            if freezesp then
+              writeWord(addr + 0x226, readWord(addr + 0x234))
+            end
+            if freezesk then
+              writeWord(addr + 0x350, 0)
+            end
+          end
+        end
+        addr = followAddress(addr, { 0x18 })
+      end
+      --[[
+      local cpath = getPath("Characters")
+      if cpath ~= nil then
+        local i=cpath.Count-1,0,-1 do
+          if names[cpath.Child[i].Description] == nil then
+            removePath("Characters\\"..cpath.Child[i].Description)
+          end
+        end
+      end
+      ]]--
+      if main2addr ~= nil then
+        local i,v
+        local j,w
+        for i,v in ipairs(bookdata) do
+          for j,w in ipairs(v["opts"]) do
+            updatePath("Book\\"..v["name"].."\\"..w["name"], "Points Per", "vtDword", hex(w["per"]), {})
+            if w["offset"] ~= nil then
+              updatePath("Book\\"..v["name"].."\\"..w["name"], "Value", w["type"], hex(main2addr + w["offset"]), {})
+            end
+          end
+        end
+      end
+      --[[
+      ]]--
+      if main2addr ~= nil then
+        local i
+        for i=0x00,0x59 do
+          local iaddr = main2addr + 0x16A0 + i*4
+          local tmr = updatePath("Items\\"..i,"Type","vtWord", hex(iaddr), {})
+          updatePath("Items\\"..i,"Count","vtByte", hex(iaddr+2), {})
+          updatePath("Items\\"..i,"Position","vtByte", hex(iaddr+3), {})
+          if tmr.DropDownList.Text == "" then
+            local k,v
+            local str = ""
+            for k,v in pairs(itemstrings) do
+              str = str .. k..":"..v.."\r\n"
+            end
+            str = str .. "65535:Empty\r\n"
+            tmr.DropDownList.Text = str
+            tmr.DropDownReadOnly = true
+            tmr.DropDownDescriptionOnly = true
+            tmr.DisplayAsDropDownListItem = true
+          end
+        end
+      end
+    end
+  end
+  collectgarbage()
+  collectgarbage()
+end
+
+if memrec ~= nil then
+  local t = getTimer()
+  t.OnTimer = Run
+  Run()
+  t.Enabled = true -- Enable timer ONLY after first run in case of error
+end
+
+[DISABLE]
+if memrec ~= nil then
+  killTimer()
+  while memrec.Count &gt; 0 do
+    memrec.Child[0]:Delete()
+  end
+end
+cached = {}
+collectgarbage()
+collectgarbage()
+</AssemblerScript>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
