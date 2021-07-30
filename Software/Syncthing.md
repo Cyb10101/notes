@@ -32,20 +32,26 @@ Start `powershell`:
 
 ```powershell
 # Add unzip function
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-function Unzip {
-    param([string]$zipfile, [string]$outpath)
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
-}
+# Add-Type -AssemblyName System.IO.Compression.FileSystem
+# function Unzip([string]$zipfile, [string]$outpath) {[System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath);}
 
 # Download and extract files
 mkdir C:\opt
 Invoke-WebRequest https://github.com/syncthing/syncthing/releases/download/v1.6.1/syncthing-windows-amd64-v1.6.1.zip -OutFile C:\opt\syncthing.zip
-Unzip "C:\opt\syncthing.zip" "C:\opt"
+
+# Unzip via Powershell function
+# Unzip "C:\opt\syncthing.zip" "C:\opt"
+
+# Unzip via Powershell
+Expand-Archive -Force "C:\opt\syncthing.zip" "C:\opt"
+
+# Unzip via 7-Zip
+# Start-Process -Wait -FilePath "7z.exe" -ArgumentList "x -o`"C:\opt`" `"C:\opt\syncthing.zip`""
+
 del C:\opt\syncthing.zip
 ren C:\opt\syncthing-windows-amd64-v1.6.1 C:\opt\Syncthing
 
-# Create shortcut (Startup)
+# Create shortcut in startup folder (explorer "shell:startup")
 $s=(New-Object -ComObject WScript.Shell).CreateShortcut($env:APPDATA + "\Microsoft\Windows\Start Menu\Programs\Startup\Start Syncthing.lnk");
 $s.TargetPath="C:\opt\Syncthing\syncthing.exe";
 $s.WorkingDirectory="C:\opt\Syncthing";
@@ -53,7 +59,7 @@ $s.Arguments="-no-console -no-browser";
 $s.WindowStyle=7;
 $s.Save();
 
-# Create shortcut (Programs)
+# Create shortcut in program folder (explorer "shell:programs")
 $s=(New-Object -ComObject WScript.Shell).CreateShortcut($env:APPDATA + "\Microsoft\Windows\Start Menu\Programs\Syncthing Web UI.lnk");
 $s.TargetPath="C:\opt\Syncthing\syncthing.exe";
 $s.WorkingDirectory="C:\opt\Syncthing";
