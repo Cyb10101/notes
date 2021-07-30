@@ -25,6 +25,7 @@ apm install sort-lines
 apm install atom-beautify
 
 # Package Settings > Open preview pane automatically when opening a markdown file = false
+# Package Settings > Preview Theme = one-dark.css
 apm install markdown-preview-enhanced
 
 # Programming languages
