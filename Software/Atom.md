@@ -1,6 +1,8 @@
 # Atom
 
-https://atom.io
+* [Atom](https://atom.io)
+
+## Installation
 
 ```bash
 wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
@@ -23,9 +25,6 @@ apm install tool-bar tool-bar-main
 apm install file-icons file-watcher
 apm install sort-lines
 apm install atom-beautify
-
-# Package Settings > Open preview pane automatically when opening a markdown file = false
-# Package Settings > Preview Theme = one-dark.css
 apm install markdown-preview-enhanced
 
 # Programming languages
@@ -46,8 +45,19 @@ apm install show-invisibles-plus
 
 ## Settings
 
-* Atom > Settings > Autocomplete plus > Settings
+* Settings > Editor
+  - Atomic Soft Tabs = false
+  - Auto Indent = false
+  - Confirm Checkout HEAD Revision = false
+  - Default Font Size = 15
+  - Show Invisibles = true
+
+* Settings > Packages > Autocomplete plus > Settings
   - Keymap for confirming a suggestion = Tab always, enter when suggestion explicitly selected
+
+* Settings > Packages > markdown-preview-enhanced > Settings
+  - Open preview pane automatically when opening a markdown file = false
+  - Preview Theme = one-dark.css
 
 ### Windows Compile C/C++
 
