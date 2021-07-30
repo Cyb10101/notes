@@ -110,6 +110,8 @@ sudo scoop install aria2 7zip croc restic --global
 ## Grafik / Video
 
 * [XnView](https://www.xnview.com/)
+* [FastStone Image Viewer](https://www.faststone.org/FSViewerDetail.htm)
+
 * [Gimp](https://www.gimp.org/)
 * [Inkscape](https://inkscape.org/)
 
@@ -154,7 +156,9 @@ sudo scoop install aria2 7zip croc restic --global
 * [Fotosizer](http://www.fotosizer.com/)
 * [TreeSize](https://www.jam-software.de/treesize_free/)
 * [WinDirStat](https://windirstat.net/)
+
 * [FreeFileSync](https://freefilesync.org/)
+* [Synchredible](https://www.ascomp.de/de/products/synchredible/)
 
 ## Instant Messenger / Voice Over IP
 
