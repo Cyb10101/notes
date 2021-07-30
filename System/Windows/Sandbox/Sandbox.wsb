@@ -1,3 +1,8 @@
+<!--
+# Enable Windows Sandbox
+dism.exe /Online /Enable-Feature /FeatureName:Containers-DisposableClientVM /All /NoRestart
+shutdown /r /t 5 /c "Restart to activate Sandbox"
+-->
 <Configuration>
   <VGpu>Default</VGpu>
   <Networking>Default</Networking>
@@ -8,11 +13,11 @@
       <ReadOnly>true</ReadOnly>
     </MappedFolder>
     <MappedFolder>
-      <HostFolder>C:\Users\Cyb10101\Desktop\Sandbox</HostFolder>
+      <HostFolder>C:\Users\Cyb10101\Sync\notes\System\Windows\Sandbox\deploy</HostFolder>
       <ReadOnly>false</ReadOnly>
     </MappedFolder>
   </MappedFolders>
   <LogonCommand>
-    <Command>C:\Users\WDAGUtilityAccount\Desktop\Sandbox\deploy.cmd</Command>
+    <Command>C:\Users\WDAGUtilityAccount\Desktop\deploy\deploy.cmd</Command>
   </LogonCommand>
 </Configuration>
