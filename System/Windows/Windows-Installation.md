@@ -226,7 +226,7 @@ choco install keepass keepass-langfiles
 * [WinSCP](https://winscp.net/)
 
 ```shell
-scoop install putty
+sudo scoop install putty --global
 ```
 
 ## System (Windows)
@@ -252,7 +252,7 @@ scoop install putty
 ```shell
 choco install chansort
 
-scoop install linphone
+sudo scoop install linphone --global
 #$tools.lazyInstall("Linphone", "https://www.linphone.org/releases/windows/app/Linphone-4.2.5-win32.exe", "Linphone.exe", "/S")
 
 #$tools.lazyInstall("Backup Maker", "https://www.ascomp.de/de/download/bkmaker.exe", "bkmaker.exe", "/SILENT /NORESTART")
