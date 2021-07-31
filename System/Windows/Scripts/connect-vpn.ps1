@@ -15,7 +15,7 @@
 # %LOCALAPPDATA%\Shrew Soft VPN\sites
 
 $pathShrew = "C:\Program Files\ShrewSoft\VPN Client"
-function connectIpSec([string]$siteProfile, [string]$username, [string]$password, [bool]$connect) {
+function connectIpSec([string]$siteProfile, [string]$username, [string]$password, [switch]$connect) {
   if ($connect) {
     & "$pathShrew\ipsecc.exe" -r $siteProfile -u $username -p $password -a
   } else {
@@ -23,5 +23,5 @@ function connectIpSec([string]$siteProfile, [string]$username, [string]$password
   }
 }
 
-# connectIpSec -siteProfile 'VPN Profile Name' -username 'FRITZ!Box-Username' -password 'FRITZ!Box-Password' -connect $True
+# connectIpSec -siteProfile 'VPN Profile Name' -username 'FRITZ!Box-Username' -password 'FRITZ!Box-Password' -connect
 # connectIpSec -siteProfile 'VPN Profile Name' -username 'FRITZ!Box-Username' -password 'FRITZ!Box-Password'
