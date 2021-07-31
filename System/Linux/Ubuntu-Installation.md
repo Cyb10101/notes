@@ -141,9 +141,35 @@ LibreOffice: Change standard template
 
 ## Internet
 
+```bash
 sudo apt -y install mariadb-client
 sudo apt -y install filezilla
+```
 
+* [Fluent Reader](https://hyliu.me/fluent-reader/)
+* [Fluent Reader: Github](https://github.com/yang991178/fluent-reader)
+
+```bash
+aria2c --download-result=hide --dir=/tmp -o fluent-reader.AppImage https://github.com/yang991178/fluent-reader/releases/download/v1.0.2/Fluent.Reader.1.0.2.AppImage
+sudo install /tmp/fluent-reader.AppImage /usr/local/bin/fluent-reader.AppImage
+
+sudo mkdir -p /usr/local/share/icons
+sudo aria2c --download-result=hide --dir=/usr/local/share/icons -o fluent-reader.png https://raw.githubusercontent.com/yang991178/fluent-reader/master/build/icon.png
+
+cat <<EOF | sudo tee /usr/share/applications/fluent-reader.desktop
+#!/bin/bash
+[Desktop Entry]
+Name=Fluent Reader
+Comment=Modern desktop RSS reader built with Electron, React, and Fluent UI.
+Exec="/usr/local/bin/fluent-reader.AppImage" %U
+Terminal=false
+Type=Application
+Icon=/usr/local/share/icons/fluent-reader.png
+StartupWMClass=fluent-reader
+Categories=Utility;
+TryExec=/usr/local/bin/fluent-reader.AppImage
+EOF
+```
 
 ## Media
 
@@ -208,10 +234,19 @@ sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
 
 * [Balena Etcher](https://www.balena.io/etcher/)
 
+Maybe new:
+
 ```bash
-aria2c --download-result=hide --dir=/tmp -o etcher.zip https://github.com/balena-io/etcher/releases/download/v1.5.109/balena-etcher-electron-1.5.109-linux-x64.zip
+curl -1sLf 'https://dl.cloudsmith.io/public/balena/etcher/setup.deb.sh' | sudo -E bash
+sudo apt install balena-etcher-electron
+```
+
+Old:
+
+```bash
+aria2c --download-result=hide --dir=/tmp -o etcher.zip https://github.com/balena-io/etcher/releases/download/v1.5.120/balena-etcher-electron-1.5.120-linux-x64.zip
 unzip /tmp/etcher.zip -d /tmp/etcher
-sudo mv /tmp/etcher/balenaEtcher-*-x64.AppImage /usr/local/bin/balenaEtcher.AppImage
+sudo install /tmp/etcher/balenaEtcher-*-x64.AppImage /usr/local/bin/balenaEtcher.AppImage
 
 sudo mkdir -p /usr/local/share/icons
 sudo aria2c --download-result=hide --dir=/usr/local/share/icons -o balenaEtcher.png https://github.com/balena-io/etcher/raw/master/assets/icon.png
@@ -437,7 +472,7 @@ sudo apt install wine
 
 ```bash
 mkdir -p ~/Dokumente/HeidiSQL
-ln -s ../../Schreibtisch/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
+ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
 
 aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.1.0.6116_Setup.exe
 wine /tmp/heidisql.exe
