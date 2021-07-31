@@ -7,7 +7,9 @@
 
 $tools.installScoop()
 $tools.installChocolatey()
+
 #choco install microsoft-windows-terminal
+#scoop install jq --global
 
 #$tools.lazyInstallCache("7-Zip", "https://www.7-zip.org/a/7z1900-x64.exe", "7zip.exe", "/S")
 #$tools.lazyInstallCache("Firefox", "https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=de", "Firefox.exe", "/S")

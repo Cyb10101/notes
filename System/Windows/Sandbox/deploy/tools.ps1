@@ -2,6 +2,7 @@
 # Set-ExecutionPolicy RemoteSigned -scope CurrentUser -Confirm:$False -Force
 
 # . "$($env:userprofile)\Sync\notes\System\Windows\Sandbox\deploy\tools.ps1"
+# . "$($env:userprofile)\Desktop\deploy\tools.ps1"
 # $tools.packageManagerList()
 # $tools.packageManagerUpgrade()
 
@@ -28,6 +29,28 @@ class CybTools {
 
   [void] setDevelopment() {
     Set-Variable -Name "development" -Value "$true"
+  }
+
+  [int] getOsArchitecture() {
+    return (32, 64)[[Environment]::Is64BitOperatingSystem]
+  }
+
+  # Add:    updateEnvironmentVariable -path "$env:homedrive$env:homepath\opt\tools\croc" -global
+  # Remove: updateEnvironmentVariable -path "$env:homedrive$env:homepath\opt\tools\croc" -global -remove
+  [void] updateEnvironmentVariable([string]$path, [switch]$global, [switch]$remove) {
+    if ($global) {
+      $target = [System.EnvironmentVariableTarget]::Machine
+    } else {
+      $target = [System.EnvironmentVariableTarget]::User
+    }
+
+    $value = ([Environment]::GetEnvironmentVariable("Path", "$($target)"))
+    $valueCleaned = ((($value).split(";") | Where-Object { $_ -ne "$($path)" }) -join ";")
+    if (-Not ($remove)) {
+        $valueCleaned = "$($valueCleaned);$($path)"
+    }
+    [Environment]::SetEnvironmentVariable("Path", "$($valueCleaned)", "$($target)")
+    [Environment]::GetEnvironmentVariable("Path", "$($target)") | Format-Table -AutoSize
   }
 
   [bool] commandExists($command) {
@@ -149,6 +172,89 @@ class CybTools {
     }
 
     Write-Host "Done: $title"
+  }
+
+  [array] getGithubRelease([string]$repository) {
+    return (Invoke-RestMethod "https://api.github.com/repos/$($repository)/releases/latest" | Select-Object -Property tag_name, name, assets)[0]
+  }
+
+  [array] getGithubReleaseFile([array]$release, [string]$expr) {
+    return ($release.assets | Select-Object -Property name, content_type, browser_download_url | Where-Object {$_.name -Match "$($expr)"})[0]
+  }
+
+  [string] getVersionByGitTag([string]$value) {
+    if ($value -match "v(\d\.\d\.\d)$") {
+      return $matches[1]
+    }
+    return "0.0.0"
+  }
+
+  [string] getVersionByFile([string]$executable, [string]$args, [string]$expr) {
+    if (-Not(Test-Path "$($executable)" -PathType leaf)) {
+        return "0.0.0"
+    }
+
+    $version = (Invoke-Expression "$($executable) $($args)")
+    if ($version -match "$($expr)") {
+      return $matches[1]
+    }
+    return "0.0.0"
+  }
+
+  [void] installZip([string]$title, [string]$url, [string]$tmpFileName, [string]$path) {
+    Write-Output "Download: $title"
+    Invoke-WebRequest -Uri "$($url)" -OutFile "$env:localappdata\Temp\$($tmpFileName)"
+
+    Write-Output "Remove old files..."
+    if (Test-Path -Path "$($path)") {
+        Remove-Item "$($path)" -Recurse -Force
+    }
+
+    Write-Output "Extract new files..."
+    Expand-Archive -Path "$env:localappdata\Temp\$($tmpFileName)" -DestinationPath "$($path)"
+
+    Remove-Item "$env:localappdata\Temp\$($tmpFileName)"
+    Write-Output "Done: $title"
+  }
+
+  ################################################################################
+  # Install Scripts
+
+  [void] installCroc() {
+      $installPath = "$env:homedrive$env:homepath\opt\tools\croc"
+
+      $release = $this.getGithubRelease("schollz/croc")
+      $releaseFile = $this.getGithubReleaseFile($release, "^.*Windows-$($this.getOsArchitecture())bit\.zip$")
+
+      $tmpFile = "$env:localappdata\Temp\$($releaseFile.name)"
+      $releaseVersion = $this.getVersionByGitTag($release.tag_name)
+      $currentVersion = $this.getVersionByFile("$($installPath)\croc.exe", "-v", "croc version v(\d\.\d\.\d)-.*")
+      if ([version]$releaseVersion -gt [version]$currentVersion) {
+          Write-Host "Installing/Updating Croc! [$($currentVersion) -> $($releaseVersion)]"
+          $this.installZip("Croc", "$($releaseFile.browser_download_url)", "$($releaseFile.name)", "$($installPath)")
+          $this.updateEnvironmentVariable("$($installPath)", $True, $False)
+      } else {
+          Write-Host "No new release. [$($currentVersion)]"
+      }
+  }
+
+  # Just for information, require jq
+  [string] getGitlabReleaseUrl([string]$domain, [string]$repository, [string]$exprName) {
+    $releases = ((New-Object System.Net.WebClient).DownloadString("https://$($domain)/api/v4/projects/$($repository)/releases"))
+    $url = $releases | jq -r --arg exprName ${exprName} '.[0].assets.sources[] | select(.url | test(\"\($exprName)\")) | .url'
+    return $url
+  }
+
+  # Just for information, require jq
+  [void] installLinphone() {
+    return;
+    $installPath = "$env:homedrive$env:homepath\opt\tools\linphone"
+
+    $url = $this.getGitlabReleaseUrl("gitlab.linphone.org", "BC%2Fpublic%2Flinphone-desktop", "^.*linphone-desktop-\d\.\d\.\d\.zip$")
+
+    $releaseFileName = "linphone.zip"
+    $tmpFile = "$env:localappdata\Temp\$($releaseFileName)"
+    $this.installZip("Linphone", "$($url)", "$($releaseFileName)", "$($installPath)")
   }
 }
 
