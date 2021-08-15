@@ -15,6 +15,13 @@ Linux
 ```bash
 rdiff-backup -b /tmp/data/ /tmp/backup/
 rdiff-backup -b user@localhost::/tmp/data/ /tmp/backup/
+
+# rdiff-backup -bv5 \
+rdiff-backup -b -v5 \
+  --exclude /var/www/vhosts/website_www/.git \
+  --exclude /var/www/vhosts/website_www/var \
+  --exclude /var/www/vhosts/website_www/public/tmp \
+  server::/var/www/vhosts/website_www/ /backup/website_www/
 ```
 
 Windows
@@ -57,6 +64,12 @@ rdiff-backup -r 2017-07-12T21:00:58+02:00 /tmp/backup/ /tmp/data/index.php
 ## Delete old backups
 
 ```bash
+# Delete older than 30 backups
+rdiff-backup --force --remove-older-than 30B /tmp/backup/
+
+# Delete older than 3 months
+rdiff-backup --force --remove-older-than 3M /tmp/backup/
+
 # Delete older than 12 weeks
 rdiff-backup --force --remove-older-than 12W /tmp/backup/
 ```
