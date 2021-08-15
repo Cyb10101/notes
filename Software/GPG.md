@@ -1,7 +1,17 @@
 # GPG - OpenPGP encryption and signing tool
 
+* [GnuPG](https://gnupg.org/download/)
+* [Gpg4win](https://gpg4win.org/download.html)
+
 ```bash
 sudo apt install gpa gnupg2
+```
+
+```shell
+curl -L -o "%LOCALAPPDATA%\Temp\gpg4win.exe" "https://files.gpg4win.org/gpg4win-3.1.14.exe"
+# Install with GPA
+"%LOCALAPPDATA%\Temp\gpg4win.exe"
+del "%LOCALAPPDATA%\Temp\gpg4win.exe"
 ```
 
 ## Create a new GPG key-pair
