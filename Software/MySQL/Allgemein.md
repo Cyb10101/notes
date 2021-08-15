@@ -26,6 +26,10 @@ collation-server=utf8_general_ci
 # Enter with password
 ssh {server} 'mysqldump -u{username} -p{password} {database-remote}' | mysql -u{username} -p{password} {database-local}
 
+# Plesk MySQL Backup
+mysqldump -uadmin -p$(cat /etc/psa/.psa.shadow) {database} > /tmp/website_$(date +%F)_$(date +%H-%M-%S).sql
+scp server:/tmp/website_2021.sql /backup/website_www/
+
 # Only if access data is stored in .my.cnf
 ssh {server} 'mysqldump {database-remote}' | mysql {database-local}
 ```
