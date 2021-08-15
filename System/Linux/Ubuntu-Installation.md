@@ -474,8 +474,13 @@ sudo apt install wine
 mkdir -p ~/Dokumente/HeidiSQL
 ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
 
-aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.1.0.6116_Setup.exe
+aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.3.0.6295_Setup.exe
 wine /tmp/heidisql.exe
+
+winecfg
+# Windows 10
+
+# Tools > Preferences > Application style = Windows10
 ```
 
 Private key file: Z:\home\username\.ssh\id_rsa.ppk
