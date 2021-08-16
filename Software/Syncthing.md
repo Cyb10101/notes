@@ -1,6 +1,7 @@
 # Syncthing
 
 * [Syncthing](https://syncthing.net/)
+* [Github latest release](https://github.com/syncthing/syncthing/releases/latest)
 * [Configure Autostart](https://docs.syncthing.net/users/autostart.html)
 * [Android FAQ](https://github.com/syncthing/syncthing-android/wiki/Frequently-Asked-Questions)
 
@@ -22,13 +23,9 @@ wget -O ~/.config/autostart/syncthing-start.desktop https://raw.githubuserconten
 wget -O ~/.local/share/applications/syncthing-ui.desktop https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-ui.desktop
 ```
 
-## Windows
+## Windows: Via Powershell
 
-Install via powershell or manually.
-
-### Powershell method
-
-Start `powershell`:
+Start `powershell` as administrator:
 
 ```powershell
 # Add unzip function
@@ -36,8 +33,9 @@ Start `powershell`:
 # function Unzip([string]$zipfile, [string]$outpath) {[System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath);}
 
 # Download and extract files
+$version = "1.18.1"
 mkdir C:\opt
-Invoke-WebRequest https://github.com/syncthing/syncthing/releases/download/v1.6.1/syncthing-windows-amd64-v1.6.1.zip -OutFile C:\opt\syncthing.zip
+Invoke-WebRequest "https://github.com/syncthing/syncthing/releases/download/v$($version)/syncthing-windows-amd64-v$($version).zip" -OutFile C:\opt\syncthing.zip
 
 # Unzip via Powershell function
 # Unzip "C:\opt\syncthing.zip" "C:\opt"
@@ -49,7 +47,7 @@ Expand-Archive -Force "C:\opt\syncthing.zip" "C:\opt"
 # Start-Process -Wait -FilePath "7z.exe" -ArgumentList "x -o`"C:\opt`" `"C:\opt\syncthing.zip`""
 
 del C:\opt\syncthing.zip
-ren C:\opt\syncthing-windows-amd64-v1.6.1 C:\opt\Syncthing
+ren "C:\opt\syncthing-windows-amd64-v$($version)" C:\opt\Syncthing
 
 # Create shortcut in startup folder (explorer "shell:startup")
 $s=(New-Object -ComObject WScript.Shell).CreateShortcut($env:APPDATA + "\Microsoft\Windows\Start Menu\Programs\Startup\Start Syncthing.lnk");
@@ -68,7 +66,12 @@ $s.WindowStyle=7;
 $s.Save();
 ```
 
-### Manually
+* Reboot or run "Start Syncthing" in "shell:startup"
+* Run: Start > Syncthing Web UI ( http://127.0.0.1:8384/ )
+
+*Note: Syncthing updates itself.*
+
+## Windows: Manually
 
 Copy files to `C:\opt\Syncthing`.
 
@@ -107,13 +110,40 @@ SD card write support:
 
 ## Docker
 
-```bash
-# default
-docker pull syncthing/syncthing:latest
-
-# ARM Processor
-docker pull linuxserver/syncthing:latest
-```
-
 * Web GUI: https://192.168.178.123:8384
 * Sync Address: tcp://192.168.178.123
+
+docker-compose.yml:
+
+```yaml
+version: "3.8"
+
+services:
+  syncthing:
+    # Default Processor
+    image: syncthing/syncthing:latest
+
+    # ARM Processor
+    # image: linuxserver/syncthing
+
+    #restart: unless-stopped
+    restart: always
+    container_name: syncthing
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - UMASK_SET=022
+    volumes:
+      - ./.docker/config:/config
+    ports:
+      - "8384:8384"
+      - "22000:22000"
+      - "21027:21027/udp"
+```
+
+Run with:
+
+```bash
+docker-compose up -d
+```
