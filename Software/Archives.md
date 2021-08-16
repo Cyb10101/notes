@@ -20,9 +20,12 @@ Linux:
 Linux:
 
 ```bash
-# Create archive with password (-hp) and split to 50 MB parts
-rar a -hp -ep1 -v50m archive.rar ~/Documents
-rar a -hp123456 -ep1 -v50m archive.rar ~/Documents
+# -hp   = Header and data encrypted
+# -ep1  = Exclude base dir from names
+# -r    = Recurse subdirectories.
+# -rr5p = Data recovery record 5% (-rr = 1%)
+# -v1g  = Split 1 GB (-v100m = 100 MB)
+rar a -hp -ep1 -r -rr5p -v1g archive.rar ~/Documents
 
 # Extract archive
 rar x archive.part1.rar
