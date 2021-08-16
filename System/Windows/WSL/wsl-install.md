@@ -2,6 +2,24 @@
 
 * [Installation Guide for Windows 10](https://docs.microsoft.com/en-gb/windows/wsl/install-win10)
 
+## Test: Install Windows Subsystem for Linux (after build 20262)
+
+Install Windows Subsystem for Linux in PowerShell as Administrator:
+
+```powershell
+# Install WSL
+wsl --install
+
+# Install Linux
+wsl --list --online
+wsl --install -d Ubuntu-20.04
+
+# Update Kernel
+wsl --status
+wsl --update
+wsl --shutdown
+```
+
 ## Bugfix
 
 Check if someting blocking port 53 (Error 0xffffffff) via powershell:
@@ -17,10 +35,12 @@ Install Windows Subsystem for Linux in PowerShell as Administrator:
 ```powershell
 #Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 
-dism.exe /Online /Enable-Feature /featurename:Microsoft-Windows-Subsystem-Linux /All /NoRestart
 dism.exe /Online /Enable-Feature /featurename:VirtualMachinePlatform /All /NoRestart
+dism.exe /Online /Enable-Feature /featurename:Microsoft-Windows-Subsystem-Linux /All /NoRestart
 wsl --set-default-version 2
 ```
+
+* Recommended: Reboot
 
 Install Linux via Windows Store:
 
