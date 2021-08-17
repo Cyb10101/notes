@@ -120,26 +120,23 @@ version: "3.8"
 
 services:
   syncthing:
-    # Default Processor
     image: syncthing/syncthing:latest
-
-    # ARM Processor
-    # image: linuxserver/syncthing
-
     #restart: unless-stopped
     restart: always
     container_name: syncthing
+    hostname: syncthing
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
       - UMASK_SET=022
     volumes:
-      - ./.docker/config:/config
+      - ./.docker/syncthing:/var/syncthing
     ports:
       - "8384:8384"
-      - "22000:22000"
-      - "21027:21027/udp"
+      - "22000:22000/tcp"
+      - "22000:22000/udp"
+      #- "21027:21027/udp"
 ```
 
 Run with:
