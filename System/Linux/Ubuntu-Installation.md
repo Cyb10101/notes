@@ -125,7 +125,7 @@ sudo apt -y install gnome-tweaks
 
 ```bash
 sudo add-apt-repository ppa:variety/stable
-sudo apt -y install variety
+sudo apt -y install variety variety-slideshow
 ```
 
 ## Office
