@@ -80,73 +80,9 @@ Currently in development.
 sudo scoop install aria2 7zip croc restic --global
 ```
 
-## Office
+## Software installation
 
-* [Mozilla Firefox](https://www.mozilla.org/firefox/)
-* [Mozilla Thunderbird](https://www.mozilla.org/thunderbird/)
-* [Google Chrome](https://www.google.de/chrome/)
-* [LibreOffice](https://de.libreoffice.org/download/download/)
-* [PDFsam](https://pdfsam.org/)
-
-## Text Editor / IDE
-
-* [Atom](https://atom.io/)
-* [Geany](https://www.geany.org/)
-* [Notepad++](https://notepad-plus-plus.org/)
-* [Visual Studio Code](https://code.visualstudio.com/)
-
-```powershell
-#$tools.lazyInstall("Visual Studio Code", "https://update.code.visualstudio.com/latest/win32-x64-user/stable", "vscode.exe", "/verysilent /suppressmsgboxes /MERGETASKS=!runcode")
-```
-
-## Multimedia
-
-* [Spotify](https://spotify.com/)
-* [VLC](http://www.videolan.org/vlc/)
-* [Kodi](https://kodi.tv/)
-* [HandBrake](https://handbrake.fr/downloads.php)
-* [fre:ac](https://www.freac.org/)
-
-## Grafik / Video
-
-* [XnView](https://www.xnview.com/)
-* [FastStone Image Viewer](https://www.faststone.org/FSViewerDetail.htm)
-
-* [Gimp](https://www.gimp.org/)
-* [Inkscape](https://inkscape.org/)
-
-* [Flameshot](https://github.com/lupoDharkael/flameshot) (Recommended)
-* [Greenshot](https://getgreenshot.org/)
-* [LightShot](https://app.prntscr.com/)
-
-* [ScreenToGif](http://screentogif.com/)
-
-* [MP3Tag](https://www.mp3tag.de/)
-
-* [OBS Studio](https://obsproject.com/)
-* [MkvToolNix](https://mkvtoolnix.download/)
-* [ffmpeg](https://www.ffmpeg.org/)
-
-## Brenntools
-
-* [Etcher](https://www.balena.io/etcher/)
-* [Rufus](https://rufus.akeo.ie/)
-* [ImgBurn](http://www.imgburn.com/)
-* [InfraRecorder](http://infrarecorder.org/)
-* [CDBurnerXP](https://cdburnerxp.se/)
-* [WinCDEmu](https://wincdemu.sysprogs.org/)
-
-## Komprimierungstools
-
-* [7-Zip](http://7-zip.org/)
-* [WinRAR](https://www.winrar.de/)
-
-## Entwicklung
-
-* [PhpStorm](https://www.jetbrains.com/phpstorm/)
-* [Meld](http://meldmerge.org/)
-* [LinkChecker](https://wummel.github.io/linkchecker/)
-* [Poedit](https://poedit.net/)
+* [Software installation](../../Software/Software-Installation.md)
 
 ## Tools
 
@@ -157,27 +93,6 @@ sudo scoop install aria2 7zip croc restic --global
 * [TreeSize](https://www.jam-software.de/treesize_free/)
 * [WinDirStat](https://windirstat.net/)
 
-* [FreeFileSync](https://freefilesync.org/)
-* [Synchredible](https://www.ascomp.de/de/products/synchredible/)
-
-## Instant Messenger / Voice Over IP
-
-* [Discord](https://discordapp.com/)
-* [Teamspeak](https://www.teamspeak.com/)
-
-* [Threema](https://threema.ch/)
-* [Wire](https://wire.com/)
-* [Signal](https://signal.org/)
-
-* [Telegram](https://telegram.org/)
-* [WhatsApp](https://www.whatsapp.com/download/)
-
-## Internet / Cloud
-
-* [Dropbox](https://www.dropbox.com/)
-* [Google Drive](https://drive.google.com/)
-* [Seafile](https://www.seafile.com/)
-
 ## Internet / Server
 
 * [FileZilla Client](https://filezilla-project.org/download.php?type=client)
@@ -187,9 +102,6 @@ sudo scoop install aria2 7zip croc restic --global
 
 * [VirtualBox](https://www.virtualbox.org/)
 
-* [TeamViewer](https://www.teamviewer.com/)
-* [AnyDesk](https://anydesk.com/)
-
 ## Ram Drive
 
 * [ImDiskTk](http://www.ltr-data.se/opencode.html/#ImDisk)
@@ -198,24 +110,6 @@ sudo scoop install aria2 7zip croc restic --global
 ```shell
 choco install imdisk-toolkit
 ```
-
-## Sicherheit
-
-* [Bitwarden](https://bitwarden.com/)
-* [KeePass](https://keepass.info/)
-* [KeePassDroid](https://play.google.com/store/apps/details?id=com.android.keepass)
-* [KeePassX](https://www.keepassx.org/)
-
-
-```shell
-choco install keepass keepass-langfiles
-```
-
-## Spiele Clients & Software
-
-* [Steam Client](http://store.steampowered.com/)
-* [DOSBox](https://www.dosbox.com/)
-* [Twitch](https://www.twitch.tv/)
 
 ## System (Windows zu Linux)
 
@@ -245,17 +139,9 @@ sudo scoop install putty --global
 * [Oracle Java](https://www.java.com/)
 
 * [ChanSort](https://github.com/PredatH0r/ChanSort/releases/latest) (Sort TV Channels)
-* [Linphone](https://www.linphone.org/)
-* [BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
-* [Synchredible](https://www.ascomp.de/de/products/synchredible/)
 
 ```shell
 choco install chansort
-
-sudo scoop install linphone --global
-#$tools.lazyInstall("Linphone", "https://www.linphone.org/releases/windows/app/Linphone-4.2.5-win32.exe", "Linphone.exe", "/S")
-
-#$tools.lazyInstall("Backup Maker", "https://www.ascomp.de/de/download/bkmaker.exe", "bkmaker.exe", "/SILENT /NORESTART")
 
 choco install rsync
 ```
