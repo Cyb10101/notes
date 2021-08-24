@@ -122,6 +122,11 @@ function getCalendarEventsInTime(calendarId, eventName, fromDate, toDate) {
     orderBy: 'startTime',
     maxResults: 100
   });
+
+  events.items = events.items.filter(function  (event) {
+    return event.getSummary().match('^(\s+)?' + eventName + '(\s+)?$') !== null;
+  });
+
   return events;
 }
 
