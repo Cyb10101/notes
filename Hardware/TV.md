@@ -13,3 +13,9 @@ Menu > Image > Screen Adjustment > Image Format > Image Adjustment
 Menu > Picture > Picture Mode > Movie
 
 (Menü > Bild > Bildmodus > Film)
+
+### Remove HD+
+
+Model: SmartTV2019:URU7100
+
+German: Fernbedienung "Settings" > Senderempfang > Experteneinstellungen > TVkey-Schnittstelle > TV-Dienst löschen > HD+ entfernen
