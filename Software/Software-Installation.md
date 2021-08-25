@@ -4,6 +4,7 @@ Requirements:
 
 * [Ubuntu installation](../System/Linux/Ubuntu-Installation.md)
 * [Windows installation](../System/Windows/Windows-Installation.md)
+* [Mac OS X installation](../System/Mac-OS-X/Mac-OS-X-Installation.md)
 
 ## Essential
 
@@ -17,6 +18,14 @@ Linux:
 ```bash
 # Compression tools
 sudo apt -y install p7zip-full p7zip-rar rar unrar-free
+```
+
+Configuration:
+
+```text
+Windows Scoop:
+* 7-Zip > Tools > Options > System > Associate with 7-Zip
+* 7-Zip > Tools > Options > Language > Language = German (Deutsch)
 ```
 
 ## Office
@@ -51,7 +60,7 @@ Configuration:
 LibreOffice: Change standard template: File > Templates > Save / Organize
 ```
 
-## RSS Reader: Fluent Reader
+## Reader: Fluent Reader (RSS)
 
 * [Fluent Reader](https://hyliu.me/fluent-reader/)
 * [Fluent Reader: Github](https://github.com/yang991178/fluent-reader)
@@ -80,6 +89,28 @@ StartupWMClass=fluent-reader
 Categories=Utility;
 TryExec=/usr/local/bin/fluent-reader.AppImage
 EOF
+```
+
+## Reader: EBook Reader (epub)
+
+* [Calibre](https://calibre-ebook.com/)
+
+```bash
+sudo apt -y install calibre
+```
+
+## Reader: Comic Book Reader (cbz, cbr)
+
+* [YACReader](https://www.yacreader.com/downloads) (Recommended)
+
+```bash
+echo 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/home:selmf.list
+curl -fsSL https://download.opensuse.org/repositories/home:selmf/xUbuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_selmf.gpg > /dev/null
+sudo apt update && sudo apt -y install yacreader
+
+# Create a comic book
+rar a -ma4 -ep1 'Comic Name.cbr' 'Pictures/'
+# add to notes: ~/.local/share/nautilus/scripts
 ```
 
 ## Social
@@ -226,7 +257,7 @@ sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
 
 ## Multimedia: Screenshot
 
-* [Flameshot](https://github.com/lupoDharkael/flameshot) (Recommended)
+* [Flameshot](https://github.com/flameshot-org/flameshot/releases/latest) (Recommended)
 * [Greenshot](https://getgreenshot.org/)
 * [LightShot](https://app.prntscr.com/)
 
@@ -356,15 +387,43 @@ sudo dpkg -i /tmp/dropbox.deb
 
 ## Backup
 
+* [Restic](https://github.com/restic/restic)
 * [BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
 
 Windows:
 
 ```shell
+sudo scoop install restic --global
+
 #$tools.lazyInstall("Backup Maker", "https://www.ascomp.de/de/download/bkmaker.exe", "bkmaker.exe", "/SILENT /NORESTART")
 ```
 
-## Sicherheit
+## File transfer
+
+* [Croc](https://github.com/schollz/croc)
+* [Aria2](https://aria2.github.io/)
+
+* [JDownloader](https://jdownloader.org/download/index)
+* [Deluge](https://www.deluge-torrent.org/)
+
+* [Samba - Windows sharing](../../Software/Samba.md)
+
+Linux:
+
+```bash
+curl https://getcroc.schollz.com | bash
+
+sudo apt -y install aria2
+sudo apt -y install deluge
+```
+
+Windows:
+
+```shell
+sudo scoop install aria2 croc --global
+```
+
+## Security
 
 Password Manager:
 
@@ -372,6 +431,10 @@ Password Manager:
 * [KeePass](https://keepass.info/)
 * [KeePassDroid](https://play.google.com/store/apps/details?id=com.android.keepass) (Android)
 * [KeePassX](https://www.keepassx.org/)
+
+VPN:
+
+* [OpenVPN](https://openvpn.net/index.php/open-source/downloads.html)
 
 Windows:
 
@@ -422,3 +485,152 @@ Windows:
 ```powershell
 #$tools.lazyInstall("Visual Studio Code", "https://update.code.visualstudio.com/latest/win32-x64-user/stable", "vscode.exe", "/verysilent /suppressmsgboxes /MERGETASKS=!runcode")
 ```
+
+## Development: Languages & Tools
+
+* [jq: JSON processor](https://stedolan.github.io/jq/)
+* [yq, xq: YAML/XML processor](https://github.com/kislyuk/yq)
+
+Linux:
+
+```bash
+sudo apt install -y jq python3 python3-pip
+sudo pip3 install yq
+```
+
+* [Go-Lang](https://golang.org/)
+
+Linux:
+
+```bash
+# Snap or Apt
+sudo snap install go --classic
+sudo apt install golang-go
+
+# Or manually
+# Uninstall: sudo rm -rf /usr/local/go
+aria2c --download-result=hide --dir=/tmp -o golang.tar.gz https://dl.google.com/go/go1.14.3.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf /tmp/golang.tar.gz
+sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" > /etc/profile'
+```
+
+## Tools
+
+* [pkColorPicker](http://www.color-picker.de/)
+* [ReNamer](https://www.den4b.com/products/renamer)
+* [Fotosizer](http://www.fotosizer.com/)
+
+Disk space analyser:
+
+* [TreeSize](https://www.jam-software.de/treesize_free/)
+* [WinDirStat](https://windirstat.net/)
+
+## Internet / Server
+
+* [FileZilla Client](https://filezilla-project.org/download.php?type=client)
+
+Linux:
+
+```bash
+sudo apt -y install filezilla
+```
+
+* [HeidiSQL](https://www.heidisql.com/download.php)
+
+Linux with Wine:
+
+```bash
+mkdir -p ~/Dokumente/HeidiSQL
+ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
+
+aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.3.0.6295_Setup.exe
+wine /tmp/heidisql.exe
+
+# Tools > Preferences > Application style = Windows10
+# Private key file: Z:\home\username\.ssh\id_rsa.ppk
+```
+
+## Ram Drive
+
+* [Linux RamDisk](../System/Linux/RamDisk/ramdisk.md)
+* [ImDiskTk](http://www.ltr-data.se/opencode.html/#ImDisk)
+* [ImDiskTk Download](https://sourceforge.net/projects/imdisk-toolkit/)
+
+```shell
+choco install imdisk-toolkit
+```
+
+## TV Liste
+
+* [ChanSort](https://github.com/PredatH0r/ChanSort/releases/latest) (Sort TV Channels)
+
+```shell
+choco install chansort
+```
+
+## Virtualisierung
+
+* [Docker](../../Server/Docker/Installation.md)
+* [VirtualBox](../../Software/VirtualBox/Installation.md)
+
+* [Disk2vhd](https://docs.microsoft.com/en-us/sysinternals/downloads/disk2vhd)
+
+```shell
+# choco install disk2vhd
+```
+
+## Wine
+
+* [Wine HQ](https://winehq.org/)
+* [Wine HQ: Apps](https://appdb.winehq.org/objectManager.php?sClass=application)
+
+Linux:
+
+```bash
+sudo apt install wine
+
+winecfg
+# Windows 10
+```
+
+## PlayOnLinux
+
+```bash
+sudo apt -y install playonlinux
+```
+
+* [Phoenicis PlayOnLinux 5 - in Development](https://www.phoenicis.org/)
+
+```bash
+sudo flatpak install flathub org.phoenicis.playonlinux
+```
+
+## Windows terminal to Linux
+
+* [WSL - Windows Subsystem for Linux](WSL/wsl-install.md) (Recommended)
+* [Cygwin](https://cygwin.com/)
+
+* [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
+* [WinSCP](https://winscp.net/)
+
+Linux with Wine:
+
+```bash
+# Nobody need this?!
+aria2c --download-result=hide --dir=/tmp -o putty.zip https://the.earth.li/~sgtatham/putty/latest/w32/putty.zip
+mkdir -p ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
+unzip /tmp/putty.zip -d ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
+```
+
+Windows:
+
+```shell
+sudo scoop install putty --global
+```
+
+## Other
+
+* [OpenJDK](http://openjdk.java.net/projects/jdk9/)
+* [Oracle Java](https://www.java.com/)
+
+* [Adobe Flash Player](https://get.adobe.com/flashplayer/)

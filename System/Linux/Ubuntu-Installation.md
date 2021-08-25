@@ -143,19 +143,6 @@ sudo apt -y install variety variety-slideshow
 
 ```bash
 sudo apt -y install mariadb-client
-sudo apt -y install filezilla
-```
-
-## PlayOnLinux
-
-```bash
-sudo apt -y install playonlinux
-```
-
-* [Phoenicis PlayOnLinux 5 - in Development](https://www.phoenicis.org/)
-
-```bash
-sudo flatpak install flathub org.phoenicis.playonlinux
 ```
 
 ## Tor Browser
@@ -168,30 +155,6 @@ aptUpdate
 installTorBrowser
 ```
 
-## Development
-
-* [jq: JSON processor](https://stedolan.github.io/jq/)
-* [yq, xq: YAML/XML processor](https://github.com/kislyuk/yq)
-
-```bash
-sudo apt install -y jq python3 python3-pip
-sudo pip3 install yq
-```
-
-* [Go-Lang](https://golang.org/)
-
-```bash
-# Snap or Apt
-sudo snap install go --classic
-sudo apt install golang-go
-
-# Or manually
-# Uninstall: sudo rm -rf /usr/local/go
-aria2c --download-result=hide --dir=/tmp -o golang.tar.gz https://dl.google.com/go/go1.14.3.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf /tmp/golang.tar.gz
-sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" > /etc/profile'
-```
-
 # Configure date
 
 Linux use local time instead UTC.
@@ -200,58 +163,11 @@ Linux use local time instead UTC.
 timedatectl set-local-rtc 1 --adjust-system-clock
 ```
 
-# Download
-
-* [JDownloader](https://jdownloader.org/download/index)
-
-```bash
-sudo apt -y install deluge
-```
-
 ## Additional
 
-* [VirtualBox](../../Software/VirtualBox/Installation.md)
-* [Docker](../../Server/Docker/Installation.md)
 * [HTTrack](../../Software/HTTrack.md)
 
-* [Samba - Windows sharing](../../Software/Samba.md)
-
 * [Synergy](https://members.symless.com/synergy/downloads/list/s1)
-
-## Wine
-
-```bash
-sudo apt install wine
-
-winecfg
-# Windows 10
-```
-
-### HeidiSQL
-
-* [HeidiSQL](https://www.heidisql.com/)
-
-```bash
-mkdir -p ~/Dokumente/HeidiSQL
-ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
-
-aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.3.0.6295_Setup.exe
-wine /tmp/heidisql.exe
-
-# Tools > Preferences > Application style = Windows10
-```
-
-Private key file: Z:\home\username\.ssh\id_rsa.ppk
-
-### PuTTY
-
-* [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
-
-```bash
-aria2c --download-result=hide --dir=/tmp -o putty.zip https://the.earth.li/~sgtatham/putty/latest/w32/putty.zip
-mkdir -p ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
-unzip /tmp/putty.zip -d ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
-```
 
 ## Sync files
 
