@@ -1,4 +1,4 @@
-# Android: Installation
+# Android installation
 
 Useful for the first installation.
 

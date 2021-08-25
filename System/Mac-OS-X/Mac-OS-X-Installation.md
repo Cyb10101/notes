@@ -1,4 +1,4 @@
-# Installation Mac OS X
+# Mac OS X installation
 
 * [Homebrew](https://brew.sh/)
 
