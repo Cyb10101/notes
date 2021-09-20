@@ -1,8 +1,9 @@
 # HTTrack - Website copier
 
-https://www.httrack.com/
+* [HTTrack](https://www.httrack.com/)
 
 ```bash
+# Not needed: httrack
 sudo apt install webhttrack
 ```
 
@@ -14,8 +15,8 @@ Start HTTrack in Browser:
 
 Select Project:
 
-* Select a existing or create new project
-* Base path: Set Download directory
+* Select a existing or create new project: website_www
+* Base path: Set Download directory: /home/cyb10101/websites
 * Next
 
 Select Urls:
@@ -26,7 +27,7 @@ Select Urls:
 
 Set options:
 
-* Build > Structure = ISO9960 names (CDROM)
+* Build > Structure type = ISO9960 names (CDROM)
 * Flow Control > N# connections = 8
 * Limits > Max transfer rate = 250000
 * Browser ID > HTML-Footer = None (Clear field)
@@ -39,6 +40,7 @@ Set options:
 +*.zip +*.tar +*.tgz +*.gz +*.rar +*.z +*.exe
 +*.mov +*.mpg +*.mpeg +*.avi +*.asf +*.mp3 +*.mp2 +*.rm +*.wav +*.vob +*.qt +*.vid +*.ac3 +*.wma +*.wmv
 ```
+
 * Scan rules - Exclude something:
 
 ```text
