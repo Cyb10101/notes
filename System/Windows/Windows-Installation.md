@@ -59,25 +59,6 @@ Currently in development.
 * [WinGet: Store](https://www.microsoft.com/de-de/p/app-installer/9nblggh4nns1) (Recommended)
 * [WinGet: Github](https://github.com/microsoft/winget-cli)
 
-## General
-
-* [Windows Terminal: Store](https://www.microsoft.com/de-de/p/windows-terminal/9n0dx20hk701) (Recommended)
-* [Windows Terminal: Github](https://github.com/microsoft/terminal)
-
-```shell
-# choco install microsoft-windows-terminal
-```
-
-```shell
-sudo scoop install aria2 7zip --global
-```
-
 ## Software installation
 
 * [Software installation](../../Software/Software-Installation.md)
-
-## Other
-
-```shell
-# choco install rsync
-```

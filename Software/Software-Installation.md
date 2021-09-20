@@ -13,11 +13,19 @@ Compression tools:
 * [7-Zip](http://7-zip.org/)
 * [WinRAR](https://www.winrar.de/)
 
+* [Rsync](https://rsync.samba.org/)
+
 Linux:
 
 ```bash
 # Compression tools
 sudo apt -y install p7zip-full p7zip-rar rar unrar-free
+```
+
+Windows:
+
+```shell
+choco install rsync
 ```
 
 Configuration:
@@ -26,6 +34,15 @@ Configuration:
 Windows Scoop:
 * 7-Zip > Tools > Options > System > Associate with 7-Zip
 * 7-Zip > Tools > Options > Language > Language = German (Deutsch)
+```
+
+## General
+
+* [Windows Terminal: Store](https://www.microsoft.com/de-de/p/windows-terminal/9n0dx20hk701) (Recommended)
+* [Windows Terminal: Github](https://github.com/microsoft/terminal)
+
+```shell
+# choco install microsoft-windows-terminal
 ```
 
 ## Office
@@ -212,9 +229,13 @@ sudo apt -y install audacity
 Linux:
 
 ```bash
+sudo add-apt-repository ppa:kdenlive/kdenlive-stable
 sudo apt -y install mpv vlc
 sudo apt -y install kodi
 sudo apt -y install handbrake kdenlive flowblade openshot pitivi
+
+# Video effects
+sudo apt -y install frei0r-plugins
 ```
 
 * [MkvToolNix](https://mkvtoolnix.download/downloads.html)
@@ -421,6 +442,16 @@ Windows:
 
 ```shell
 sudo scoop install aria2 croc --global
+
+croc --relay "example.de:9009" send [filename]
+```
+
+Windows Bugfix:
+
+```bash
+# If Windows Port 9009 is blocked
+croc send --no-local file.txt
+croc send --ports "9010,9011,9012,9013" file.txt
 ```
 
 ## Security
@@ -572,6 +603,12 @@ choco install chansort
 
 * [Docker](../../Server/Docker/Installation.md)
 * [VirtualBox](../../Software/VirtualBox/Installation.md)
+
+* [GNOME Boxes](https://wiki.gnome.org/Apps/Boxes)
+
+```bash
+flatpak install -y flathub org.gnome.Boxes
+```
 
 * [Disk2vhd](https://docs.microsoft.com/en-us/sysinternals/downloads/disk2vhd)
 

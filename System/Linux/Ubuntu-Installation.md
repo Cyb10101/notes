@@ -31,7 +31,7 @@ sudo usermod -a -G vboxsf ${USER}
 
 * [Snapcraft Store](https://snapcraft.io/store)
 
-# Flatpak
+## Flatpak
 
 * [Flatpak](https://flatpak.org/setup/)
 * [Flathub](https://flathub.org/apps)
@@ -41,8 +41,11 @@ sudo apt -y install flatpak
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # Restart system: reboot
+```
 
-# Bugfix GPG key
+Bugfix GPG key:
+
+```bash
 # cat /var/lib/flatpak/repo/flathub.trustedkeys.gpg | sudo apt-key add -
 
 #flatpak install flathub org.signal.Signal
