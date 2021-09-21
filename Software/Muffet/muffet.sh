@@ -3,7 +3,7 @@
 # Muffet - Broken link checker
 # https://github.com/raviqqe/muffet/releases/latest
 
-# ./muffet.sh
+# source ./muffet.sh
 # muffetCheck 'example_www' 'https://example.de/'
 
 getMuffet() {
@@ -27,5 +27,7 @@ muffetFast() {
 }
 
 getMuffet
-export -f muffetCheck
-export -f muffetFast
+
+# Not working
+#export -f muffetCheck
+#export -f muffetFast
