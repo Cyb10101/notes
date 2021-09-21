@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width" name="viewport">
+    <title>Muffet - Broken link checker</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+
+    <style>
+        .page {
+            margin: 20px;
+        }
+
+        .page h1 {
+            margin-top: 0;
+        }
+
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1 class="text-center">Muffet - Broken link checker</h1>
+</div>
+
+<script type="text/javascript">
+    class Muffet {
+        constructor() {
+            this.coloredRow = 0;
+
+            this.httpResponseList = {
+                100: 'Continue',
+                101: 'Switching Protocols',
+
+                200: 'OK',
+                201: 'Created',
+                202: 'Accepted',
+                203: 'Non-Authoritative Information',
+                204: 'No Content',
+                205: 'Reset Content',
+                206: 'Partial Content',
+
+                300: 'Multiple Choices',
+                301: 'Moved Permanently',
+                302: 'Moved Temporarily',
+                303: 'See Other',
+                304: 'Not Modified',
+                305: 'Use Proxy',
+
+                400: 'Bad Request',
+                401: 'Unauthorized',
+                402: 'Payment Required',
+                403: 'Forbidden',
+                404: 'Not Found',
+                405: 'Method Not Allowed',
+                406: 'Not Acceptable',
+                407: 'Proxy Authentication Required',
+                408: 'Request Time-out',
+                409: 'Conflict',
+                410: 'Gone',
+                411: 'Length Required',
+                412: 'Precondition Failed',
+                413: 'Request Entity Too Large',
+                414: 'Request-URI Too Large',
+                415: 'Unsupported Media Type',
+
+                500: 'Internal Server Error',
+                501: 'Not Implemented',
+                502: 'Bad Gateway',
+                503: 'Service Unavailable',
+                504: 'Gateway Time-out',
+                505: 'HTTP Version not supported',
+            }
+        }
+
+        getHttpResponseText(code) {
+            return (this.httpResponseList.hasOwnProperty(code) ? this.httpResponseList[code] : '');
+        }
+
+        sort(input, key) {
+            let sortable = [];
+            for (var item in input) {
+                sortable.push([item, input[item]]);
+            }
+
+            sortable.sort((a, b) => {
+                return ('' + a[1][key]).localeCompare(b[1][key]);
+            });
+
+            let objSorted = {}
+            let i = 0;
+            sortable.forEach((item) => {
+                objSorted[i++] = item[1];
+            });
+
+            return objSorted;
+        }
+
+        parse(file) {
+            let instance = this;
+            let color = (++this.coloredRow % 2 ? 'danger' : 'success');
+
+            let page = document.querySelector('.container');
+
+            let container = document.createElement('div');
+            container.classList.add('border', 'border-1', 'rounded', 'border-' + color, 'p-1', 'mb-3');
+            page.append(container);
+
+            container.insertAdjacentHTML('beforeend',
+                '<h4 class="border-bottom border-1 border-' + color + '">' + file.substr(0, file.length - 5) + '</h4>');
+
+            fetch(file).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok!');
+                }
+                return response.json();
+            }).then(data => {
+                data = instance.sort(data, 'url');
+
+                if (Object.keys(data).length === 0) {
+                    container.insertAdjacentHTML('beforeend', 'No items found');
+                    return;
+                }
+
+                for (const key of Object.keys(data)) {
+                    const website = data[key];
+                    website.links = instance.sort(website.links, 'url');
+
+                    let items = [];
+                    for (const key2 of Object.keys(website.links)) {
+                        const link = website.links[key2];
+                        if (link.url.indexOf('/_error/') > 0) {
+                            return;
+                        }
+                        items.push('<li><span style="color: red;" title="' + this.getHttpResponseText(link.error) + '">' + link.error + '</span>: '
+                            + '<a href="' + link.url + '" target="_blank">' + link.url + '</a></li>');
+                    }
+
+                    if (items.length > 0) {
+                        container.insertAdjacentHTML('beforeend',
+                            '<b><a href="' + website.url + '" target="_blank">' + website.url + '</a></b>'
+                            + '<ul>' + items.join('') + '</ul>'
+                        );
+                    } else {
+                        container.insertAdjacentHTML('beforeend', 'No items found');
+                    }
+                }
+            }).catch((error) => {
+                container.insertAdjacentHTML('beforeend', error.toString().replace(new RegExp('^\\w+:'), '<b>$&</b>'));
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const muffet = new Muffet();
+        muffet.parse('example_www.json');
+    });
+</script>
+</body></html>
