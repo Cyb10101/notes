@@ -2,6 +2,7 @@
 
 * [Visual Studio Code](https://code.visualstudio.com/)
 
+Ctrl + , = Settings
 Ctrl + Shift + P = Powerbar / Command Palette
 
 ## Extensions
@@ -29,6 +30,12 @@ code --install-extension mrmlnc.vscode-apache
 
 # Language: PHP
 code --install-extension bmewburn.vscode-intelephense-client
+
+# Activitybar: Workspace sidebar
+code --install-extension sketchbuch.vsc-workspace-sidebar
+
+# Shortcut menu
+code --install-extension jerrygoyal.shortcut-menu-bar
 ```
 
 ## Configuration
@@ -37,11 +44,21 @@ File > Preferences > Settings > User
 
 ```json
 {
+  "editor.minimap.enabled": false,
   "editor.renderWhitespace": "all",
   "files.autoSave": "onFocusChange",
-  "window.openFoldersInNewWindow": "on",
   "window.newWindowDimensions": "inherit",
-  "window.zoomLevel": 0.3
+  "window.openFoldersInNewWindow": "on",
+  "window.zoomLevel": 0.3,
+  "workbench.colorTheme": "One Dark Pro",
+  "workbench.editor.untitled.hint": "hidden",
+  "workbench.startupEditor": "newUntitledFile",
+
+  "ShortcutMenuBar.newFile": true,
+  "ShortcutMenuBar.openFilesList": false,
+  "ShortcutMenuBar.toggleTerminal": false,
+
+  "workspaceSidebar.depth": 2
 }
 ```
 
