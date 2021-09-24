@@ -40,6 +40,7 @@ File > Preferences > Settings > User
   "editor.renderWhitespace": "all",
   "files.autoSave": "onFocusChange",
   "window.openFoldersInNewWindow": "on",
+  "window.newWindowDimensions": "inherit",
   "window.zoomLevel": 0.3
 }
 ```
