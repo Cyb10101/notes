@@ -26,6 +26,9 @@ code --install-extension mblode.twig-language-2
 
 # Language: Apache Conf
 code --install-extension mrmlnc.vscode-apache
+
+# Language: PHP
+code --install-extension bmewburn.vscode-intelephense-client
 ```
 
 ## Configuration
