@@ -31,6 +31,9 @@ code --install-extension mrmlnc.vscode-apache
 # Language: PHP
 code --install-extension bmewburn.vscode-intelephense-client
 
+# Language: Markdown
+code --install-extension yzhang.markdown-all-in-one
+
 # Activitybar: Workspace sidebar
 code --install-extension sketchbuch.vsc-workspace-sidebar
 
@@ -44,12 +47,17 @@ File > Preferences > Settings > User
 
 ```json
 {
+  "terminal.integrated.fontSize": 15,
+  "editor.fontSize": 15,
+  "debug.console.fontSize": 15,
+  "markdown.preview.fontSize": 15,
+
+  "editor.copyWithSyntaxHighlighting": false,
   "editor.minimap.enabled": false,
   "editor.renderWhitespace": "all",
   "files.autoSave": "onFocusChange",
   "window.newWindowDimensions": "inherit",
   "window.openFoldersInNewWindow": "on",
-  "window.zoomLevel": 0.3,
   "workbench.colorTheme": "One Dark Pro",
   "workbench.editor.untitled.hint": "hidden",
   "workbench.startupEditor": "newUntitledFile",
