@@ -5,6 +5,14 @@
 * [Configure Autostart](https://docs.syncthing.net/users/autostart.html)
 * [Android FAQ](https://github.com/syncthing/syncthing-android/wiki/Frequently-Asked-Questions)
 
+## Antivirus
+
+Maybe you want to exclude your Syncthing paths in your Antivirus Software.
+
+* Windows Security > Virus & threat protection > Virus & threat protection settings > Manage settings > Exclusions > Add or remove exclusions > Add exclusion > Select folder (Translated from german)
+
+* German: Windows-Sicherheit > Viren & Bedrohungsschutz > Einstellungen für Viren- & Bedrohungsschutz > Einstellungen verwalten > Ausschlüsse > Ausschlüsse hinzufügen oder entfernen > Ausschluss hinzufügen > Ordner wählen
+
 ## Firewall
 
 * Port  8384/TCP Remote Web GUI
