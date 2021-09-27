@@ -92,14 +92,14 @@ func convertCsvPartsToJson(headers []string, content [][]string) []byte {
   return bytesJson
 }
 
-func convertCsvPathToJson(path string) string {
+func convertInputToOutputPath(path string, extension string) string {
   newFileName := filepath.Base(path)
-  newFileName = newFileName[0:len(newFileName)-len(filepath.Ext(newFileName))] + ".json"
+  newFileName = newFileName[0:len(newFileName)-len(filepath.Ext(newFileName))] + "." + extension
   r := filepath.Dir(path)
   return filepath.Join(r, newFileName)
 }
 
-func saveJsonFile(path string, content []byte) {
+func saveFile(path string, content []byte) {
   err := ioutil.WriteFile(path, content, os.FileMode(0644))
   if err != nil {
     panic(err)
@@ -127,9 +127,9 @@ func main() {
   
     bytesJson := convertCsvPartsToJson(headers, content)
     if outputFile == "" {
-      outputFile = convertCsvPathToJson(inputFile)
+      outputFile = convertInputToOutputPath(inputFile, "json")
     }
-    saveJsonFile(outputFile, bytesJson)
+    saveFile(outputFile, bytesJson)
   } else {
     fmt.Println(colors.Cyan("Convert CSV to JSON."))
     fmt.Println("")

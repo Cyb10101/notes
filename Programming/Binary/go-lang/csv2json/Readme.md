@@ -10,7 +10,7 @@ Compile and move to binary folder:
 
 ```bash
 # Linux
-go build -o /usr/local/bin/csv2json
+sudo go build -o /usr/local/bin/csv2json
 
 # Windows
 env GOOS=windows GOARCH=amd64 go build
