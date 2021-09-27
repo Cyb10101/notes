@@ -39,6 +39,9 @@ code --install-extension sketchbuch.vsc-workspace-sidebar
 
 # Shortcut menu
 code --install-extension jerrygoyal.shortcut-menu-bar
+
+# Todo Tree
+code --install-extension gruntfuggly.todo-tree
 ```
 
 ## Configuration
@@ -61,6 +64,9 @@ File > Preferences > Settings > User
   "workbench.colorTheme": "One Dark Pro",
   "workbench.editor.untitled.hint": "hidden",
   "workbench.startupEditor": "newUntitledFile",
+
+  "todo-tree.highlights.useColourScheme": true,
+  "todo-tree.regex.regexCaseSensitive": false,
 
   "ShortcutMenuBar.newFile": true,
   "ShortcutMenuBar.openFilesList": false,
