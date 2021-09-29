@@ -46,7 +46,8 @@ code --install-extension gruntfuggly.todo-tree
 
 ## Configuration
 
-File > Preferences > Settings > User
+* Powerbar > Preferences: Open Settings (JSON)
+* Or: File > Preferences > Settings > User
 
 ```json
 {
@@ -68,6 +69,8 @@ File > Preferences > Settings > User
   "todo-tree.highlights.useColourScheme": true,
   "todo-tree.regex.regexCaseSensitive": false,
 
+  "ShortcutMenuBar.navigateBack": false,
+  "ShortcutMenuBar.navigateForward": false,
   "ShortcutMenuBar.newFile": true,
   "ShortcutMenuBar.openFilesList": false,
   "ShortcutMenuBar.toggleTerminal": false,
@@ -79,3 +82,20 @@ File > Preferences > Settings > User
 File > Preferences > Keyboard shortcuts
 
 * Toggle Line Comment = Ctrl + Numpad-/ (German: Zeilenkommentar umschalten)
+
+* Or: Powerbar > Preferences: Open Keyboard Shortcuts (JSON)
+
+```json
+[
+    {
+        "key": "ctrl+numpad_divide",
+        "command": "editor.action.commentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+shift+7",
+        "command": "-editor.action.commentLine",
+        "when": "editorTextFocus && !editorReadonly"
+    }
+]
+```
