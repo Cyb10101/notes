@@ -61,4 +61,10 @@ Currently in development.
 
 ## Software installation
 
+Update all package manger with packages, run `cmd` as administrator:
+
+```shell
+scoop status && scoop update && scoop update *; choco outdated && choco upgrade all
+```
+
 * [Software installation](../../Software/Software-Installation.md)
