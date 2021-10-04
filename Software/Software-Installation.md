@@ -59,15 +59,10 @@ Linux:
 
 ```bash
 sudo apt -y install firefox thunderbird
-sudo apt -y install libreoffice libreoffice-base
-sudo apt -y install pdfarranger
-```
 
-Windows:
-
-```bash
-sudo apt -y install firefox thunderbird
+sudo add-apt-repository ppa:libreoffice/ppa
 sudo apt -y install libreoffice libreoffice-base
+
 sudo apt -y install pdfarranger
 ```
 
