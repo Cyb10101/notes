@@ -1,0 +1,64 @@
+file-drop {
+    display: block;
+    margin-bottom: 10px;
+    padding: 20px;
+    border: 2px dashed grey;
+    transition: background-color 400ms, border-color 400ms;
+}
+
+file-drop.drop-invalid {
+    border-color: red;
+    background-color: #F68080;
+    transition: background-color 200ms, border-color 200ms;
+}
+
+file-drop.drop-valid {
+    border-color: green;
+    background-color: #B2DE9B;
+    transition: background-color 200ms, border-color 200ms;
+}
+button, input, optgroup, select, textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.form-control[type="file"] {
+    overflow: hidden;
+}
+.form-control[type="file"]:not(:disabled):not([readonly]) {
+    cursor: pointer;
+}
+
+#output {
+    padding: .25rem;
+    margin-top: .25rem;
+    margin-bottom: .25rem;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    background-color: #ffc10733;
+}
+#output img {
+    display: inline-block;
+    max-height: 300px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+}
