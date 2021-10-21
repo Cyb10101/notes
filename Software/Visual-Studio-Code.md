@@ -15,6 +15,7 @@ code --install-extension zhuangtongfa.material-theme
 
 # German: (Powerbar > Configure Display Language)
 code --install-extension ms-ceintl.vscode-language-pack-de
+code --locale=de
 
 # Docker
 code --install-extension ms-azuretools.vscode-docker
@@ -42,6 +43,9 @@ code --install-extension jerrygoyal.shortcut-menu-bar
 
 # Todo Tree
 code --install-extension gruntfuggly.todo-tree
+
+# Unique Lines
+code --install-extension bibhasdn.unique-lines
 ```
 
 ## Configuration
