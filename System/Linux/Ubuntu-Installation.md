@@ -158,7 +158,7 @@ aptUpdate
 installTorBrowser
 ```
 
-# Configure date
+## Configure date
 
 Linux use local time instead UTC.
 
