@@ -78,6 +78,7 @@ Open Explorer:
 
 * Start Docker Desktop
 * Settings > General > Use the WSL 2 based engine = true
+* Settings > General > Use Docker Compose V2 = true
 * Settings > Resources > WSL Integration > Enable integration with my default WSL distro = true
 * Settings > Resources > WSL Integration > Enable integration with additional distro = Ubuntu
 * Apply & Restart

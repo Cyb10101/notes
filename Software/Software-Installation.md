@@ -143,17 +143,25 @@ rar a -ma4 -ep1 'Comic Name.cbr' 'Pictures/'
 Linux:
 
 ```bash
+# Discord
 aria2c --download-result=hide --dir=/tmp -o discord.deb https://dl.discordapp.net/apps/linux/0.0.10/discord-0.0.10.deb
 sudo dpkg -i /tmp/discord.deb
 sudo apt -f install
 
-sudo snap install signal-desktop
+# Signal
+# sudo snap install signal-desktop
+curl -fsSL https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor | sudo tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
+echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' | sudo tee /etc/apt/sources.list.d/signal-desktop.list
+sudo apt update && sudo apt -y install signal-desktop
+# Autorun: signal-desktop --start-in-tray
 
+# Telegram
 # Problems with file permissions
 #sudo snap install telegram-desktop
 aria2c --download-result=hide --dir=/tmp -o telegram.tar.xz https://telegram.org/dl/desktop/linux
 tar -C ~/opt -xf /tmp/telegram.tar.xz
 
+# Other
 sudo snap install slack --classic
 sudo snap install skype --classic
 ```
@@ -166,7 +174,9 @@ sudo snap install skype --classic
 Linux:
 
 ```bash
-aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage https://www.linphone.org/releases/linux/app/Linphone-4.2.5.AppImage && chmod +x /tmp/Linphone.AppImage && sudo mv /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
+LINPHONE_VERSION='4.3.0' && \
+aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage "https://www.linphone.org/releases/linux/app/Linphone-${LINPHONE_VERSION}.AppImage" && chmod +x /tmp/Linphone.AppImage && \
+sudo mv /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
 sudo mkdir -p /usr/local/share/icons
 sudo aria2c --download-result=hide --dir=/usr/local/share/icons -o linphone.png https://github.com/BelledonneCommunications/linphone-desktop/raw/master/linphone-app/assets/icons/hicolor/64x64/apps/icon.png

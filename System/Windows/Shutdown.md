@@ -2,7 +2,7 @@
 
 Some systems, such as Linux, require that Windows be completely shut down and not in a hibernation state so that the hard disk can be accessed.
 
-*Keywords: Hibernation, Fast Startup, Hybrid Boot, Hybrid Shutdown, Complete Shutdown*
+*Keywords: Hibernation, Fast Startup, Hybrid Boot, Hybrid Shutdown, Complete Shutdown, Full Shutdown*
 
 ## Shut down completely temporarily
 

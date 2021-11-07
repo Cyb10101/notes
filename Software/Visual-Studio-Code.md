@@ -35,6 +35,9 @@ code --install-extension bmewburn.vscode-intelephense-client
 # Language: Markdown
 code --install-extension yzhang.markdown-all-in-one
 
+# Language: Windows Registry Script
+code --install-extension ionutvmi.reg
+
 # Activitybar: Workspace sidebar
 code --install-extension sketchbuch.vsc-workspace-sidebar
 
@@ -64,6 +67,7 @@ code --install-extension bibhasdn.unique-lines
   "editor.minimap.enabled": false,
   "editor.renderWhitespace": "all",
   "editor.scrollBeyondLastLine": false,
+  "extensions.ignoreRecommendations": true,
   "files.autoSave": "onFocusChange",
   "window.newWindowDimensions": "inherit",
   "window.openFilesInNewWindow": "on",
@@ -74,6 +78,7 @@ code --install-extension bibhasdn.unique-lines
 
   "todo-tree.highlights.useColourScheme": true,
   "todo-tree.regex.regexCaseSensitive": false,
+  "todo-tree.regex.regex": "(\\/\\/|#|<!--|;|\\/\\*|^|^[ \\t]*(-|\\d+.))\\s*@?($TAGS)",
 
   "ShortcutMenuBar.navigateBack": false,
   "ShortcutMenuBar.navigateForward": false,
@@ -81,7 +86,12 @@ code --install-extension bibhasdn.unique-lines
   "ShortcutMenuBar.openFilesList": false,
   "ShortcutMenuBar.toggleTerminal": false,
 
-  "workspaceSidebar.depth": 2
+  "workspaceSidebar.depth": 2,
+  "search.exclude": {
+    "**/cache": true,
+    "**/var": true,
+    "public/build": true
+  }
 }
 ```
 
