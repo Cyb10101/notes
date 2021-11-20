@@ -1,6 +1,6 @@
-# rdiff-backup
+# Rdiff Backup
 
-* [rdiff-backup.net](https://rdiff-backup.net/)
+* [rdiff-backup](https://rdiff-backup.net/)
 
 Incremental backup creation.
 
