@@ -31,9 +31,10 @@ sudo VBoxManage convertfromraw /dev/sda disk.vdi
 # Convert from raw image
 sudo VBoxManage convertfromraw disk.img disk.vdi
 
-# Convert from compressed image (stupid as fuck)
+# Convert from compressed image with progress (stupid as fuck)
 sudo apt install pv
-gzip -cd disk.img.gz | pv | VBoxManage convertfromraw stdin disk.vdi $(gzip -cd disk.img.gz | wc -c)
+SOURCE=disk.img.gz
+gzip -cd ${SOURCE} | pv | VBoxManage convertfromraw stdin disk.vdi $(gzip -cd ${SOURCE} | wc -c)
 ```
 
 ## UEFI Secure Boot
