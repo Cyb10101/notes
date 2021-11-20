@@ -39,6 +39,9 @@ function startFunction {
         bash)
             dockerCompose exec web bash
         ;;
+        setup)
+            dockerCompose exec mail /usr/local/bin/setup "${@:2}"
+        ;;
         *)
             dockerCompose "${@:1}"
         ;;

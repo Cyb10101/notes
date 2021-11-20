@@ -65,7 +65,7 @@ services:
       - ROUNDCUBEMAIL_PLUGINS=archive,carddav,managesieve,markasjunk,newmail_notifier,zipdownload
 
   mail:
-    image: tvial/docker-mailserver:latest
+    image: docker.io/mailserver/docker-mailserver:latest
     restart: always
     hostname: mail
     domainname: mail-example.org

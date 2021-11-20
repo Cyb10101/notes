@@ -312,13 +312,29 @@ FLUSH PRIVILEGES;
 
 ## Mail
 
-* [tomav/docker-mailserver](https://github.com/tomav/docker-mailserver)
-
-The `setup.sh` file is started outside of the Docker container.
+* [docker-mailserver/docker-mailserver](https://github.com/docker-mailserver/docker-mailserver)
 
 ```bash
-wget https://raw.githubusercontent.com/tomav/docker-mailserver/master/setup.sh
-chmod +x setup.sh
+./start.sh setup help
+
+./start.sh setup email list
+./start.sh setup email add <EMAIL ADDRESS> [<PASSWORD>]
+./start.sh setup email update <EMAIL ADDRESS> [<PASSWORD>]
+./start.sh setup email del [ OPTIONS... ] <EMAIL ADDRESS> [ <EMAIL ADDRESS>... ]
+./start.sh setup email restrict <add|del|list> <send|receive> [<EMAIL ADDRESS>]
+
+./start.sh setup alias list
+./start.sh setup alias add <EMAIL ADDRESS> <RECIPIENT>
+./start.sh setup alias del <EMAIL ADDRESS> <RECIPIENT>
+
+./start.sh setup quota set <EMAIL ADDRESS> [<QUOTA>]
+./start.sh setup quota del <EMAIL ADDRESS>
+
+./start.sh setup config dkim [ ARGUMENTS... ]
+
+./start.sh setup debug fetchmail
+./start.sh setup debug fail2ban [unban <IP>]
+./start.sh setup debug show-mail-logs
 ```
 
 To test the e-mail delivery, you can use this website: https://www.mail-tester.com/
