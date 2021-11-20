@@ -25,7 +25,7 @@ sudo apt -y install p7zip-full p7zip-rar rar unrar-free
 Windows:
 
 ```shell
-choco install rsync
+#choco install rsync
 ```
 
 Configuration:
@@ -174,9 +174,9 @@ sudo snap install skype --classic
 Linux:
 
 ```bash
-LINPHONE_VERSION='4.3.0' && \
-aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage "https://www.linphone.org/releases/linux/app/Linphone-${LINPHONE_VERSION}.AppImage" && chmod +x /tmp/Linphone.AppImage && \
-sudo mv /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
+LINPHONE_VERSION='4.3.2' && \
+aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage "https://www.linphone.org/releases/linux/app/Linphone-${LINPHONE_VERSION}.AppImage" && \
+sudo install /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
 sudo mkdir -p /usr/local/share/icons
 sudo aria2c --download-result=hide --dir=/usr/local/share/icons -o linphone.png https://github.com/BelledonneCommunications/linphone-desktop/raw/master/linphone-app/assets/icons/hicolor/64x64/apps/icon.png
@@ -398,9 +398,8 @@ sudo apt -y install dosbox
 
 * [Dropbox](https://www.dropbox.com/)
 * [Google Drive](https://drive.google.com/)
-* [Seafile](https://www.seafile.com/)
-* [Insync](https://www.insynchq.com/downloads)
 
+* [Rsync](https://rsync.samba.org/)
 * [FreeFileSync](https://freefilesync.org/)
 * [Synchredible](https://www.ascomp.de/de/products/synchredible/)
 
@@ -414,7 +413,8 @@ sudo dpkg -i /tmp/dropbox.deb
 ## Backup
 
 * [Restic](https://github.com/restic/restic)
-* [BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
+* [rdiff-backup](https://rdiff-backup.net/)
+* [ascomp - BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
 
 Windows:
 
