@@ -8,7 +8,25 @@ Another advantage is that you can virtualize the hard drive (Example: VirtualBox
 
 ETA means "estimated time of arrival". Simply put, if there is an ETA, you know how long it will take.
 
-In these examples the image file is compressed sofot to save storage space.
+You should always compress the image to save storage space.
+
+## Why not a paid Software
+
+In my opinion, there is absolutely no need to choose paid software for this.
+
+For example a free version of a paid backup software:
+
+* The backup software is only for Windows (But it is possible to backup Linux partitions)
+* To download the software you have to provide your email address or must register
+* You get a download manager that downloads the installer (or other malware)
+* When you install the software, you get a free license key that can be upgraded (Nobody needs that)
+* It is only possible to create a restore ISO in the backup software (Downloading is not possible)
+* The recovery ISO is a very stripped-down version like Windows PE (Useless apart from the backup software)
+* For more functions, you have to pay for the software by taking out a subscription
+
+Or you can take a free Linux CD that contains a functional live system and use the dd + gzip.
+
+And the best thing is, in most cases an image is not necessary, just a data backup.
 
 ## First steps
 
