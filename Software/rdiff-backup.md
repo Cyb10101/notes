@@ -10,7 +10,7 @@ sudo apt install rdiff-backup
 
 ## Backup
 
-Linux
+Linux:
 
 ```bash
 rdiff-backup -b /tmp/data/ /tmp/backup/
@@ -24,14 +24,31 @@ rdiff-backup -b -v5 \
   server::/var/www/vhosts/website_www/ /backup/website_www/
 ```
 
-Windows
+Windows:
 
-```bash
-rdiff-backup.exe -b "C:/source/" "E:/backup/destination/"
+*Note: If you don't use --no-acls then the GUID from old user is stored.*
 
-rdiff-backup.exe -b ^
+``` shell
+# --no-acls = No permissions (Shows: Warning: Windows Access Control List file not found.)
+C:\Users\username\Desktop\rdiff-backup -b -v5 --no-acls ^
   --exclude "**/NTUSER.DAT" ^
-  "C:/source/" "E:/backup/destination/"
+  --exclude "**/ntuser.dat.*" ^
+  --exclude "**/AppData/Local/Comms" ^
+  --exclude "**/AppData/Local/Microsoft/Edge/User Data/**/LOCK" ^
+  --exclude "**/AppData/Local/Microsoft/Edge/User Data/lockfile" ^
+  --exclude "**/AppData/Local/Microsoft/Edge/User Data/Default/Cache" ^
+  --exclude "**/AppData/Local/Microsoft/Edge/User Data/GrShaderCache/GPUCache" ^
+  --exclude "**/AppData/Local/Microsoft/Edge/User Data/ShaderCache/GPUCache" ^
+  --exclude "**/AppData/Local/Microsoft/Internet Explorer/CacheStorage" ^
+  --exclude "**/AppData/Local/Microsoft/Windows/Notifications" ^
+  --exclude "**/AppData/Local/Microsoft/Windows/UsrClass.dat*" ^
+  --exclude "**/AppData/Local/Microsoft/Windows/WebCache" ^
+  --exclude "**/AppData/Local/Microsoft/Windows/WebCacheLock.dat" ^
+  --exclude "**/AppData/Local/Microsoft/WindowsApps" ^
+  --exclude "**/AppData/Local/Packages" ^
+  --exclude "**/AppData/Local/Temp" ^
+  --exclude "**/AppData/Roaming/ASCOMP Software/BackUp Maker" ^
+  C:\Users\username\ D:\backup\
 ```
 
 ## List backups
@@ -46,6 +63,8 @@ rdiff-backup -l public/index.php
 
 ## Restore backup
 
+Linux:
+
 ```bash
 # Last backup
 rdiff-backup -r now /tmp/backup/ /tmp/data/
@@ -59,6 +78,14 @@ rdiff-backup -r 2017-07-12T21:00:58+02:00 /tmp/backup/ /tmp/data/
 
 # One file
 rdiff-backup -r 2017-07-12T21:00:58+02:00 /tmp/backup/ /tmp/data/index.php
+```
+
+Windows:
+
+```shell
+# --no-acls = No permissions (Shows: Warning: Windows Access Control List file not found.)
+C:\Users\username\Desktop\rdiff-backup --no-acls -r now ^
+  "D:/backup/" "C:/Users/username/Desktop/restore/"
 ```
 
 ## Delete old backups

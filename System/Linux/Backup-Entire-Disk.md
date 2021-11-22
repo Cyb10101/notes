@@ -1,5 +1,7 @@
 # Backup and restore entire disk
 
+*Note: If you only want a small backup of your data then look here: [Backup](../../Tutorial/Backup.md).*
+
 Here the complete hard drive with all partitions is copied. A 1 to 1 copy of a real hard disk, so to speak.
 
 The advantage is, if something went wrong after the backup, you can reset everything.
