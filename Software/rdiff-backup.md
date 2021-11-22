@@ -4,6 +4,8 @@
 
 Incremental backup creation.
 
+Linux:
+
 ```bash
 sudo apt install rdiff-backup
 ```
@@ -53,6 +55,8 @@ C:\Users\username\Desktop\rdiff-backup -b -v5 --no-acls ^
 
 ## List backups
 
+Linux:
+
 ```bash
 # Complete folder
 rdiff-backup -l /tmp/backup/
@@ -90,6 +94,8 @@ C:\Users\username\Desktop\rdiff-backup --no-acls -r now ^
 
 ## Delete old backups
 
+Linux:
+
 ```bash
 # Delete older than 30 backups
 rdiff-backup --force --remove-older-than 30B /tmp/backup/
@@ -101,7 +107,11 @@ rdiff-backup --force --remove-older-than 3M /tmp/backup/
 rdiff-backup --force --remove-older-than 12W /tmp/backup/
 ```
 
-## rdiff-backup mount (fuse)
+## Mount
+
+With fuse.
+
+Linux:
 
 ```bash
 sudo apt install rdiff-backup-fs

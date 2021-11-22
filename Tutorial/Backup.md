@@ -10,6 +10,10 @@ For most inexperienced users, it is a good choice.
 
 * [ascomp - BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
 
+## Experienced users
+
+For the experienced users who can handle a terminal, this choice will be better.
+
 Rsync and exclude folder & files on Windows:
 
 ```bash
@@ -36,10 +40,11 @@ rsync -rtPhv --no-p --no-g --chmod=ugo=rwX --delete \
   /mnt/c/Users/username/ /media/backup/
 ```
 
-## Experienced users
+Backup:
 
-For the experienced users who can handle a terminal, this choice will be better.
+* [Restic](../Software/Restic.md)
+* [rdiff-backup](../Software/rdiff-backup.md)
 
-* [Restic](https://github.com/restic/restic)
-* [rdiff-backup](https://rdiff-backup.net/)
+Syncronisation:
 
+* [Syncthing](../Software/Syncthing.md)
