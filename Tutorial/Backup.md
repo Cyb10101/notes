@@ -6,7 +6,7 @@ But what you want is as simple a tool as possible to back up the most important 
 
 ## Inexperienced users
 
-For most inexperienced users, i is a good choice.
+For most inexperienced users, it is a good choice.
 
 * [ascomp - BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
 
