@@ -49,6 +49,9 @@ code --install-extension gruntfuggly.todo-tree
 
 # Unique Lines
 code --install-extension bibhasdn.unique-lines
+
+# Rest Client
+code --install-extension humao.rest-client
 ```
 
 ## Configuration
