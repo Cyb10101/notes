@@ -163,7 +163,7 @@ Windows:
 Linux:
 
 ```bash
-restic forget --keep-last 3
+restic forget --keep-last 10
 ```
 
 ## Linux Scripts
