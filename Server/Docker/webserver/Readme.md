@@ -569,3 +569,26 @@ Start Docker and remove or ajust skeleton for new users:
 ~/projects/nextcloud/start.sh up
 rm -rf ~/projects/nextcloud/.docker/nextcloud/core/skeleton/*
 ```
+
+Edit `~/projects/nextcloud/.docker/nextcloud/config/config.php`:
+
+```php
+$CONFIG = array(
+  'default_phone_region' => 'DE',
+  'trashbin_retention_obligation' => 'auto, 30', // Delete trash files: older than x days, other anytime if space needed
+  'versions_retention_obligation' => 'auto, 7', // Delete versions: older than x days, other according to expiration rules
+);
+```
+
+* [Config: Trash bin](https://docs.nextcloud.com/server/18/admin_manual/configuration_server/config_sample_php_parameters.html#deleted-items-trash-bin)
+* [Config: File versioning](https://docs.nextcloud.com/server/18/admin_manual/configuration_server/config_sample_php_parameters.html#file-versions)
+
+Restart Docker container:
+
+```bash
+~/projects/nextcloud/start.sh down && ~/projects/nextcloud/start.sh up
+```
+
+[Settings > Administration > Basic Settings](https://nextcloud.cyb21.de/settings/admin)
+
+* Background jobs = Cron

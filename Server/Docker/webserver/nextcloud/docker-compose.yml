@@ -9,8 +9,6 @@ services:
       - VIRTUAL_HOST=nextcloud.server.org
       - LETSENCRYPT_HOST=nextcloud.server.org
 
-      - WEB_DOCUMENT_ROOT=/app
-
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_PASSWORD=password
@@ -19,6 +17,7 @@ services:
       - NEXTCLOUD_ADMIN_USER=admin
       - NEXTCLOUD_ADMIN_PASSWORD=password
       - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.server.org
+      - OVERWRITEPROTOCOL=https
 
       - SMTP_HOST=mail.server.org
       - SMTP_SECURE=ssl
@@ -28,7 +27,14 @@ services:
       - SMTP_PASSWORD=password
       - MAIL_FROM_ADDRESS=no-reply
       - MAIL_DOMAIN=server.org
-    working_dir: /app
+    working_dir: /var/www/html
+
+  cron:
+    image: nextcloud
+    restart: always
+    volumes:
+      - ./.docker/nextcloud:/var/www/html
+    entrypoint: /cron.sh
 
 networks:
   default:
