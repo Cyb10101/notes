@@ -1,6 +1,6 @@
 # Backup and restore entire disk
 
-*Note: If you only want a small backup of your data then look here: [Backup](../../Tutorial/Backup.md).*
+**Note: If you only want a small backup of your data then look here: [Backup](../../Tutorial/Backup.md).**
 
 Here the complete hard drive with all partitions is copied. A 1 to 1 copy of a real hard disk, so to speak.
 
@@ -30,24 +30,59 @@ Or you can take a free Linux CD that contains a functional live system and use t
 
 And the best thing is, in most cases an image is not necessary, just a data backup.
 
+## Virtual Machine
+
+If you want to create a virtual disk for a virtual machine.
+
+* [VirtualBox](../../Software/VirtualBox/VirtualBox.md)
+
 ## First steps
 
+* Be sure you have a [Backup](../../Tutorial/Backup.md) if something fails (should not, but could)
 * Maybe required: [Windows complete shutdown](../Windows/Shutdown.md)
 * Optional: [Disk: Zero fill empty space](Disk-Zero-Fill-Empty-Space.md)
+* Shrink disk with GParted (It is not nesseccary and be very carefull doing this)
 
-Run a Ubuntu live disc.
+Run a Linux live disc, for example [Ubuntu Desktop](https://ubuntu.com/download/desktop)
 
 Find your device and unmount it, if already mounted. But don't unmount your backup storage.
 
 ```bash
+sudo apt install hwinfo
+
+# Via Desktop: Gnome Disk, Gparted
+sudo hwinfo --short --disk
 sudo blkid /dev/sd*
+sudo lsblk /dev/sd?
+sudo fdisk -l /dev/sda
 ```
+
+## Backup/Clone with ddrescue (Safely and with continuation)
+
+Rather no backup, more a cloning of the hard disk to a new disk or for data recovery.
+No compression in image, better you use a real disk instead of a image.
+
+* [GNU ddrescue](https://wiki.ubuntuusers.de/gddrescue/)
+
+```bash
+# Install
+sudo add-apt-repository multiverse
+sudo apt install gddrescue
+sudo apt install ddrescueview # Optional: You can see the log file
+
+# Backup/Clone: 1. Only safe blocks, then 2. corrupted blocks
+sudo ddrescue -f -n /dev/sda /dev/sdb /tmp/ddrescue.log
+sudo ddrescue -f -R /dev/sda /dev/sdb /tmp/ddrescue.log # Optional: -R Reverse direction (Maybe for corrupted disk)
+
+# Restore: Only for images
+sudo ddrescue -f image.img /dev/sda /tmp/restore.log
+```
+
+Maybe you wan't expand partition after cloning with GParted.
 
 ## Backup with PV and compression (ETA)
 
-Recommended variant, as you can see here how long it takes and often faster than dd.
-
-*Note: Some say that it may not be certain that it will work.*
+With progress bar.
 
 ```bash
 sudo apt install pv
@@ -65,10 +100,12 @@ You can only see how much time or bytes have passed. If you know the size of the
 
 ```bash
 # Backup: Create a image
-sudo dd if=/dev/sda status=progress | gzip > disk.img.gz
+sudo dd if=/dev/sda bs=64k status=progress | gzip > disk.img.gz
+# If failed: sudo dd if=/dev/sda bs=64k conv=noerror,sync iflag=fullblock status=progress | gzip > disk.img.gz
 
 # Restore: Copy image to device
-gzip -cd disk.img.gz | sudo dd of=/dev/sda status=progress
+gzip -cd disk.img.gz | sudo dd of=/dev/sda bs=64k status=progress
+# If failed: gzip -cd disk.img.gz | sudo dd of=/dev/sda bs=64k conv=noerror,sync iflag=fullblock status=progress
 ```
 
 ## Backup with DD (No ETA)
@@ -77,8 +114,10 @@ Not recommended because it requires a lot of disk space.
 
 ```bash
 # Backup: Create a image
-sudo dd if=/dev/sda of=disk.img status=progress
+sudo dd if=/dev/sda of=disk.img bs=64k status=progress
+# If failed: sudo dd if=/dev/sda of=disk.img bs=64k conv=noerror,sync iflag=fullblock status=progress
 
 # Restore: Copy image to device
-sudo dd if=disk.img of=/dev/sda status=progress
+sudo dd if=disk.img of=/dev/sda bs=64k status=progress
+# If failed: sudo dd if=disk.img of=/dev/sda bs=64k conv=noerror,sync iflag=fullblock status=progress
 ```
