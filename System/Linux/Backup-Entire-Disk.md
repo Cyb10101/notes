@@ -36,7 +36,7 @@ If you want to create a virtual disk for a virtual machine.
 
 * [VirtualBox](../../Software/VirtualBox/VirtualBox.md)
 
-## Attention
+## Warning
 
 Do not move or shrink Windows Partition with gparted!
 In my test GParted crashed. Use a Windows tool:
@@ -90,7 +90,7 @@ sudo ddrescue -f image.img /dev/sda /tmp/restore.log
 
 Open GParted and fix "Not all of space available" with "Repair".
 
-Maybe you wan't expand partition after cloning with GParted. (Windows see Attention!)
+Maybe you wan't expand partition after cloning with GParted. (Windows see above: Warning)
 
 ## Backup with PV and compression (ETA)
 
