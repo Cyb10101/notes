@@ -13,6 +13,10 @@ shutdown /r /t 5 /c "Restart to activate Sandbox"
       <ReadOnly>true</ReadOnly>
     </MappedFolder>
     <MappedFolder>
+      <HostFolder>C:\Users\Cyb10101\Downloads\public</HostFolder>
+      <ReadOnly>false</ReadOnly>
+    </MappedFolder>
+    <MappedFolder>
       <HostFolder>C:\Users\Cyb10101\Sync\notes\System\Windows\Sandbox\deploy</HostFolder>
       <ReadOnly>false</ReadOnly>
     </MappedFolder>
