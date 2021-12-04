@@ -384,12 +384,8 @@ sudo apt -y install k3b xfburn brasero
 
 * [CurseForge Client](https://download.curseforge.com/)
 
-* [DOSBox](https://www.dosbox.com/)
-
 ```bash
 sudo apt -y install steam
-
-sudo apt -y install dosbox
 ```
 
 ## File synchronization
