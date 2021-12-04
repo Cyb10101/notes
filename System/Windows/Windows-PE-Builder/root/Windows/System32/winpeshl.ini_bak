@@ -1,0 +1,16 @@
+; Optional: winpeshl.ini
+
+[LaunchApp]
+AppPath = %SYSTEMDRIVE%\demo\HWiNFO32.exe
+
+;AppPath = %SYSTEMDRIVE%\Fabrikam\shell.exe
+;echo %PROCESSOR_ARCHITECTURE%
+
+[LaunchApps]
+cmd
+powershell
+%SYSTEMDRIVE%\demo\HWiNFO32.exe
+%SYSTEMDRIVE%\demo\cpuz_x32.exe
+
+%SYSTEMDRIVE%\demo\pw1206-free-offline.exe, /SILENT
+;%SYSTEMDRIVE%\demo\pw1206-free-offline.exe, /SILENT "C:\Program Files\App3"
