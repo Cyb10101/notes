@@ -1,5 +1,22 @@
 # Windows: Bugfix
 
+## Time difference in Windows 11 and Linux
+
+* See old: [Linux Bugfix](../Linux/Bugfix.md)
+
+Set Windows 11 Time to UTC.
+
+Run Command in as Administrator:
+
+```shell
+reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation" /v RealTimeIsUniversal /d 1 /t REG_DWORD /f
+```
+
+Type `Windows + R` and run `ms-settings:dateandtime` (Settings > Time & Language > Date & Time).
+Toogle off and on "Set time automatically".
+
+*Keyword: Timezone, Same time for Windows and Linux*
+
 ## Delete Windows folders and files with trailing spaces
 
 ```bash
