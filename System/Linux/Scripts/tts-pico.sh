@@ -4,6 +4,15 @@ set -e
 # Requirements
 # sudo apt install mpv libttspico-utils
 
+# alias tts-pico=/home/cyb10101/Sync/notes/System/Linux/Scripts/tts-pico.sh
+# alias tts-pico-de='tts-pico -l de'
+# alias tts-pico-en=tts-pico
+
+# echo 'This is a test.' | tts-pico-en
+# tts-pico-en file.txt
+# tts-pico-en 'This is a test.'
+# tts-pico-de 'Dies ist ein Test.'
+
 # Default settings
 language=en-US
 

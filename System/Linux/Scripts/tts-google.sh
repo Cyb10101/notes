@@ -4,8 +4,28 @@ set -e
 # Requirements
 # sudo apt install mpv
 
+# alias tts-google=/home/cyb10101/Sync/notes/System/Linux/Scripts/tts-google.sh
+# alias tts-google-de-female='tts-google -l de -g female'
+# alias tts-google-de-male='tts-google -l de'
+# alias tts-google-en-female='tts-google -g female'
+# alias tts-google-en-male=tts-google
+
+# echo 'This is a test.' | tts-google
+# tts-google file.txt
+# tts-google 'This is a test.'
+
+# tts-google -l en-US -g male 'This is a test.'
+# tts-google -l en-US -g male 'This is a test.'
+# tts-google -l en-US -g female 'This is a test.'
+
+# tts-google -l en-GB -g male 'This is a test.'
+# tts-google -l en-GB -g female 'This is a test.'
+
+# tts-google -l de-DE -g male 'Dies ist ein Test.'
+# tts-google -l de-DE -g female 'Dies ist ein Test.'
+
 # Default settings
-language=de-DE
+language=en-US
 gender=male
 
 # Parse arguments
@@ -94,7 +114,14 @@ convertTextByGoogleSpeech() {
 
     curl -H "Authorization: Bearer $(gcloud auth application-default print-access-token)" \
       -H "Content-Type: application/json; charset=utf-8" \
-      --data @${fileData} -fsSL "https://texttospeech.googleapis.com/v1/text:synthesize" > ${fileSynthesize}
+      --data @${fileData} -sSL "https://texttospeech.googleapis.com/v1/text:synthesize" > ${fileSynthesize}
+
+    # In development
+    #cat ${fileSynthesize}
+    if [ "$(jq -r '.error.code' ${fileSynthesize})" == "403" ]; then
+      printError "$(jq -r '.error.message' ${fileSynthesize})"
+      exit 1
+    fi
 
     jq -r '.audioContent' ${fileSynthesize} | base64 --decode > ${fileAudio}
     rm ${fileData} ${fileSynthesize}
@@ -116,6 +143,12 @@ playAudio() {
   if [ -f ${fileAudio} ]; then
     echo -e "\033[0;32mPlay file:\033[0m ${fileAudio}"
     mpv ${fileAudio}
+  fi
+}
+
+printError() {
+  if [ ! -z "${1}" ]; then
+    echo -e "\033[0;31mError: ${1}\033[0m"
   fi
 }
 
