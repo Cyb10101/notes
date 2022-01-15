@@ -33,9 +33,26 @@ sudo fdisk -l
 sudo lilo -M /dev/ mbr
 ```
 
-## Time difference in Windows and Linux
+## Time difference in Windows 11 and Linux
 
-Same time for Windows and Linux.
+Set Windows 11 Time to UTC.
+
+Run Command in as Administrator:
+
+```shell
+reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation" /v RealTimeIsUniversal /d 1 /t REG_DWORD /f
+```
+
+Type `Windows + R` and run `ms-settings:dateandtime` (Settings > Time & Language > Date & Time).
+Toogle off and on "Set time automatically".
+
+*Keyword: linux*
+
+## Time difference in Windows 10 and Linux
+
+Set Linux Time to RTC.
+
+Run Terminal in Linux:
 
 ```bash
 # Status
@@ -43,4 +60,10 @@ timedatectl
 
 # Linux use local time instead UTC
 timedatectl set-local-rtc 1 --adjust-system-clock
+
+# Update time by internet
+timedatectl set-ntp 0
+timedatectl set-ntp 1
 ```
+
+*Tags: Windows timezone, Same time for Windows and Linux*

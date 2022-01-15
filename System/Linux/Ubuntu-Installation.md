@@ -158,14 +158,6 @@ aptUpdate
 installTorBrowser
 ```
 
-## Configure date
-
-Linux use local time instead UTC.
-
-```bash
-timedatectl set-local-rtc 1 --adjust-system-clock
-```
-
 ## Additional
 
 * [HTTrack](../../Software/HTTrack.md)
