@@ -65,6 +65,10 @@ Update all package manger with packages, run `cmd` as administrator:
 
 ```shell
 scoop status && scoop update && scoop update *; choco outdated && choco upgrade all
+
+# Bugfix
+cd %USERPROFILE%\scoop\buckets\extras
+git fetch && git reset --hard origin/master
 ```
 
 * [Software installation](../../Software/Software-Installation.md)

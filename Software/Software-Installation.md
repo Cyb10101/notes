@@ -82,7 +82,7 @@ Linux:
 ```bash
 VERSION=$(curl -fsSL https://api.github.com/repos/yang991178/fluent-reader/releases/latest | jq -r '.tag_name' | sed -E 's/v([0-9]\.[0-9]\.[0-9])/\1/')
 
-aria2c --download-result=hide --dir=/tmp -o fluent-reader.AppImage https://github.com/yang991178/fluent-reader/releases/download/v${VERSION}/Fluent.Reader.${VERSION}.AppImage
+aria2c --download-result=hide --dir=/tmp -o fluent-reader.AppImage "https://github.com/yang991178/fluent-reader/releases/download/v${VERSION}/Fluent.Reader.${VERSION}.AppImage"
 sudo install /tmp/fluent-reader.AppImage /usr/local/bin/fluent-reader.AppImage
 
 sudo mkdir -p /usr/local/share/icons

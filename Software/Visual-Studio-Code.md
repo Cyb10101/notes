@@ -38,6 +38,9 @@ code --install-extension yzhang.markdown-all-in-one
 # Language: Windows Registry Script
 code --install-extension ionutvmi.reg
 
+# Language: Better Shell Syntax (Highlighting)
+code --install-extension jeff-hykin.better-shellscript-syntax
+
 # Activitybar: Workspace sidebar
 code --install-extension sketchbuch.vsc-workspace-sidebar
 
