@@ -2,7 +2,7 @@
 
 ## Time difference in Windows 11 and Linux
 
-* See old: [Linux Bugfix](../Linux/Bugfix.md)
+* See old: [Linux Bugfix](../Linux/Bugfix.md#time-difference-in-windows-10-and-linux)
 
 Set Windows 11 Time to UTC.
 

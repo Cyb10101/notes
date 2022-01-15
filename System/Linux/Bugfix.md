@@ -35,7 +35,7 @@ sudo lilo -M /dev/ mbr
 
 ## Time difference in Windows 10 and Linux
 
-* See new: [Windows Bugfix](../Windows/Bugfix.md)
+* See new: [Windows Bugfix](../Windows/Bugfix.md#time-difference-in-windows-11-and-linux)
 
 Set Linux Time to RTC.
 
