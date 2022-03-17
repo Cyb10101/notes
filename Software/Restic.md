@@ -3,7 +3,7 @@
 Incremental backup creation.
 
 * [Website](https://restic.net/)
-* [GitHub](https://github.com/restic/restic)
+* [GitHub Release](https://github.com/restic/restic/releases/latest)
 * [Documentation](https://restic.readthedocs.io/)
 
 ## Installation
