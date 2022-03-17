@@ -64,7 +64,8 @@ Currently in development.
 Update all package manger with packages, run `cmd` as administrator:
 
 ```shell
-scoop status && scoop update && scoop update *; choco outdated && choco upgrade all
+scoop status && scoop update && scoop update *
+choco outdated && choco upgrade all
 
 # Bugfix
 cd %USERPROFILE%\scoop\buckets\extras
