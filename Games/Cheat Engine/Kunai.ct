@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://fearlessrevolution.com/viewtopic.php?t=11565 -->
+<CheatTable CheatEngineTableVersion="29">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>9</ID>
+      <Description>"Launch Mono"</Description>
+      <Options moHideChildren="1"/>
+      <LastState/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$LUA}
+LaunchMonoDataCollector()
+{$ASM}
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>5</ID>
+          <Description>"Unlimited Money"</Description>
+          <LastState Activated="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+mov [esi+5C],#999999999
+mov eax,[esi+3C]
+
+exit:
+jmp returnhere
+
+GameState:AddCoins+11:
+jmp newmem
+nop
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+GameState:AddCoins+11:
+mov [esi+5C],eax
+mov eax,[esi+3C]
+//Alt: db 89 46 5C 8B 46 3C
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>8</ID>
+          <Description>"Unlimited Health"</Description>
+          <LastState Activated="1"/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+//code from here to '[DISABLE]' will be used to enable the cheat
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem: //this is allocated memory, you have read,write,execute access
+//place your code here
+
+originalcode:
+mov [eax+50],#99999
+cmp eax,00000014
+
+exit:
+jmp returnhere
+
+EnergyContainer:FixedUpdate+21:
+jmp newmem
+nop 3
+returnhere:
+
+
+ 
+ 
+[DISABLE]
+//code from here till the end of the code will be used to disable the cheat
+dealloc(newmem)
+EnergyContainer:FixedUpdate+21:
+mov eax,[eax+50]
+cmp eax,00000014
+//Alt: db 8B 40 50 3D 14 00 00 00
+</AssemblerScript>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+  <Structures StructVersion="2">
+    <Structure Name="String" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" Description="Length" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="12" Vartype="Unicode String" Bytesize="128" Description="Value" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="GameState" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="8" Vartype="Pointer" Bytesize="4" Description="_objectReferences" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="12" Vartype="Pointer" Bytesize="4" Description="_serializedStateKeys" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="16" Vartype="Pointer" Bytesize="4" Description="_serializedStateValues" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="Byte" Bytesize="1" Description="&lt;FullInspector.ISerializedObject.IsRestored&gt;k__BackingField" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="24" Vartype="Pointer" Bytesize="4" ChildStruct="String" Description="Slot" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="28" Vartype="Pointer" Bytesize="4" ChildStruct="String" Description="Date" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="32" Vartype="Pointer" Bytesize="4" ChildStruct="String" Description="Scene" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="36" Vartype="Pointer" Bytesize="4" ChildStruct="String" Description="SavedSpawnPoint" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="40" Vartype="Pointer" Bytesize="4" ChildStruct="String" Description="SavedArea" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="44" Vartype="Pointer" Bytesize="4" ChildStruct="String" Description="LastCallKeyWithCallback" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="48" Vartype="Pointer" Bytesize="4" Description="CollectedHearts" DisplayMethod="Unsigned Integer">
+          <Structure Name="HashSet`1" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+            <Elements>
+              <Element Offset="8" Vartype="Pointer" Bytesize="4" Description="_buckets" DisplayMethod="Unsigned Integer"/>
+              <Element Offset="12" Vartype="Pointer" Bytesize="4" Description="_slots" DisplayMethod="Unsigned Integer"/>
+              <Element Offset="16" Vartype="Pointer" Bytesize="4" Description="_comparer" DisplayMethod="Unsigned Integer"/>
+              <Element Offset="20" Vartype="Pointer" Bytesize="4" Description="_siInfo" DisplayMethod="Unsigned Integer"/>
+              <Element Offset="24" Vartype="4 Bytes" Bytesize="4" Description="_count" DisplayMethod="Unsigned Integer"/>
+              <Element Offset="28" Vartype="4 Bytes" Bytesize="4" Description="_lastIndex" DisplayMethod="Unsigned Integer"/>
+              <Element Offset="32" Vartype="4 Bytes" Bytesize="4" Description="_freeList" DisplayMethod="Unsigned Integer"/>
+              <Element Offset="36" Vartype="4 Bytes" Bytesize="4" Description="_version" DisplayMethod="Unsigned Integer"/>
+            </Elements>
+          </Structure>
+        </Element>
+        <Element Offset="52" Vartype="Pointer" Bytesize="4" Description="SceneStates" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="56" Vartype="Pointer" Bytesize="4" Description="VisitedSceneSwitches" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="60" Vartype="Pointer" Bytesize="4" Description="OnCoinsChangedEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="64" Vartype="Pointer" Bytesize="4" Description="OnHeartsChangedEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="68" Vartype="Float" Bytesize="4" Description="PlayTime" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="72" Vartype="4 Bytes" Bytesize="4" Description="Palette" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="76" Vartype="Float" Bytesize="4" Description="BestSkebinTime" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="80" Vartype="4 Bytes" Bytesize="4" Description="Weapons" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="4 Bytes" Bytesize="4" Description="Upgrades" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="88" Vartype="4 Bytes" Bytesize="4" Description="KatanaUpgradeLevel" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="92" Vartype="4 Bytes" Bytesize="4" Description="&lt;Coins&gt;k__BackingField" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="96" Vartype="4 Bytes" Bytesize="4" Description="UnlockedHats" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="100" Vartype="4 Bytes" Bytesize="4" Description="SelectedHat" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="104" Vartype="4 Bytes" Bytesize="4" Description="WorldEvents" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="Destroyable" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" Description="m_CachedPtr" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="12" Vartype="Pointer" Bytesize="4" Description="_objectReferences" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="16" Vartype="Pointer" Bytesize="4" Description="_serializedStateKeys" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="Pointer" Bytesize="4" Description="_serializedStateValues" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="24" Vartype="Byte" Bytesize="1" Description="&lt;FullInspector.ISerializedObject.IsRestored&gt;k__BackingField" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="28" Vartype="Pointer" Bytesize="4" Description="OnDestroyedEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="32" Vartype="Pointer" Bytesize="4" Description="OnDamageEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="36" Vartype="Pointer" Bytesize="4" Description="OnHitEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="40" Vartype="Pointer" Bytesize="4" Description="OnHealthChangedEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="44" Vartype="Pointer" Bytesize="4" Description="OnDamageEffects" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="48" Vartype="Pointer" Bytesize="4" Description="OnDestroyedEffects" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="52" Vartype="Pointer" Bytesize="4" Description="_controller" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="56" Vartype="4 Bytes" Bytesize="4" Description="ImmuneToSource" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="60" Vartype="4 Bytes" Bytesize="4" Description="TemporarilyImmuneToSource" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="64" Vartype="4 Bytes" Bytesize="4" Description="ImmuneToDirection" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="68" Vartype="4 Bytes" Bytesize="4" Description="DamageType" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="72" Vartype="4 Bytes" Bytesize="4" Description="MaxHealthOrHits" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="76" Vartype="4 Bytes" Bytesize="4" Description="StartHealthOrHits" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="80" Vartype="4 Bytes" Bytesize="4" Description="_hitsOrHealth" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="Byte" Bytesize="1" Description="DespawnOnDestroy" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="85" Vartype="Byte" Bytesize="1" Description="DeactivateOnDestroy" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="86" Vartype="Byte" Bytesize="1" Description="DestroyOnDestroy" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="88" Vartype="4 Bytes" Bytesize="4" Description="EnergyGainedOnDestroy" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="92" Vartype="Byte" Bytesize="1" Description="ImmuneToDamage" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="93" Vartype="Byte" Bytesize="1" Description="Destroyed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="94" Vartype="Byte" Bytesize="1" Description="PushedWhenDamaged" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="96" Vartype="4 Bytes" Bytesize="4" Description="IgnoredForceDirectionsOnPlayer" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="100" Vartype="Byte" Bytesize="1" Description="IgnoreScreenShake" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="Destroyable" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" Description="m_CachedPtr" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="12" Vartype="Pointer" Bytesize="4" Description="_objectReferences" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="16" Vartype="Pointer" Bytesize="4" Description="_serializedStateKeys" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="20" Vartype="Pointer" Bytesize="4" Description="_serializedStateValues" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="24" Vartype="Byte" Bytesize="1" Description="&lt;FullInspector.ISerializedObject.IsRestored&gt;k__BackingField" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="28" Vartype="Pointer" Bytesize="4" Description="OnDestroyedEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="32" Vartype="Pointer" Bytesize="4" Description="OnDamageEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="36" Vartype="Pointer" Bytesize="4" Description="OnHitEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="40" Vartype="Pointer" Bytesize="4" Description="OnHealthChangedEvent" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="44" Vartype="Pointer" Bytesize="4" Description="OnDamageEffects" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="48" Vartype="Pointer" Bytesize="4" Description="OnDestroyedEffects" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="52" Vartype="Pointer" Bytesize="4" Description="_controller" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="56" Vartype="4 Bytes" Bytesize="4" Description="ImmuneToSource" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="60" Vartype="4 Bytes" Bytesize="4" Description="TemporarilyImmuneToSource" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="64" Vartype="4 Bytes" Bytesize="4" Description="ImmuneToDirection" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="68" Vartype="4 Bytes" Bytesize="4" Description="DamageType" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="72" Vartype="4 Bytes" Bytesize="4" Description="MaxHealthOrHits" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="76" Vartype="4 Bytes" Bytesize="4" Description="StartHealthOrHits" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="80" Vartype="4 Bytes" Bytesize="4" Description="_hitsOrHealth" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="84" Vartype="Byte" Bytesize="1" Description="DespawnOnDestroy" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="85" Vartype="Byte" Bytesize="1" Description="DeactivateOnDestroy" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="86" Vartype="Byte" Bytesize="1" Description="DestroyOnDestroy" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="88" Vartype="4 Bytes" Bytesize="4" Description="EnergyGainedOnDestroy" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="92" Vartype="Byte" Bytesize="1" Description="ImmuneToDamage" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="93" Vartype="Byte" Bytesize="1" Description="Destroyed" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="94" Vartype="Byte" Bytesize="1" Description="PushedWhenDamaged" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="96" Vartype="4 Bytes" Bytesize="4" Description="IgnoredForceDirectionsOnPlayer" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="100" Vartype="Byte" Bytesize="1" Description="IgnoreScreenShake" DisplayMethod="Unsigned Integer"/>
+      </Elements>
+    </Structure>
+  </Structures>
+  <Signature>
+    <SignedHash HashSize="132">0ljs.Iw+TlCn9L=[qfdH!-T.{/Opv$-@2nlGRp})kgfE^wq;[,Fz+uhwhuWZ0_.t5![-7jW^R.L/!MFZkR/];1zv-][VI:_i+Dy}LQ;{P12;ARB:a]-s7FR7St:c,BTaq6sIzr=0.,Ru%%bQ/2Pvt@vm;?TK7R6fFFc}e</SignedHash>
+    <PublicKey Size="19758">5dZ*HQ*y;zWn;@ic[31Gb7e,vc#Hr707XMnH9]OY00C8fJ^.;p)$!4MJWC#o?w=f[S(H*(KdrOisgvy?O?;VM_9RUrgPmo:CJu=HB@Yxa1Sw1.*qOO!hvqmOadOiDM7}8vUafx;M7QoFU(6V,L5_M;Oj%OLvo_.z[1y-wCX+d.ug!0mr_$SSFsg1nDR)(pB-Em@f@VJ:ybtj!=gRWw0095k_KI:,N:8XW009930AK*M0095t6=jE;X:VTbO-%qQ0000800saH00IC2044wc2x0+e00RI3009620003o00IC2044wc2#5hP00IC202BZK2)E]_00aO4009612+T/d00#g72n,xK09F715k=(9000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000038MZe)wFb0AP=Z++?UMPzAoZ+m_pFfK4IF*%POF*lGSGdMH:S7}l!Z,CMbP-t(-Zy-fvX;?OLATcm5FfK7LFflPMF+Y,eGypO%F+!OgG()UiATcsJH8=smG5]PukOKe$0000K000pjkOTk%0000K000p%l92!c00003I5[_Sl9B*d00003I5[_SpaB2[0000100961;Kp)E000OK000RP000009O=i700.m8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000GB7bYIxsXkF+hJFGCDOlIx#Z/GB7bYIxsXkF+hJFGCDOlIx#Z/000060RsR70000100sa60U7]W00001000q]0UH1X00001000r30Vn[i0000100IC20s#O700001000rB0s.U800001000Bb000000001B000010001B00001_JeWA07C!;1[lQP1qcTR2MGxX3Jeqt3:0bk84=o?6df8L9vvDS93UhvCm/p$BODwkHz[PIF+GzZA166II5IpgGc,;*,W/oW2=,?d3k)/y4Hz.Z93e6=GBPqUGBPqUGBPqUGBPqUGBPqUGBPqUGBPqUGBPqUGBPqUGBPqUGBPqUGBPqU_G*qd2mlZOGy=%400I#K0{%oL!}h:v009L70RaI40RR9100000009C61O*}M2nh-c_HJ@b5C8%J0_NpC0_f.H1ONa5eE_Xk00a;Q5,N{]1]_/X2O?D4GJ%ny2qQwV!4+:]?FX+0a*Jp878e+98YLztC?Cs5H8wXmIXXi]MMg)RNlH@xRaRG6Sz2RcWoBn,X:-zHb#]{nd3u9^g?%WSiHeewl$Dm3n3/ZQqok##r;Lo[va[[cwzs(sy28W6#m2_T$.#5x*YaD4+xB0Q.@XAy:I7_=;hbdP@!4]l]1$))!}h:w00RL50RaI40RaI300000009C61O*}M2nh-c_HJ@b5dZ:K0t5sD1P28K1ONd7cK]tb0{%uTAu$FLK}V:]aT6jkfd}^rk*g4^2[rL7?D+Zm)FztMG}p%j7Z?2DCMPH/Dm6AYI5_2*L]6nNNJ(alR8;{2SXo,QWMyV(XlZJ5bai%jczJq*gM?^Khlq*al9QB]mY0}BnxdnmrKYE-sj9NGw6)UkxVgH+!@FkL$H;Xb)$mz^+4NnC,T!En/;u$.;FV/H@!4]l]1$)),5ij#0RRFK0{%i{0NK.yx3utT-u.5s.@FU%JEx4d%d/G?JJM;FwpOP]*Z)#.QsO@0du}cL8wVLY0xPpt%,f]H.rlrJLiY;/Xo)NofjtaoqJ4LKzlBlIt!+![@%pi*(v=/7v9+,9GTHmM(m/0lmD?p}Pg9!C:S7[@=5)Xeh%N%6!2yV{W9AG893RG:X$%(A2aixqCerflwFZQ:?RuPr1K5uL0M3(dIbBX.d3WX.3u^soDUJw:FV[V1:89l=Hko^uUJ6aITTb8F1em8#,-w{/x7MZC*i0(DyNX3=NuvT7*B*sUs$g]%=@hVUVsD[AGrD+hJ5M]5;7^mOott,7@xat,R,kQ:72/h{w}?vk*dPjz!16ioj?hEtOl93{-g$g9)]%8WdZbdKTe*H8%ALaj+B,+$){twp1V{WCmWJtd7H1LMtWC3E:aM,hX7/-%qmR_BwHPnh;REf42KIKDWG(m03FnF[s_f$u_KTy^XmoUNIxjD7b1q=IZ)=OGV^dIQcwulaF*lDK06af/aA9L;Wpp57WoKz[JtyzGzb7DRWIZQWHBB(0a6?HiX-Il/Wm9?iRAYK.V;x6eKRyi#Ja^@IZE$U6bYUQPZES9HI)R*IVPtP(WjbziI(EciVJ^+,JaS{aI#NVNAb4$TZgV/vWM){gXmoUNIxjDGcXuv#GcIp)XD:}1IXN#dGA{YREplXLEpvHpbYXZcZgV3dK0I/^W.#S:b7OL8aCB+JZXj{GW.$VFZ+[D%B6W3XWIASHW.J4DWHl^fVKZbcF*=IeEn#FcF*d@;Gh^b4F+q]2F:8Shcx]NMb2?l!a6KYubaZe!FE4I$E?5PEVr4F4Z+4DlVQ=:oE-*]5K0J7Ba5[VBWnpx0a#U_]Y)7[MZe)wFb0AP=Z++?UMPzAoZ+m_pFfK4IF*%POF*lGSGdMInFL-TmIzw]0VRUbDRBvx:K0J7Ba5[VBWnpw;L{7GgJ}A+dIV}[WEipG#F*{)eI65(iE.u,fJTG]^a5[VBWnpw;L{7GgK0GgSWM):/WpiV4X;fFDZ+D$3FLGpNI#NVNK0GgYI)ThxZDn+{J]D.WARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)h3LqdLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hAPOKLARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr1LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)LARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)hARr)-KX]CqV^2t{AZ2c3Jtuc3KR+B407C!,0s.d90s^jB0_WyD1O+5M1q1^I3I[*U2n-4g3:0Yi3k=nu5Dg9y4hstq77!5:6crT{3:bC:78Do}6crTz,W/oW0_W#G1O+8N1ql:l3k=)$6ciK]6ciK]6ciK]6ciK]6ciK]6ciK]6ciK]6ciK]6ciK]6ciK]6ciK]6ciK]_G*qd2mlZOGy=%500I#K0{%oL!}h:v009L70RaI40RR9100000009C61O*}M2nh-c_HJ@b5C8%J0_NpC0_f.H1ONa5eE_Xk00a;Q5,N{]1]_/X2O?D4GJ%ny2qQwV!4+:]?FX+0a*Jp878e+98YLztC?Cs5H8wXmIXXi]MMg)RNlH@xRaRG6Sz2RcWoBn,X:-zHb#]{nd3u9^g?%WSiHeewl$Dm3n3/ZQqok##r;Lo[va[[cwzs(sy28W6#m2_T$.#5x*YaD4+xB0Q.@XAy:I7_=;hbdP@!4]l]1$))!}h:w00RL50RaI40RaI300000009C61O*}M2nh-c_HJ@b5dZ:K0t5sD1P28K1ONd7cK]tb0{%uTAu$FLK}V:]aT6jkfd}^rk*g4^2[rL7?D+Zm)FztMG}p%j7Z?2DCMPH/Dm6AYI5_2*L]6nNNJ(alR8;{2SXo,QWMyV(XlZJ5bai%jczJq*gM?^Khlq*al9QB]mY0}BnxdnmrKYE-sj9NGw6)UkxVgH+!@FkL$H;Xb)$mz^+4NnC,T!En/;u$.;FV/H@!4]l]1$)),5ij#0RRFK0{%i{0Q5fx,3CI=[y-:mJUOH58npf+YXdH,YGuSfXAiUh!/;*Q);!@g:sFAhJn=0xhpgeZ*h$i#p]!fHZ6S[Lju1N%p[e;oj/vtwe-%ODpV^sM9iEk^%sfua*;?QHFxmEXJA#wPOl{:BSH3PoZ^n-XCt0,)j%@11*e@$aBt/%CU%zfqK--4N(wP%!ucm{$DcSdD4;C(TLVO,2=EWcSYLcj%.kCV(^3MFa%DtlkQrsN%GJfwJaHqX/KMC_L8@wMl?omFsI#tJrWVL(b4][Fbw$Y_9%wY:v=5X!uoD-bacdhD@,WyWqx-h:q^^R![h]=NLHsUiPt}%]V2_rrkz90As$HsPkA-5MYL$BLgEc!jV(X9=vR}wft!C/[F1RT:kmn@y7,7GI,f#aP:Lf1YX;Q=(RgQfU*.s%=lM.s7onsZs1ZOV{/%8E8,PavE)PQ29KAJcUI01kf6cD@OI?LrGNU3PC1O/=nCb{w=t0Jm2F1z//b-]:}widsgYsC+*t[u;t-7M=V,yN2IOx[J:aUfU7#tjeU82mm45pL5:yg44xv^;@sUe{Z+sG}I4L6iqbo,G;(5%j6qn8.NNXE4v=#D,zoluI7;4]G3b6i{.sY]%8FpOVC^,SenmEv@Mbq2_J3j6S)KE)u)N+B6wfK]d@7/e-!Vz*@5.TOFWnHUCAIMs4pVO++]8hIlvTEt%/uo_Jj590002qb_0/(d-M_lodYFJ0:l:sB;iIZI}fV*[d0jM5;X(B6YnF}%}/q^NC9LUNm?oO=FkNMNWz;ACQ;Vb]Q2%O0iSUy[DgHMHqgluWj[+rUT%r!X!{N}P6BEoY,wl-Q3kYTc4YH{#HH6.+,oWbIk!Y!,.WCXi_+LtFc];lzq9</PublicKey>
+  </Signature>
+</CheatTable>
