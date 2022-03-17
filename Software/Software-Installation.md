@@ -14,12 +14,16 @@ Compression tools:
 * [WinRAR](https://www.winrar.de/)
 
 * [Rsync](https://rsync.samba.org/)
+* [Zsync](https://wiki.ubuntuusers.de/zsync/)
 
 Linux:
 
 ```bash
 # Compression tools
 sudo apt -y install p7zip-full p7zip-rar rar unrar-free
+
+# Syncronisation tools
+sudo apt -y install rsync zsync
 ```
 
 Windows:
@@ -115,11 +119,9 @@ sudo apt -y install calibre
 
 * [YACReader](https://www.yacreader.com/downloads) (Recommended)
 
-```bash
-echo 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_20.04/ /' | sudo tee /etc/apt/sources.list.d/home:selmf.list
-curl -fsSL https://download.opensuse.org/repositories/home:selmf/xUbuntu_20.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_selmf.gpg > /dev/null
-sudo apt update && sudo apt -y install yacreader
+Repository not working, install [Debian package](https://software.opensuse.org/download.html?project=home%3Aselmf&package=yacreader)!
 
+```bash
 # Create a comic book
 rar a -ma4 -ep1 'Comic Name.cbr' 'Pictures/'
 # add to notes: ~/.local/share/nautilus/scripts
@@ -276,7 +278,7 @@ sudo apt -y install gwenview gimp inkscape
 aria2c --download-result=hide --dir=/tmp -o XnViewMP.deb https://download.xnview.com/XnViewMP-linux-x64.deb
 sudo dpkg -i /tmp/XnViewMP.deb
 
-VERSION=$(curl -fsSL https://api.github.com/repos/qarmin/czkawka/releases/latest | jq -r '.tag_name')
+VERSION=$(curl -fsSL https://api.github.com/repos/qarmin/czkawka/releases/latest | jq -r '.tag_name'); echo "${VERSION}"
 curl -fsSL "https://github.com/qarmin/czkawka/releases/download/${VERSION}/linux_czkawka_gui" -o /tmp/czkawka-gui
 sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
 ```
@@ -398,6 +400,8 @@ sudo apt -y install steam
 * [Rsync](https://rsync.samba.org/)
 * [FreeFileSync](https://freefilesync.org/)
 * [Synchredible](https://www.ascomp.de/de/products/synchredible/)
+
+* [TeraCopy](https://www.codesector.com/teracopy)
 
 Linux:
 
@@ -541,9 +545,11 @@ sudo apt install golang-go
 
 # Or manually
 # Uninstall: sudo rm -rf /usr/local/go
-aria2c --download-result=hide --dir=/tmp -o golang.tar.gz https://dl.google.com/go/go1.14.3.linux-amd64.tar.gz
+VERSION="1.17.7"
+curl -o /tmp/golang.tar.gz -fsSL "https://go.dev/dl/go${VERSION}.linux-amd64.tar.gz"
 sudo tar -C /usr/local -xzf /tmp/golang.tar.gz
-sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" > /etc/profile'
+sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile'
+# sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /root/.bashrc'
 ```
 
 ## Tools
