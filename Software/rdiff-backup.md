@@ -1,6 +1,7 @@
 # Rdiff Backup
 
 * [rdiff-backup](https://rdiff-backup.net/)
+* [GitHub Release](https://github.com/rdiff-backup/rdiff-backup/releases/latest)
 
 Incremental backup creation.
 
