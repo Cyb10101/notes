@@ -83,3 +83,29 @@ For Windows hosts:
 ```bash
 "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe" controlvm "DEV-VM" acpipowerbutton
 ```
+
+## Windows 11 in Virtualbox
+
+Bypass Windows 11 requirements in Ubuntu.
+
+* Boot Windows Setup ISO
+* Select language
+* Launch Command: Shift + F10
+* Run: regedit
+* Add Keys: BypassTPMCheck, BypassSecureBootCheck, BypassRAMCheck
+* Click on "Install now"
+
+```powershell
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\SOFTWARE\Microsoft\PCHC]
+"UpgradeEligibility"=dword:00000001
+
+[HKEY_LOCAL_MACHINE\SYSTEM\Setup\LabConfig]
+"BypassTPMCheck"=dword:00000001
+"BypassSecureBootCheck"=dword:00000001
+"BypassRAMCheck"=dword:00000001
+"BypassStorageCheck"=dword:00000001
+"BypassCPUCheck"=dword:00000001
+"BypassDiskCheck"=dword:00000001
+```
