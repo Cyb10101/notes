@@ -35,6 +35,8 @@ sudo fdisk -l
 sudo ntfswipe -a /dev/sda1
 ```
 
+*Keywords: zerofill*
+
 ## VDI disks
 
 In Linux:
