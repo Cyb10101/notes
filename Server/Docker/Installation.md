@@ -35,6 +35,7 @@ sudo usermod -aG docker ${USER}
 [Docker Compose Releases](https://github.com/docker/compose/releases)
 
 ```bash
+sudo apt -y install jq
 VERSION=$(curl -fsSL https://api.github.com/repos/docker/compose/releases/latest | jq -r '.name')
 curl -o /tmp/docker-compose -fsSL "https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m)"
 sudo install /tmp/docker-compose /usr/local/bin/docker-compose
