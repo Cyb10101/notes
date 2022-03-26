@@ -8,10 +8,16 @@
 
 getMuffet() {
   if [ ! -f muffet ]; then
-    VERSION=2.4.4 && \
+    VERSION=$(curl -fsSL https://api.github.com/repos/raviqqe/muffet/releases/latest | jq -r '.tag_name' | sed -r 's/v//g'); echo "${VERSION}" && \
       curl -o /tmp/muffet.tar.gz -fsSL "https://github.com/raviqqe/muffet/releases/download/v${VERSION}/muffet_${VERSION}_Linux_x86_64.tar.gz" && \
       tar -xf /tmp/muffet.tar.gz muffet -C "$(pwd -P)"
   fi
+}
+
+muffetCheckSafer() {
+  ./muffet --header="Authorization: Basic $(echo -n 'username:password' | base64)" \
+    --exclude='^\/_error.*' \
+    --max-connections 100 --timeout=60 --skip-tls-verification --json ${2} > ${1}.json
 }
 
 muffetCheck() {
