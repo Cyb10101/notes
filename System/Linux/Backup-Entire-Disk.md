@@ -147,7 +147,7 @@ apt install gddrescue
 fdisk -l /dev/sda
 
 # Create partition table (msdos/gpt)
-parted /dev/sda
+parted /dev/sdb
 mklabel gpt
 q
 
