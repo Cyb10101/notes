@@ -65,7 +65,7 @@ C:\Users\username\Desktop\restic init -r D:\restic-repository -p D:\password.txt
 Linux:
 
 ```bash
-sudo /usr/bin/restic backup -H cyb-pc-linux \
+sudo /usr/bin/restic backup --host=cyb-pc-linux \
   --exclude /home/username/.cache \
   --exclude /home/username/.local/share/Trash \
   --exclude /home/username/snap/spotify \
@@ -81,7 +81,7 @@ Windows:
 
 ```shell
 # -r D:\restic-repository -p D:\password.txt
-%USERPROFILE%\Desktop\restic backup -H cyb-pc-windows ^
+%USERPROFILE%\Desktop\restic backup --host=cyb-pc-windows ^
   --exclude "**/NTUSER.DAT" ^
   --exclude "**/ntuser.dat.*" ^
   --exclude "**/AppData/Local/Comms" ^
@@ -110,7 +110,7 @@ Linux:
 ```bash
 restic snapshots
 restic snapshots --latest 1
-restic snapshots --latest 1 -H cyb-pc
+restic snapshots --latest 1 --host=cyb-pc
 ```
 
 Windows:
@@ -126,7 +126,7 @@ Linux:
 ```bash
 restic mount `mktemp -d /tmp/restic_mount_$(date +%H-%M)_XXXXXXXX`
 
-# restic mount -H cyb-pc `mktemp -d /tmp/restic_$(date +%H-%M)_XXXXXXXX`
+# restic mount --host=cyb-pc `mktemp -d /tmp/restic_$(date +%H-%M)_XXXXXXXX`
 # restic mount --path="${HOME}/Bilder" `mktemp -d /tmp/restic_$(date +%H-%M)_XXXXXXXX`
 ```
 
@@ -137,13 +137,13 @@ restic mount `mktemp -d /tmp/restic_mount_$(date +%H-%M)_XXXXXXXX`
 Linux:
 
 ```bash
-restic restore -H cyb-pc --target `mktemp -d /tmp/restic-restore_$(date +%H-%M)_XXXXXXXX` latest
+restic restore --host=cyb-pc --target=`mktemp -d /tmp/restic-restore_$(date +%H-%M)_XXXXXXXX` latest
 
-#restic restore -H cyb-pc --target `mktemp -d /tmp/restic-restore_$(date +%H-%M)_XXXXXXXX` --path="${HOME}/Bilder" latest
+#restic restore --host=cyb-pc --target=`mktemp -d /tmp/restic-restore_$(date +%H-%M)_XXXXXXXX` --path="${HOME}/Bilder" latest
 
-#restic restore -H cyb-pc --target `mktemp -d /tmp/restic-restore_$(date +%H-%M)_XXXXXXXX` --path=["${HOME}/Bilder" "${HOME}/Dokumente" "${HOME}/Musik"] latest
+#restic restore --host=cyb-pc --target=`mktemp -d /tmp/restic-restore_$(date +%H-%M)_XXXXXXXX` --path=["${HOME}/Bilder" "${HOME}/Dokumente" "${HOME}/Musik"] latest
 
-# restic restore -H cyb-pc --target `mktemp -d /tmp/restic-restore_$(date +%H-%M)_XXXXXXXX` \
+# restic restore --host=cyb-pc --target=`mktemp -d /tmp/restic-restore_$(date +%H-%M)_XXXXXXXX` \
 #   --path="${HOME}/Bilder" \
 #   --path="${HOME}/Dokumente" \
 #   --path="${HOME}/Musik" \
@@ -154,8 +154,8 @@ Windows:
 
 ```shell
 # -r D:\restic-repository -p D:\password.txt
-%USERPROFILE%\Desktop\restic restore -H cyb-windows ^
-  --target %USERPROFILE%\Downloads\restore latest
+%USERPROFILE%\Desktop\restic restore --host=cyb-windows ^
+  --target=%USERPROFILE%\Downloads\restore latest
 ```
 
 ## Remove old backups
@@ -215,8 +215,8 @@ sudo apt install sshfs
 DIR_BACKUP_SSH=`mktemp -d /tmp/restic_$(date +%H-%M)_XXXXXXXX`
 sshfs user@192.168.178.71:/home/user ${DIR_BACKUP_SSH}
 cd ${DIR_BACKUP_SSH}
-restic backup -H cyb-server --tag example.com .
-restic backup -H cyb-server --tag example.org ${DIR_BACKUP_SSH}/./
+restic backup --host=cyb-server --tag=example.com .
+restic backup --host=cyb-server --tag=example.org ${DIR_BACKUP_SSH}/./
 cd -
 fusermount -u ${DIR_BACKUP_SSH}
 ```
@@ -231,9 +231,9 @@ Linux:
 set -o pipefail
 mysqldump [...] | restic -r /srv/restic-repo backup --stdin
 
-mysqldump [...] | restic -r /srv/restic-repo backup --stdin --stdin-filename website_www.sql
+mysqldump [...] | restic -r /srv/restic-repo backup --stdin --stdin-filename=website_www.sql
 
-mysqldump [...] | gzip | restic -r /srv/restic-repo backup --stdin --stdin-filename website_www.sql.gz
+mysqldump [...] | gzip | restic -r /srv/restic-repo backup --stdin --stdin-filename=website_www.sql.gz
 
-cat /etc/group | restic backup --tag database --stdin --stdin-filename website_www.sql
+cat /etc/group | restic backup --tag=database --stdin --stdin-filename=website_www.sql
 ```
