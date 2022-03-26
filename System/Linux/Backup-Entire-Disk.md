@@ -133,3 +133,33 @@ sudo dd if=/dev/sda of=disk.img bs=64k status=progress
 sudo dd if=disk.img of=/dev/sda bs=64k status=progress
 # If failed: sudo dd if=disk.img of=/dev/sda bs=64k conv=noerror,sync iflag=fullblock status=progress
 ```
+
+## Clone Windows disk
+
+Tested with Windows 10, Partition table msdos/gpt and secure boot.
+
+```bash
+# Install gddrescue
+add-apt-repository multiverse
+apt install gddrescue
+
+# Get partition info
+fdisk -l /dev/sda
+
+# Create partition table (msdos/gpt)
+parted /dev/sda
+mklabel gpt
+q
+
+# Clone: Partition table
+# 2048 Sectors * 512 Bytes = 1048576 Bytes = 1 MB = 1M
+dd if=/dev/sda of=/dev/sdb bs=1M count=1
+
+# Clone: EFI-System, Microsoft reserved
+ddrescue -f -n /dev/sda1 /dev/sdb1
+
+# Clone: NTFS, Microsoft Basic data, Windows Recovery environment
+ntfsclone --rescue --overwrite /dev/sdb2 /dev/sda2
+```
+
+Shutdown, remove source drive, boot up computer.
