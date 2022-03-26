@@ -2,6 +2,8 @@
 
 Useful for the first installation.
 
+* [F-Droid Store](https://f-droid.org/)
+
 ## Prepare SD card
 
 May not be recommended as Android is a bit strange.

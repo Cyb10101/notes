@@ -168,6 +168,25 @@ sudo snap install slack --classic
 sudo snap install skype --classic
 ```
 
+## Social: Matrix - Elements
+
+* [Matrix](https://matrix.org/)
+* [Element](https://element.io/)
+
+Linux:
+
+```bash
+sudo apt install -y wget apt-transport-https
+‍
+sudo wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg
+‍
+echo "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main" | sudo tee /etc/apt/sources.list.d/element-io.list
+‍
+sudo apt update
+‍
+sudo apt install element-desktop
+```
+
 ## Social: Linphone
 
 * [Linphone](https://www.linphone.org/)
@@ -608,8 +627,8 @@ choco install chansort
 
 ## Virtualisierung
 
-* [Docker](../../Server/Docker/Installation.md)
-* [VirtualBox](../../Software/VirtualBox/Installation.md)
+* [Docker](../Server/Docker/Installation.md)
+* [VirtualBox](VirtualBox/Installation.md)
 
 * [GNOME Boxes](https://wiki.gnome.org/Apps/Boxes)
 
