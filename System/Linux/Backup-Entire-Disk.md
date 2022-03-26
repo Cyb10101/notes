@@ -136,7 +136,7 @@ sudo dd if=disk.img of=/dev/sda bs=64k status=progress
 
 ## Clone Windows disk
 
-Tested with Windows 10, Partition table msdos/gpt and secure boot.
+Tested with Windows 10 and 11, Partition table msdos/gpt and secure boot.
 
 ```bash
 # Install gddrescue
