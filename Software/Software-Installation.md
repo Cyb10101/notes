@@ -607,6 +607,11 @@ wine /tmp/heidisql.exe
 # Private key file: Z:\home\username\.ssh\id_rsa.ppk
 ```
 
+## SFTP Drive
+
+* [NSoftware SFTP Drive](https://www.nsoftware.com/sftp/drive/order.aspx)
+* [RaiDrive](https://www.raidrive.com/download)
+
 ## Ram Drive
 
 * [Linux RamDisk](../System/Linux/RamDisk/ramdisk.md)
