@@ -36,6 +36,25 @@ for file in ./*.mid; do timidity "${file}" -Ow -o - | lame - -b 192 "${file/%mid
 ffmpeg -i movie.mkv -vf scale=-1:720 movie_720p.mkv
 ```
 
+## Rotate Video
+
+```bash
+# 90 Counter Clockwise and Vertical Flip (default)
+ffmpeg -i in.mp4 -vf "transpose=0" out.mp4
+
+# 90 Clockwise
+ffmpeg -i in.mp4 -vf "transpose=1" out.mp4
+
+# 90 Counter Clockwise
+ffmpeg -i in.mp4 -vf "transpose=2" out.mp4
+
+# 90 Clockwise and Vertical Flip
+ffmpeg -i in.mp4 -vf "transpose=3" out.mp4
+
+# Flip the input video horizontally
+ffmpeg -i in.mp4 -vf "hflip" out.mp4
+```
+
 ## Convert svg to ico
 
 Convert filename.svg to filename.ico.
