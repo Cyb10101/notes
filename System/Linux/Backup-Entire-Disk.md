@@ -151,15 +151,19 @@ parted /dev/sdb
 mklabel gpt
 q
 
-# Clone: Partition table
+# Clone partition table
 # 2048 Sectors * 512 Bytes = 1048576 Bytes = 1 MB = 1M
 dd if=/dev/sda of=/dev/sdb bs=1M count=1
 
-# Clone: EFI-System, Microsoft reserved
+# Clone unknown filesystem (EFI-System, Microsoft reserved)
 ddrescue -f -n /dev/sda1 /dev/sdb1
 
-# Clone: NTFS, Microsoft Basic data, Windows Recovery environment
+# Clone NTFS filesystem (Microsoft Basic data, Windows Recovery environment)
 ntfsclone --rescue --overwrite /dev/sdb2 /dev/sda2
+
+# Image NTFS filesystem: backup & restore (untested)
+ntfsclone --rescue --save-image --output - /dev/sdb2 | gzip > sdb2.img.gz
+gzip -cd sdb2.img.gz | ntfsclone --restore-image --overwrite /dev/sdb2 -
 ```
 
 Shutdown, remove source drive, boot up computer.
