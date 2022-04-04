@@ -3,6 +3,7 @@
 * [Visual Studio Code](https://code.visualstudio.com/)
 
 Ctrl + , = Settings
+
 Ctrl + Shift + P = Powerbar / Command Palette
 
 ## Extensions
@@ -40,6 +41,9 @@ code --install-extension ionutvmi.reg
 
 # Language: Better Shell Syntax (Highlighting)
 code --install-extension jeff-hykin.better-shellscript-syntax
+
+# Language: C++
+code --install-extension ms-vscode.cpptools
 
 # Activitybar: Workspace sidebar
 code --install-extension sketchbuch.vsc-workspace-sidebar
