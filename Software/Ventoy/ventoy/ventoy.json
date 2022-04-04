@@ -1,0 +1,109 @@
+{
+    "control":[
+        { "VTOY_MENU_TIMEOUT": "60" },
+        { "VTOY_DEFAULT_KBD_LAYOUT": "GERMAN" },
+        { "VTOY_HELP_TXT_LANGUAGE": "de_DE" },
+        { "VTOY_DEFAULT_IMAGE": "/ubuntu-20.04.4-desktop-amd64.iso" }
+    ],
+    "theme":{
+        "file":[
+            "/ventoy/themes/cyb/theme.txt"
+        ],
+        "gfxmode": "1920x1080",
+        "ventoy_left": "1%",
+        "ventoy_top": "97%",
+        "ventoy_color": "#f2f1f0",
+        "fonts":[
+            "/ventoy/themes/cyb/DejaVu_Sans_Regular_16.pf2",
+            "/ventoy/themes/cyb/DejaVu_Sans_Regular_36.pf2",
+            "/ventoy/themes/cyb/terminus-12.pf2",
+            "/ventoy/themes/cyb/terminus-14.pf2",
+            "/ventoy/themes/cyb/terminus-16.pf2",
+            "/ventoy/themes/cyb/terminus-18.pf2"
+        ]
+    },
+    "menu_alias":[
+        {
+            "image": "/ubuntu-20.04.4-desktop-amd64.iso",
+            "alias": "Ubuntu Desktop 20.04.4"
+        },
+        {
+            "image": "/ubuntu-21.10-desktop-amd64.iso",
+            "alias": "Ubuntu Desktop 21.10"
+        },
+        {
+            "image": "/ubuntu-20.04.4-live-server-amd64.iso",
+            "alias": "Ubuntu Server 20.04.4"
+        },
+        {
+            "image": "/kali-linux-2021.4a-live-amd64.iso",
+            "alias": "Kali Linux 2021.4a"
+        },
+        {
+            "image": "/Zorin-OS-16.1-Core-64-bit.iso",
+            "alias": "Zorin OS 16.1"
+        },
+        {
+            "image": "/Win10_2111_German_x64.iso",
+            "alias": "Windows 10 - 21.11"
+        },
+        {
+            "image": "/Win11_German_x64v1.iso",
+            "alias": "Windows 11 v1"
+        },
+        {
+            "image": "/systemrescue-9.01-amd64.iso",
+            "alias": "System Rescue CD 9.01"
+        }
+    ],
+    "menu_tip":{
+        "left": "25%",
+        "color": "#cccccc",
+        "tips":[
+            {
+                "image": "/kali-linux-2021.4a-live-amd64.iso",
+                "tip": "This is a Kali tip file for infomation about this image."
+            },
+            {
+                "image": "/ubuntu-20.04.4-desktop-amd64.iso",
+                "tip": "Ubuntu with persistence."
+            }
+        ]
+    },
+    "menu_class":[
+        {
+            "key": "ubuntu-",
+            "class": "ubuntu"
+        },
+        {
+            "key": "kali-linux-",
+            "class": "kali"
+        },
+        {
+            "key": "Zorin-OS-",
+            "class": "zorin"
+        },
+        {
+            "key": "Win10_",
+            "class": "windows"
+        },
+        {
+            "key": "Win11_",
+            "class": "windows11"
+        },
+        {
+            "key": "systemrescue-",
+            "class": "SystemRescueCD"
+        }
+    ],
+    "persistence":[
+        {
+            "image": "/ubuntu-20.04.4-desktop-amd64.iso",
+            "backend":[
+                "/persistence/ubuntu-20.04.4-desktop.dat"
+            ],
+            "autosel": 1,
+            "timeout": 10
+        }
+    ]
+}

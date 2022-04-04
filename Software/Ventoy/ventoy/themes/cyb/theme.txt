@@ -1,0 +1,151 @@
+# GRUB2 gfxmenu theme
+
+# Global Property
+title-text: "Ventoy"
+title-color: "#ffffff"
+title-font: "DejaVu Sans Regular 36"
+
+desktop-image: "background.jpg"
+desktop-color: "#000000"
+
+terminal-font: "Terminus Regular 14"
+terminal-box: "terminal_box_*.png"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
+
+# Show the boot menu
++ boot_menu {
+  top = 20%
+  left = 25%
+  width = 55%
+  height = 60%
+
+  menu_pixmap_style = "menu_*.png"
+
+  #item_font = "DejaVu Sans Regular 16"
+  item_color = "#cccccc"
+  item_icon_space = 20
+  item_height = 36
+  item_padding = 1
+  item_spacing = 10
+
+  icon_width = 32
+  icon_height = 32
+
+  selected_item_color = "#ffffff"
+  selected_item_pixmap_style = "select_*.png"
+
+  scrollbar = true
+  scrollbar_width = 10
+  scrollbar_thumb = "slider_*.png"
+}
+
+# Progress bar styling
++ progress_bar {
+  id = "__timeout__"
+  top = 83%
+  left = 25%
+  width = 55%
+  height = 20
+  text = "Booting in %d seconds"
+  text_color = "#ffffff"
+  #font = "JetBrains Mono Bold 15"
+  bar_style = "progress_short_bar_*.png"
+  highlight_style = "progress_short_highlight_*.png"
+}
+
+# Show a countdown message using the label component
++ label {
+  id = "__timeout__"
+  top = 86%
+  left = 25%
+  width = 55%
+  align = "center"
+  text = "Booting in %d seconds"
+  color = "#cccccc"
+  #font = "DejaVu Sans Regular 16"
+}
+
+# Center: Left text
++ label {
+  left = 25%
+  top = 95%-75
+  width = 25%
+  height = 25
+  align = "left"
+  text = "@VTOY_ISO_UEFI_DRV@"
+  color = "#cccccc"
+}
++ label {
+  left = 25%
+  top = 95%-50
+  width = 25%
+  height = 25
+  align = "left"
+  text = "@VTOY_ISO_RAW@"
+  color = "#cccccc"
+}
++ label {
+  left = 25%
+  top = 95%-25
+  width = 25%
+  height = 25
+  align = "left"
+  text = "@VTOY_MEM_DISK@"
+  color = "#cccccc"
+}
+
+# Center: Right text
++ label {
+  left = 55%
+  top = 95%-50
+  width = 25%
+  height = 25
+  align = "left"
+  text = "@VTOY_GRUB2_MODE@"
+  color = "#cccccc"
+}
++ label {
+  left = 55%
+  top = 95%-25
+  width = 25%
+  height = 25
+  align = "left"
+  text = "@VTOY_WIMBOOT_MODE@"
+  color = "#cccccc"
+}
+
+# Center: text
++ label {
+  left = 25%
+  top = 95%
+  width = 55%
+  height = 25
+  align = "center"
+  text = "@VTOY_HOTKEY_TIP@"
+  color = "#cccccc"
+}
+
+# Bottom: Left
++ vbox {
+  top = 99%-50
+  left = 1%
+  + label {
+    #font = "DejaVu Sans Regular 15"
+    text = " e: Edit commands"
+    color = "#cccccc"
+  }
+  + label {
+    #font = "DejaVu Sans Regular 15"
+    text = " c: Command line"
+    color = "#cccccc"
+  }
+  + label {
+    #font = "DejaVu Sans Regular 15"
+    text = "F7: Switch Display Mode"
+    color = "#cccccc"
+  }
+}
