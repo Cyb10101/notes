@@ -16,7 +16,6 @@ terminal-width: "100%"
 terminal-height: "100%"
 terminal-border: "0"
 
-# Show the boot menu
 + boot_menu {
   top = 20%
   left = 25%
@@ -43,7 +42,6 @@ terminal-border: "0"
   scrollbar_thumb = "slider_*.png"
 }
 
-# Progress bar styling
 + progress_bar {
   id = "__timeout__"
   top = 83%
@@ -55,18 +53,6 @@ terminal-border: "0"
   #font = "JetBrains Mono Bold 15"
   bar_style = "progress_short_bar_*.png"
   highlight_style = "progress_short_highlight_*.png"
-}
-
-# Show a countdown message using the label component
-+ label {
-  id = "__timeout__"
-  top = 86%
-  left = 25%
-  width = 55%
-  align = "center"
-  text = "Booting in %d seconds"
-  color = "#cccccc"
-  #font = "DejaVu Sans Regular 16"
 }
 
 # Center: Left text

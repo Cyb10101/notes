@@ -31,9 +31,17 @@ Create a 4 GB persistent image:
 ```bash
 mkdir -p /media/cyb10101/Ventoy/persistence
 
-# Much faster
-cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s 4096 -t ext4 -l 'casper-rw' -o /tmp/persistence-4096.dat
-cp /tmp/persistence-4096.dat /media/cyb10101/Ventoy/persistence/ubuntu-20.04.4-desktop.dat && sync
+# Much faster 4 GB
+cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s 4096 -t ext4 -l 'casper-rw' -o /tmp/persistence-4gb.dat
+cp /tmp/persistence-4gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-20.04.4-desktop-4gb.dat && sync
+
+# Much faster 8 GB (Recommended for deploy script)
+cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s 8192 -t ext4 -l 'casper-rw' -o /tmp/persistence-8gb.dat
+cp /tmp/persistence-8gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-20.04.4-desktop-8gb.dat && sync
+
+# Much faster 16 GB
+cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s 16384 -t ext4 -l 'casper-rw' -o /tmp/persistence-16gb.dat
+cp /tmp/persistence-16gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-20.04.4-desktop-16gb.dat && sync
 
 # Direct
 cd ~/opt/ventoy && sudo bash -c "./CreatePersistentImg.sh -s 4096 -t ext4 -l 'casper-rw' -o /media/cyb10101/Ventoy/persistence/ubuntu-20.04.4-desktop.dat; sync"
