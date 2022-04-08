@@ -23,11 +23,21 @@ avconv -i "${file}" "${file/%ogg/mp3}"
 avconv -i "${file}" -acodec libvorbis "${file/%mp3/ogg}"
 ```
 
+## Audio from Stereo to Mono
+
+ffmpeg -i stereo.mp4 -vc copy -ac 1 mono.mp4
+
 ## Midi to MP3
 
 ```bash
 sudo apt-get install timidity fluid-soundfont-gm fluid-soundfont-gs
 for file in ./*.mid; do timidity "${file}" -Ow -o - | lame - -b 192 "${file/%mid/mp3}"; done
+```
+
+## Video
+
+```bash
+ffmpeg -i video.mkv video.mp4
 ```
 
 ## Video to 720p
