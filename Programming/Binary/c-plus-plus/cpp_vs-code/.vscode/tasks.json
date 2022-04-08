@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Simple WSL: C++ build and run",
+            "type": "process",
+            "windows": {
+                "command": "wsl",
+                "args": ["-d", "Ubuntu", "-e", "bash", "-c", "make && ./app"],
+            },
+            "linux": {
+                "command": "bash",
+                "args": ["-c", "make && ./app"],
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        }
+    ]
+}
