@@ -8,4 +8,4 @@ clean:
 	@if [ -f app ]; then rm app; fi
 
 install: all
-	@echo Are you kidding'??
+	@echo 'Are you kidding??'

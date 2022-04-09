@@ -10,4 +10,4 @@ clean:
 	@rm -f emoji-source-code emoji-source-code_bin.cpp
 
 install: all
-	@echo Are you kidding'??'
+	@echo 'Are you kidding??'
