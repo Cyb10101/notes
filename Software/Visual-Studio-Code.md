@@ -91,7 +91,7 @@ code --install-extension ms-vscode.hexeditor
 
   "todo-tree.highlights.useColourScheme": true,
   "todo-tree.regex.regexCaseSensitive": false,
-  "todo-tree.regex.regex": "(\\/\\/|#|<!--|;|\\/\\*|^|^[ \\t]*(-|\\d+.))\\s*@?($TAGS)",
+  "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^[ \\t]*(-|\\d+.))\\s*@?($TAGS)",
 
   "ShortcutMenuBar.navigateBack": false,
   "ShortcutMenuBar.navigateForward": false,
