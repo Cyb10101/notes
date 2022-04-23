@@ -22,7 +22,7 @@ Configure password for all users:
 
 Automatic connect VPN with Network:
 
-* Open `nm-connection-editor﻿﻿` (Network Connections - it's part of NetworkManager)
+* Open `nm-connection-editor` (Network Connections - it's part of NetworkManager)
 * Choose your WiFi or LAN connection
 * Edit > "General" tab > Automatically connect to VPN when using this connection = true
 * Choose VPN connection

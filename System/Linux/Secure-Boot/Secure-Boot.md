@@ -14,3 +14,9 @@ Modules:
 
 * evdi: DisplayLink
 * vboxdrv: VirtualBox
+
+## Bugfix: Failed to find module evdi
+
+```bash
+sudo apt install evdi-dkms
+```

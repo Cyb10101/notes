@@ -1,18 +1,21 @@
 # Ubuntu installation
 
-Based on Ubuntu 20.04.
+Based on Ubuntu 22.04.
 
 ## Prepare system
 
 Remove unused software, activate multiverse repository and perform system update.
 
 ```bash
-sudo apt -y remove aisleriot gnome-mahjongg gnome-mines gnome-sudoku gnome-todo transmission-gtk totem
+sudo apt -y remove aisleriot gnome-mahjongg gnome-mines gnome-sudoku gnome-todo transmission-gtk
+sudo apt -y remove rhythmbox shotwell thunderbird totem
 sudo apt -y auto-remove
 
 sudo add-apt-repository multiverse
 
 sudo apt update && sudo apt full-upgrade
+
+mkdir ~/opt
 ```
 
 * Install: Additional drivers
@@ -23,7 +26,7 @@ sudo apt update && sudo apt full-upgrade
 # No password for sudo
 sudo sh -c "echo '%sudo ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
 
-# Set permissions
+# Set permissions (Virtualbox)
 sudo usermod -a -G vboxsf ${USER}
 ```
 
@@ -39,30 +42,38 @@ sudo usermod -a -G vboxsf ${USER}
 ```bash
 sudo apt -y install flatpak
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
 # Restart system: reboot
 ```
 
-Bugfix GPG key:
+## Wine
+
+* [Wine HQ](https://winehq.org/)
+* [Wine HQ: Apps](https://appdb.winehq.org/objectManager.php?sClass=application)
+
+Linux:
 
 ```bash
-# cat /var/lib/flatpak/repo/flathub.trustedkeys.gpg | sudo apt-key add -
+sudo apt -y install wine
 
-#flatpak install flathub org.signal.Signal
+winecfg
+# Application > Windows-Version = Windows 10
 ```
 
 ## Essential
 
 * [Software installation](../../Software/Software-Installation.md)
+* [Zsh](Zsh/Zsh.md)
 
 ```bash
-sudo apt -y install diffutils git htop inxi zsh aria2 curl iputils-ping whois vim
+sudo apt -y install diffutils git htop inxi aria2 curl iputils-ping whois vim jq
 sudo update-alternatives --set editor /usr/bin/vim.basic
 
 sudo apt -y install openssh-server
 
 # File system tools
 sudo apt -y install cifs-utils nfs-common sshfs ncdu
+
+# Prettier list filesystem
 sudo apt -y install exa
 
 # Recover files
@@ -142,7 +153,7 @@ sudo apt -y install variety variety-slideshow
 
 * [Software installation](../../Software/Software-Installation.md)
 
-## Internet
+## Development
 
 ```bash
 sudo apt -y install mariadb-client
@@ -209,9 +220,17 @@ dconf watch /
 ### Apply configuration
 
 ```bash
+# Blue Theme
+gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-blue'
+gsettings set org.gnome.desktop.interface icon-theme 'Yaru-blue'
+
 # General
-gsettings set org.gnome.desktop.background primary-color '#000000'
-gsettings set org.gnome.desktop.background secondary-color '#000000'
+@todo original: '#023c88'
+#gsettings set org.gnome.desktop.background primary-color '#000000'
+
+@todo original: '#5789ca'
+#gsettings set org.gnome.desktop.background secondary-color '#000000'
+
 gsettings set org.gnome.desktop.background picture-options 'scaled'
 gsettings set org.gnome.desktop.interface show-battery-percentage true
 gsettings set org.gnome.desktop.peripherals.mouse accel-profile 'flat'
@@ -219,9 +238,11 @@ gsettings set org.gnome.desktop.peripherals.mouse accel-profile 'flat'
 gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view'
 gsettings set org.gnome.nautilus.list-view default-visible-columns "['name', 'owner', 'group', 'permissions']"
 gsettings set org.gnome.nautilus.list-view default-zoom-level 'small'
-
-gsettings set org.gnome.nautilus.preferences executable-text-activation 'ask'
 gsettings set org.gnome.nautilus.preferences show-image-thumbnails 'never'
+
+# Desktop icons
+gsettings set org.gnome.shell.extensions.ding start-corner 'top-left'
+gsettings set org.gnome.shell.extensions.ding icon-size 'small'
 
 # Workspaces on all monitors
 gsettings set org.gnome.mutter workspaces-only-on-primary false
@@ -237,15 +258,11 @@ gsettings set org.gnome.shell.extensions.dash-to-dock multi-monitor true
 ```bash
 gsettings set org.gnome.settings-daemon.plugins.media-keys screenshot '[]'
 
-gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/','/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
 
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name 'Shutdown'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command 'gnome-session-quit --power-off'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding '<Super>F12'
-
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ name 'flameshot'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ command '/usr/bin/flameshot gui'
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ binding 'Print'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name 'flameshot'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command '/usr/bin/flameshot gui'
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding 'Print'
 ```
 
 ### Grub: Remove Boot Splash Screen
