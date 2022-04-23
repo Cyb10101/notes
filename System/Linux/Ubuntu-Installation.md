@@ -62,7 +62,7 @@ winecfg
 ## Essential
 
 * [Software installation](../../Software/Software-Installation.md)
-* [Zsh](Zsh/Zsh.md)
+* [Zsh notes](Zsh/Zsh.md)
 
 ```bash
 sudo apt -y install diffutils git htop inxi aria2 curl iputils-ping whois vim jq exa
