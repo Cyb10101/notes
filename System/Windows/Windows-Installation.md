@@ -61,11 +61,12 @@ Currently in development.
 
 ## Software installation
 
-Update all package manger with packages, run `cmd` as administrator:
+Update all package manger with packages, run `powershell` as administrator:
+
+See script: [update-system.ps1](Scripts/update-system.ps1)
 
 ```shell
-scoop status && scoop update && scoop update *
-choco outdated && choco upgrade all
+& "$env:userprofile/Sync/notes/System/Windows/Scripts/update-system.ps1"
 
 # Bugfix
 cd %USERPROFILE%\scoop\buckets\extras

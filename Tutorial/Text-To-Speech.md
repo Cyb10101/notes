@@ -20,7 +20,8 @@ tts-pico -l de 'Text or file'
 * [Google Cloud](https://console.cloud.google.com/)
 
 * [Cloud Text-to-Speech: Before you begin](https://cloud.google.com/text-to-speech/docs/before-you-begin)
-* [Cloud Text-to-Speech API](https://console.cloud.google.com/marketplace/product/google/texttospeech.googleapis.com)
+* [Cloud Text-to-Speech: API](https://console.cloud.google.com/marketplace/product/google/texttospeech.googleapis.com)
+* [Cloud Text-to-Speech: Quota](https://console.cloud.google.com/iam-admin/quotas?service=texttospeech.googleapis.com)
 * [Credentials / API Key](https://console.cloud.google.com/apis/credentials)
 * [gcloud - Cloud SDK](https://cloud.google.com/sdk/docs/quickstart#deb)
 * [Rollen: Cloud Speech-Client](https://console.cloud.google.com/iam-admin/roles)
