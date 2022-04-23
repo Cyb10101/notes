@@ -286,7 +286,7 @@ sudo apt -y install mkvtoolnix mkvtoolnix-gui
 ## Multimedia: Graphic
 
 * [Gwenview](https://userbase.kde.org/Gwenview/de)
-* [XnView](https://www.xnview.com/)
+* [XnView notes](XnView.md)
 * [FastStone Image Viewer](https://www.faststone.org/FSViewerDetail.htm)
 
 * [Gimp](https://www.gimp.org/downloads/)
@@ -298,10 +298,6 @@ Linux:
 
 ```bash
 sudo apt -y install gwenview gimp inkscape
-
-aria2c --download-result=hide --dir=/tmp -o XnViewMP.deb https://download.xnview.com/XnViewMP-linux-x64.deb
-sudo dpkg -i /tmp/XnViewMP.deb
-sudo apt install -f
 
 VERSION=$(curl -fsSL https://api.github.com/repos/qarmin/czkawka/releases/latest | jq -r '.tag_name'); echo "${VERSION}"
 curl -fsSL "https://github.com/qarmin/czkawka/releases/download/${VERSION}/linux_czkawka_gui" -o /tmp/czkawka-gui

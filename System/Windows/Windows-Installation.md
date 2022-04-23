@@ -65,10 +65,14 @@ Update all package manger with packages, run `powershell` as administrator:
 
 See script: [update-system.ps1](Scripts/update-system.ps1)
 
-```shell
-& "$env:userprofile/Sync/notes/System/Windows/Scripts/update-system.ps1"
+```powershell
+# Create symlink
+New-Item -Path "$env:userprofile\Desktop\update-system.ps1" -ItemType SymbolicLink -Value "$env:userprofile\Sync\notes\System\Windows\Scripts\update-system.ps1"
+```
 
-# Bugfix
+## Bugfix Scoop
+
+```shell
 cd %USERPROFILE%\scoop\buckets\extras
 git fetch && git reset --hard origin/master
 ```

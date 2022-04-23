@@ -65,7 +65,7 @@ winecfg
 * [Zsh](Zsh/Zsh.md)
 
 ```bash
-sudo apt -y install diffutils git htop inxi aria2 curl iputils-ping whois vim jq
+sudo apt -y install diffutils git htop inxi aria2 curl iputils-ping whois vim jq exa
 sudo update-alternatives --set editor /usr/bin/vim.basic
 
 sudo apt -y install openssh-server
@@ -135,6 +135,16 @@ sudo dpkg-reconfigure libdvd-pkg
 ```
 
 ## Tweaks / Design
+
+Gnome extensions:
+
+* [Sound Input & Output Device Chooser](https://extensions.gnome.org/extension/906/sound-output-device-chooser/)
+* [Notification Banner Reloaded](https://extensions.gnome.org/extension/4651/notification-banner-reloaded/) (Recommended)
+* [Notification Banner Position](https://extensions.gnome.org/extension/4105/notification-banner-position/)
+
+```bash
+sudo apt install gnome-shell-extension-manager
+```
 
 Gnome tweaks:
 
