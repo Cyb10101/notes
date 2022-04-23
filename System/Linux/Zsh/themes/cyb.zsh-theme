@@ -97,24 +97,23 @@ cyb_prompt_git_hash() {
 }
 
 precmd() {
-	if [[ $EUID -eq 0 ]]; then
-		_USERNAME="%{$fg_bold[red]%}%n%{$reset_color%}"
-	else
-		_USERNAME="%{$fg_bold[green]%}%n%{$reset_color%}"
-	fi
-	_HOSTNAME="%{$fg_bold[blue]%}%m%{$reset_color%}"
-	_PATH="%~"
-	_TIME="%T"
+    if [[ $EUID -eq 0 ]]; then
+        _USERNAME="%{$fg_bold[red]%}%n%{$reset_color%}"
+    else
+        _USERNAME="%{$fg_bold[green]%}%n%{$reset_color%}"
+    fi
+    _HOSTNAME="%{$fg_bold[blue]%}%m%{$reset_color%}"
+    _PATH="%~"
+    _TIME="%T"
 
-	LEFT="%{$fg[cyan]%}[$_USERNAME%{$fg[cyan]%}@$_HOSTNAME%{$fg[cyan]%}: %{$reset_color%}$_PATH%{$fg[cyan]%}]%{$reset_color%}"
-	RIGHT="%{$fg_bold[grey]%}$(cyb_prompt_git_hash)$_TIME%{$reset_color%} "
+    LEFT="%{$fg[cyan]%}[$_USERNAME%{$fg[cyan]%}@$_HOSTNAME%{$fg[cyan]%}: %{$reset_color%}$_PATH%{$fg[cyan]%}]%{$reset_color%}"
+    RIGHT="%{$fg[white]%}$(cyb_prompt_git_hash)$_TIME%{$reset_color%} "
 
-	RIGHTWIDTH=$(($COLUMNS-${#LEFT}))
-	#print -rP $LEFT${(l:$RIGHTWIDTH::.:)RIGHT}
-	print -rP "$LEFT$(cyb_get_space $LEFT $RIGHT)$RIGHT";
+    RIGHTWIDTH=$(($COLUMNS-${#LEFT}))
+    #print -rP $LEFT${(l:$RIGHTWIDTH::.:)RIGHT}
+    print -rP "$LEFT$(cyb_get_space $LEFT $RIGHT)$RIGHT";
 }
 
 setopt prompt_subst
 PROMPT='$(cyb_prompt_status)'
 RPROMPT='$(git_prompt_info)$(git_prompt_status)$(git_prompt_ahead)%{$reset_color%}'
-

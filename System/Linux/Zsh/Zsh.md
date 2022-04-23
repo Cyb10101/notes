@@ -1,24 +1,24 @@
 # Zsh shell
 
+* [themes/cyb.zsh-theme](themes/cyb.zsh-theme)
+* [.zshrc](.zshrc)
+
 ## Install Zsh
 
 ```bash
 sudo apt update
-sudo apt install zsh
+sudo apt -y install zsh
 
 git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
-vim ~/.zshrc
 mkdir -p ~/.oh-my-zsh/custom/themes
-vim ~/.oh-my-zsh/custom/themes/cyb.zsh-theme
-```
 
-## Change login shell permanently
+# Optional: Compare template
+meld -n ~/Sync/notes/System/Linux/Zsh/.zshrc ~/.oh-my-zsh/templates/zshrc.zsh-template &
 
-```bash
+# Copy custom settings
+cp ~/Sync/notes/System/Linux/Zsh/themes/cyb.zsh-theme ~/.oh-my-zsh/custom/themes/cyb.zsh-theme
+cp ~/Sync/notes/System/Linux/Zsh/.zshrc ~/.zshrc
+
+# Change login shell permanently
 chsh -s $(which zsh)
 ```
-
-## Konfiguration
-
-See [.zshrc](.zshrc)
