@@ -4,11 +4,9 @@ Configure url: [about:config](about:config)
 
 ## Disable Pocket
 
+```text
 extensions.pocket.enabled = false
-
-## Double encoding - Disable encoding (Gzip)
-
-network.http.accept-encoding = ""
+```
 
 ## Switch off full screen message
 
@@ -38,3 +36,11 @@ User prefers color scheme [0 = Dark, 1 = Light, 2 = System, 3 = Browser]:
 layout.css.prefers-color-scheme.content-override = 2
 
 *Keywords: Content black by dark themes*
+
+## Development
+
+Double encoding - Disable encoding (Gzip):
+
+```text
+network.http.accept-encoding = ""
+```

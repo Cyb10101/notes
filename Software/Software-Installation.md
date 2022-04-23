@@ -84,7 +84,7 @@ LibreOffice: Change standard template: File > Templates > Save / Organize
 Linux:
 
 ```bash
-VERSION=$(curl -fsSL https://api.github.com/repos/yang991178/fluent-reader/releases/latest | jq -r '.tag_name' | sed -E 's/v([0-9]\.[0-9]\.[0-9])/\1/')
+VERSION=$(curl -fsSL https://api.github.com/repos/yang991178/fluent-reader/releases/latest | jq -r '.tag_name' | sed -E 's/v([0-9]\.[0-9]\.[0-9])/\1/'); echo "${VERSION}"
 
 aria2c --download-result=hide --dir=/tmp -o fluent-reader.AppImage "https://github.com/yang991178/fluent-reader/releases/download/v${VERSION}/Fluent.Reader.${VERSION}.AppImage"
 sudo install /tmp/fluent-reader.AppImage /usr/local/bin/fluent-reader.AppImage
@@ -129,7 +129,7 @@ rar a -ma4 -ep1 'Comic Name.cbr' 'Pictures/'
 
 ## Social
 
-* [Discord](https://discordapp.com/)
+* [Discord](https://discord.com/)
 * [Teamspeak](https://www.teamspeak.com/)
 
 * [Threema](https://threema.ch/)
@@ -146,7 +146,7 @@ Linux:
 
 ```bash
 # Discord
-aria2c --download-result=hide --dir=/tmp -o discord.deb https://dl.discordapp.net/apps/linux/0.0.10/discord-0.0.10.deb
+aria2c --download-result=hide --dir=/tmp -o discord.deb https://discord.com/api/download?platform=linux&format=deb
 sudo dpkg -i /tmp/discord.deb
 sudo apt -f install
 
@@ -163,9 +163,9 @@ sudo apt update && sudo apt -y install signal-desktop
 aria2c --download-result=hide --dir=/tmp -o telegram.tar.xz https://telegram.org/dl/desktop/linux
 tar -C ~/opt -xf /tmp/telegram.tar.xz
 
-# Other
-sudo snap install slack --classic
-sudo snap install skype --classic
+# Other (Maybe append --classic)
+sudo snap install slack
+sudo snap install skype
 ```
 
 ## Social: Matrix - Elements
@@ -176,7 +176,7 @@ sudo snap install skype --classic
 Linux:
 
 ```bash
-sudo apt install -y wget apt-transport-https
+sudo apt -y install wget apt-transport-https
 ‍
 sudo wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg
 ‍
@@ -195,7 +195,7 @@ sudo apt install element-desktop
 Linux:
 
 ```bash
-LINPHONE_VERSION='4.3.2' && \
+LINPHONE_VERSION='4.4.1' && \
 aria2c --download-result=hide --dir=/tmp -o Linphone.AppImage "https://www.linphone.org/releases/linux/app/Linphone-${LINPHONE_VERSION}.AppImage" && \
 sudo install /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
@@ -234,7 +234,6 @@ sudo scoop install linphone --global
 Linux:
 
 ```bash
-# Snap no emoji support, Debian package offline
 sudo snap install spotify
 
 sudo apt -y install audacity
@@ -258,7 +257,10 @@ Linux:
 sudo add-apt-repository ppa:kdenlive/kdenlive-stable
 sudo apt -y install mpv vlc
 sudo apt -y install kodi
-sudo apt -y install handbrake kdenlive flowblade openshot pitivi
+sudo apt -y install handbrake kdenlive flowblade pitivi
+
+@todo missing
+sudo apt -y install openshot
 
 # Video effects
 sudo apt -y install frei0r-plugins
@@ -270,9 +272,12 @@ Linux:
 
 ```bash
 # Optional: Updates
-wget -q -O - https://mkvtoolnix.download/gpg-pub-moritzbunkus.txt | sudo apt-key add -
-sudo sh -c 'echo "deb https://mkvtoolnix.download/ubuntu/ focal main" > /etc/apt/sources.list.d/mkvtoolnix.list'
-sudo sh -c 'echo "deb-src https://mkvtoolnix.download/ubuntu/ focal main" >> /etc/apt/sources.list.d/mkvtoolnix.list'
+sudo wget -O /usr/share/keyrings/gpg-pub-moritzbunkus.gpg https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg
+
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ jammy main" | sudo tee -a /etc/apt/sources.list.d/mkvtoolnix.list
+echo "deb-src [arch=amd64 signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ jammy main" | sudo tee -a /etc/apt/sources.list.d/mkvtoolnix.list
+
+sudo apt update
 
 # Install
 sudo apt -y install mkvtoolnix mkvtoolnix-gui
@@ -296,6 +301,7 @@ sudo apt -y install gwenview gimp inkscape
 
 aria2c --download-result=hide --dir=/tmp -o XnViewMP.deb https://download.xnview.com/XnViewMP-linux-x64.deb
 sudo dpkg -i /tmp/XnViewMP.deb
+sudo apt install -f
 
 VERSION=$(curl -fsSL https://api.github.com/repos/qarmin/czkawka/releases/latest | jq -r '.tag_name'); echo "${VERSION}"
 curl -fsSL "https://github.com/qarmin/czkawka/releases/download/${VERSION}/linux_czkawka_gui" -o /tmp/czkawka-gui
@@ -348,23 +354,25 @@ sudo apt -y install peek
 Linux:
 
 ```bash
+@bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
 aria2c --download-result=hide --dir=/tmp -o teamviewer.deb https://download.teamviewer.com/download/linux/teamviewer_amd64.deb
 sudo dpkg -i /tmp/teamviewer.deb
 sudo apt -f install
 
+@bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
 wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | sudo apt-key add -
-sudo sh -c 'echo "deb http://deb.anydesk.com/ all main" > /etc/apt/sources.list.d/anydesk-stable.list'
+echo "deb http://deb.anydesk.com/ all main" | sudo tee -a /etc/apt/sources.list.d/anydesk-stable.list
 sudo apt update
-sudo apt install anydesk
+sudo apt -y install anydesk
 
-# NoMachine Linux 64bit - https://www.nomachine.com/download/download&id=3
-NOMACHINE_VERSION="7.6.2_4" && \
-NOMACHINE_MD5="4fffc2d252868086610b0264c30461bd" && \
+# NoMachine Linux 64bit - https://www.nomachine.com/download/download&id=4
+NOMACHINE_VERSION="7.9.2_1" && \
+NOMACHINE_MD5="a24aa0b09543d207034e8198972cbd24" && \
 NOMACHINE_OS="Linux" && NOMACHINE_ARCHITECTURE="amd64" && \
 NOMACHINE_VERSION_SHORT=`echo ${NOMACHINE_VERSION} | cut -d. -f1-2` && \
 curl -fsSL "https://download.nomachine.com/download/${NOMACHINE_VERSION_SHORT}/${NOMACHINE_OS}/nomachine_${NOMACHINE_VERSION}_${NOMACHINE_ARCHITECTURE}.deb" -o /tmp/nomachine.deb && \
 echo "${NOMACHINE_MD5} /tmp/nomachine.deb" | md5sum -c - && \
-dpkg -i /tmp/nomachine.deb
+sudo dpkg -i /tmp/nomachine.deb
 ```
 
 ## Burning tools
@@ -385,8 +393,15 @@ dpkg -i /tmp/nomachine.deb
 Linux:
 
 ```bash
+# @bug chmod file not found: /opt/balena-etcher-electron/chrome-sandbox
+VERSION=$(curl -fsSL https://api.github.com/repos/balena-io/etcher/releases/latest | jq -r '.tag_name' | sed -r 's/v//g'); echo "${VERSION}"
+curl -o /tmp/etcher.deb -fsSL "https://github.com/balena-io/etcher/releases/download/v${VERSION}/balena-etcher-electron_${VERSION}_amd64.deb"
+sudo dpkg -i /tmp/etcher.deb
+sudo apt install -f
+
+# @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
 curl -1sLf 'https://dl.cloudsmith.io/public/balena/etcher/setup.deb.sh' | sudo -E bash
-sudo apt install balena-etcher-electron
+sudo apt -y install balena-etcher-electron
 
 sudo apt -y install k3b xfburn brasero
 ```
@@ -425,8 +440,11 @@ sudo apt -y install steam
 Linux:
 
 ```bash
+@bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
 aria2c --download-result=hide --dir=/tmp -o dropbox.deb https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb
+sudo apt -y install python3-gpg
 sudo dpkg -i /tmp/dropbox.deb
+sudo apt install -f
 ```
 
 ## Backup
@@ -504,10 +522,18 @@ choco install keepass keepass-langfiles
 Linux:
 
 ```bash
+@bug crashed
+VERSION=$(curl -fsSL https://api.github.com/repos/atom/atom/releases/latest | jq -r '.tag_name' | sed -r 's/v//g'); echo "${VERSION}"
+curl -o /tmp/etcher.deb -fsSL "https://github.com/atom/atom/releases/download/v${VERSION}/atom-amd64.deb"
+sudo dpkg -i /tmp/etcher.deb
+sudo apt install -f
+
+@bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
+@bug crashed
 wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
 sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
 sudo apt update
-sudo apt install atom
+sudo apt -y install atom
 
 #aria2c --download-result=hide --dir=/tmp -o atom.deb https://atom.io/download/deb
 #sudo dpkg -i /tmp/atom.deb
@@ -549,7 +575,7 @@ Windows:
 Linux:
 
 ```bash
-sudo apt install -y jq python3 python3-pip
+sudo apt -y install jq python3 python3-pip
 sudo pip3 install yq
 ```
 
@@ -600,7 +626,7 @@ Linux with Wine:
 mkdir -p ~/Dokumente/HeidiSQL
 ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
 
-aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_11.3.0.6295_Setup.exe
+aria2c --download-result=hide --dir=/tmp -o heidisql.exe https://www.heidisql.com/installers/HeidiSQL_12.0.0.6468_Setup.exe
 wine /tmp/heidisql.exe
 
 # Tools > Preferences > Application style = Windows10
@@ -647,20 +673,6 @@ flatpak install -y flathub org.gnome.Boxes
 # choco install disk2vhd
 ```
 
-## Wine
-
-* [Wine HQ](https://winehq.org/)
-* [Wine HQ: Apps](https://appdb.winehq.org/objectManager.php?sClass=application)
-
-Linux:
-
-```bash
-sudo apt install wine
-
-winecfg
-# Windows 10
-```
-
 ## PlayOnLinux
 
 ```bash
@@ -670,7 +682,7 @@ sudo apt -y install playonlinux
 * [Phoenicis PlayOnLinux 5 - in Development](https://www.phoenicis.org/)
 
 ```bash
-sudo flatpak install flathub org.phoenicis.playonlinux
+flatpak install flathub org.phoenicis.playonlinux
 ```
 
 ## Windows terminal to Linux
@@ -700,5 +712,3 @@ sudo scoop install putty --global
 
 * [OpenJDK](http://openjdk.java.net/projects/jdk9/)
 * [Oracle Java](https://www.java.com/)
-
-* [Adobe Flash Player](https://get.adobe.com/flashplayer/)
