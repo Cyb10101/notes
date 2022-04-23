@@ -1,5 +1,7 @@
 # XnView MP
 
+* [XnView MP](https://www.xnview.com/de/xnviewmp/#downloads)
+
 ## Installation
 
 ```bash
@@ -11,6 +13,8 @@ sudo apt install -f
 ## Configuration
 
 Tools > Settings...
+
+Linux configuration:
 
 ```bash
 sudo apt -y install crudini
