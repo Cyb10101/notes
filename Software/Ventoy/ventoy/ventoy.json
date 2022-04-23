@@ -3,7 +3,7 @@
         { "VTOY_MENU_TIMEOUT": "60" },
         { "VTOY_DEFAULT_KBD_LAYOUT": "GERMAN" },
         { "VTOY_HELP_TXT_LANGUAGE": "de_DE" },
-        { "VTOY_DEFAULT_IMAGE": "/ubuntu-20.04.4-desktop-amd64.iso" }
+        { "VTOY_DEFAULT_IMAGE": "/ubuntu-22.04-desktop-amd64.iso" }
     ],
     "theme":{
         "file":[
@@ -23,6 +23,10 @@
         ]
     },
     "menu_alias":[
+        {
+            "image": "/ubuntu-22.04-desktop-amd64.iso",
+            "alias": "Ubuntu Desktop 22.04"
+        },
         {
             "image": "/ubuntu-20.04.4-desktop-amd64.iso",
             "alias": "Ubuntu Desktop 20.04.4"
@@ -65,6 +69,10 @@
                 "tip": "This is a Kali tip file for infomation about this image."
             },
             {
+                "image": "/ubuntu-22.04-desktop-amd64.iso",
+                "tip": "Ubuntu with persistence."
+            },
+            {
                 "image": "/ubuntu-20.04.4-desktop-amd64.iso",
                 "tip": "Ubuntu with persistence."
             }
@@ -98,9 +106,19 @@
     ],
     "persistence":[
         {
+            "image": "/ubuntu-22.04-desktop-amd64.iso",
+            "backend":[
+                "/persistence/ubuntu-22.04-desktop-8gb.dat",
+                "/persistence/ubuntu-22.04-desktop-16gb.dat"
+            ],
+            "autosel": 1,
+            "timeout": 10
+        },
+        {
             "image": "/ubuntu-20.04.4-desktop-amd64.iso",
             "backend":[
-                "/persistence/ubuntu-20.04.4-desktop.dat"
+                "/persistence/ubuntu-20.04.4-desktop-8gb.dat",
+                "/persistence/ubuntu-20.04.4-desktop-16gb.dat"
             ],
             "autosel": 1,
             "timeout": 10
