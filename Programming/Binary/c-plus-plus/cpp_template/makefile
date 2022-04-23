@@ -7,8 +7,8 @@ app: app.cpp
 	g++ -static -std=c++17 -o app app.cpp
 
 app.exe: app.cpp
-	@if [ -f app ]; then echo "\033[0;32mCompile for Windows...\033[0m"; fi
-	if [ -f app ]; then x86_64-w64-mingw32-g++ -static -std=c++17 -o app.exe app.cpp; fi
+	@if [ -f app ] && [ -x /usr/bin/x86_64-w64-mingw32-g++ ]; then echo "\033[0;32mCompile for Windows...\033[0m"; fi
+	if [ -f app ] && [ -x /usr/bin/x86_64-w64-mingw32-g++ ]; then x86_64-w64-mingw32-g++ -static -std=c++17 -o app.exe app.cpp; fi
 
 clean:
 	@echo "\033[0;33mCleanup files...\033[0m"
