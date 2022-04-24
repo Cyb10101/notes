@@ -2,6 +2,11 @@
 
 Configure url: [about:config](about:config)
 
+## Enable touch
+
+* [firefox-enable-touch.sh](firefox-enable-touch.sh)
+* [firefox-enable-touch-snap.sh](firefox-enable-touch-snap.sh)
+
 ## Disable Pocket
 
 ```text
