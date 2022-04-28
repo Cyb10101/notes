@@ -313,6 +313,11 @@ sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
 Linux:
 
 ```bash
+# @bug Ubuntu 22.04 Flameshot not working on wayland https://github.com/flameshot-org/flameshot/issues/2199
+echo "XDG_SESSION_TYPE = ${XDG_SESSION_TYPE} (fail if wayland)"
+echo "QT_QPA_PLATFORM = ${QT_QPA_PLATFORM}"
+
+#sudo snap install flameshot
 sudo apt -y install flameshot
 ```
 
