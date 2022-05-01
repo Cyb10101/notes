@@ -159,6 +159,14 @@ sudo add-apt-repository ppa:variety/stable
 sudo apt -y install variety variety-slideshow
 ```
 
+## Nautilus: Python Extensions
+
+```bash
+sudo apt -y install python3-nautilus
+mkdir -p ~/.local/share/nautilus-python/extensions
+rsync -av ~/Sync/notes/System/Linux/Nautilus/python-extensions/ ~/.local/share/nautilus-python/extensions/
+```
+
 ## Software installation
 
 * [Software installation](../../Software/Software-Installation.md)
