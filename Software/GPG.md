@@ -4,7 +4,7 @@
 * [Gpg4win](https://gpg4win.org/download.html)
 
 ```bash
-sudo apt install gpa gnupg2
+sudo apt install gpa gnupg2 xsel
 ```
 
 ```shell
@@ -21,7 +21,7 @@ gpg --full-generate-key
 gpg --gen-key
 - Kind of key: 1 RSA & RSA (default)
 - Key length: 4096
-- Expire: 0 = key does not expire
+- Expire: 0 = key does not expire (or 1 - 5 years)
 
 - Real name:
 - Email adress:
@@ -33,16 +33,26 @@ gpg --gen-key
 ```bash
 gpg --list-keys
 gpg --export {username} > key-pub.gpg
+gpg --armor --export E0123456 | xsel --clipboard
+gpg --armor --output gpg2-key.asc --export E0123456
 
-#### Export als ASCII
+# Export als ASCII
 gpg --armor --export {username} > key-pub-asc.gpg
 ```
 
 ## Import others public key
 
 ```bash
+xsel --clipboard | gpg --import
 gpg --with-fingerprint key-pub.gpg
 gpg --import key-pub.gpg
+
+# Check fingerprint
+gpg2 --fingerprint 0x012345678901234d5678901234567890123456789
+
+# There is no particular reason that you should trust this key. You can see who has trusted it:
+gpg2 --list-sigs 0x012345678901234d5678901234567890123456789
+
 gpg --edit-key {username} trust
 # Possibly enter 'save'
 ```
@@ -61,6 +71,12 @@ gpg --recipient {username} --armor --encrypt secret.txt
 
 ```bash
 gpg --decrypt file.txt.gpg > file.txt
+```
+
+# Verify Signed Message
+
+```bash
+xsel --clipboard | gpg --verify -a | xsel --clipboard
 ```
 
 ## Symmetric (Encrypt & Decrypt)
