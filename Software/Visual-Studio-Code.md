@@ -6,6 +6,10 @@ Ctrl + , = Settings
 
 Ctrl + Shift + P = Powerbar / Command Palette
 
+Ctrl + D = Multi selection
+
+Alt + Shit + Arrow-Key = Multi selection
+
 ## Extensions
 
 *Note: Restard needed!*
