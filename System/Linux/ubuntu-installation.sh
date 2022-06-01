@@ -525,6 +525,8 @@ installTeamViewer() {
     textColor 3 'Install: TeamViewer'
     # @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
     curl -o /tmp/teamviewer.deb -fsSL "https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
+    # Fix TeamViewer missing packages
+    sudo apt -y install libminizip1
     sudo dpkg -i /tmp/teamviewer.deb
     # @bug Installation failed because packages missing
     sudo apt -f install
