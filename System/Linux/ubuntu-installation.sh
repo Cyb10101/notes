@@ -366,13 +366,13 @@ installOpenShot() {
     local usernameRepository='OpenShot/openshot-qt'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
 
-    curl -o /tmp/OpenShot.AppImage -fsSL "https://github.com/OpenShot/openshot-qt/releases/download/v${VERSION}/OpenShot-v${VERSION}-x86_64.AppImage"
+    curl -o /tmp/OpenShot.AppImage -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/OpenShot-v${VERSION}-x86_64.AppImage"
     sudo install /tmp/OpenShot.AppImage /usr/local/bin/OpenShot.AppImage
 
     if [ ! -d /usr/local/share/icons ]; then
         sudo mkdir -p /usr/local/share/icons
     fi
-    sudo curl -o /usr/local/share/icons/openshot.svg -fsSL "https://raw.githubusercontent.com/OpenShot/openshot-qt/master/images/openshot.svg"
+    sudo curl -o /usr/local/share/icons/openshot.svg -fsSL "https://raw.githubusercontent.com/${usernameRepository}/master/images/openshot.svg"
 
     cat <<EOF | sudo tee /usr/share/applications/OpenShot.desktop
 [Desktop Entry]
@@ -521,6 +521,16 @@ installPeek() {
     sudo apt -y install peek
 }
 
+installRustDesk() {
+    textColor 3 'Install: RustDesk'
+    local usernameRepository='rustdesk/rustdesk'
+    VERSION=$(getGithubReleaseLatest "${usernameRepository}")
+    curl -o /tmp/rustdesk.deb -fsSL "https://github.com/${usernameRepository}/releases/download/${VERSION}/rustdesk-${VERSION}.deb"
+    # Fix missing packages
+    sudo apt -y install libxdo3
+    sudo dpkg -i /tmp/rustdesk.deb
+}
+
 installTeamViewer() {
     textColor 3 'Install: TeamViewer'
     # @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
@@ -565,7 +575,7 @@ installBalenaEtcher() {
     local usernameRepository='balena-io/etcher'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
 
-    curl -o /tmp/etcher.deb -fsSL "https://github.com/balena-io/etcher/releases/download/v${VERSION}/balena-etcher-electron_${VERSION}_amd64.deb"
+    curl -o /tmp/etcher.deb -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/balena-etcher-electron_${VERSION}_amd64.deb"
     # Fix
     sudo apt -y install gconf2 gconf-service libgconf-2-4 libgdk-pixbuf2.0-0
     sudo dpkg -i /tmp/etcher.deb
@@ -613,7 +623,7 @@ installNextcloudDesktop() {
     local usernameRepository='nextcloud/desktop'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
 
-    curl -o /tmp/nextcloud.AppImage -fsSL "https://github.com/nextcloud/desktop/releases/download/v${VERSION}/Nextcloud-${VERSION}-x86_64.AppImage"
+    curl -o /tmp/nextcloud.AppImage -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Nextcloud-${VERSION}-x86_64.AppImage"
     sudo install /tmp/nextcloud.AppImage /usr/local/bin/nextcloud.AppImage
     #yad --on-top --width=400 --title "Configure Wine" --button="gtk-ok:0" --text "Run XnView, initialize config file and close it!"
 
@@ -819,6 +829,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installObsStudio" "ObsStudio" "Screen recorder" \
         "${TICK:-FALSE}" "installPeek" "Peek" "Screen recorder" \
         "${TICK:-FALSE}" "installVideoTools" "Video tools" "ffmpeg" \
+        "${TICK:-FALSE}" "installRustDesk" "RustDesk" "Remote maintenance" \
         "${TICK:-FALSE}" "installTeamViewer" "TeamViewer" "Remote maintenance" \
         "${TICK:-FALSE}" "installAnyDesk" "AnyDesk" "Remote maintenance" \
         "${TICK:-FALSE}" "installNoMachine" "NoMachine" "Remote maintenance" \
