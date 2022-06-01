@@ -168,7 +168,7 @@ sudo snap install slack
 sudo snap install skype
 ```
 
-## Social: Matrix - Elements
+## Social: Matrix - Element
 
 * [Matrix](https://matrix.org/)
 * [Element](https://element.io/)
@@ -237,6 +237,8 @@ Linux:
 sudo snap install spotify
 
 sudo apt -y install audacity
+
+sudo snap install freac
 ```
 
 ## Multimedia: Video
@@ -441,7 +443,7 @@ sudo apt -y install steam
 Linux:
 
 ```bash
-@bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
+# @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
 aria2c --download-result=hide --dir=/tmp -o dropbox.deb https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb
 sudo apt -y install python3-gpg
 sudo dpkg -i /tmp/dropbox.deb
@@ -450,8 +452,8 @@ sudo apt install -f
 
 ## Backup
 
-* [Restic](https://github.com/restic/restic)
-* [rdiff-backup](https://rdiff-backup.net/)
+* [Restic notes](../Software/Restic.md)
+* [rdiff-backup notes](../Software/rdiff-backup.md)
 * [ascomp - BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
 
 Windows:
@@ -544,7 +546,6 @@ sudo apt -y install atom
 ## Development
 
 * [Visual Studio Code](https://code.visualstudio.com/)
-* [Geany](https://www.geany.org/)
 * [Notepad++](https://notepad-plus-plus.org/)
 
 * [PhpStorm](https://www.jetbrains.com/phpstorm/)
@@ -660,6 +661,7 @@ choco install chansort
 ## Virtualisierung
 
 * [Docker](../Server/Docker/Installation.md)
+* [LXD/LXC](../Server/LXD-LXC.md)
 * [VirtualBox](VirtualBox/Installation.md)
 
 * [GNOME Boxes](https://wiki.gnome.org/Apps/Boxes)

@@ -155,7 +155,7 @@ sudo apt -y install gnome-tweaks
 * [Variety - Background changer](https://peterlevi.com/variety/)
 
 ```bash
-sudo add-apt-repository ppa:variety/stable
+sudo add-apt-repository -y ppa:variety/stable
 sudo apt -y install variety variety-slideshow
 ```
 

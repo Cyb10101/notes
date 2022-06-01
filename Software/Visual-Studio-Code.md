@@ -132,3 +132,18 @@ File > Preferences > Keyboard shortcuts
     }
 ]
 ```
+
+## Maximum file watches exceeded
+
+```bash
+cat /proc/sys/fs/inotify/max_user_watches
+```
+
+Edit `sudo gedit /etc/sysctl.conf`:
+
+```text
+# Maximum file watches to 512 MB (Visual Studio Code)
+fs.inotify.max_user_watches=524288
+```
+
+Reload: `sudo sysctl -p`
