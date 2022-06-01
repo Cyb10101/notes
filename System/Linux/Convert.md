@@ -9,7 +9,7 @@ sudo apt -y install ffmpeg faac faad flac lame libmad0 libmpcdec6 mppenc vorbis-
 ## Audio
 
 ```bash
-for file in ./*.m4a; do avconv -i "${file}" "${file/%m4a/mp3}";	done
+for file in ./*.m4a; do ffmpeg -i "${file}" "${file/%m4a/mp3}"; done
 
 # Static bitrate
 lame -q 2 -b 320  -F file.wav file.mp3
@@ -17,10 +17,10 @@ lame -q 2 -b 320  -F file.wav file.mp3
 # Variable bitrate
 lame -q 2 -b 128 -m j -V 1 -B 320 -F file.wav file.mp3
 
-avconv -i "${file}" "${file/%wav/ogg}"
-avconv -i "${file}" "${file/%wav/mp3}"
-avconv -i "${file}" "${file/%ogg/mp3}"
-avconv -i "${file}" -acodec libvorbis "${file/%mp3/ogg}"
+-ffmpeg -i "${file}" "${file/%wav/ogg}"
+ffmpeg -i "${file}" "${file/%wav/mp3}"
+ffmpeg -i "${file}" "${file/%ogg/mp3}"
+ffmpeg -i "${file}" -acodec libvorbis "${file/%mp3/ogg}"
 ```
 
 ## Audio from Stereo to Mono
@@ -37,7 +37,10 @@ for file in ./*.mid; do timidity "${file}" -Ow -o - | lame - -b 192 "${file/%mid
 ## Video
 
 ```bash
+for file in ./*.mov; do ffmpeg -i "${file}" "${file/%mov/mp4}"; done
+
 ffmpeg -i video.mkv video.mp4
+ffmpeg -i video.mov video.mp4
 ```
 
 ## Video to 720p

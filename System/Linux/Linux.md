@@ -1,5 +1,23 @@
 # Linux
 
+## Find
+
+```bash
+# Find long filenames
+find . -regextype posix-extended -regex '.*[^/]{255,}$'
+find . -regextype posix-extended -regex '.*[^/]{128,}$'
+
+# Find file extensions
+find . -type f | sed -n 's/..*\.//p' | sort | uniq -c
+```
+
+## Rename
+
+```bash
+# Rename with the last modification time of file
+for file in *.*; do mv -n "${file}" "$(date -r "${file}" +"%Y-%m-%d_%H-%M-%S")_${file}"; done
+```
+
 ## Speedtest
 
 [Windows IPerv 2 files](https://sourceforge.net/projects/iperf2/files/)
