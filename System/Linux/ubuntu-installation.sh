@@ -525,7 +525,7 @@ installTeamViewer() {
     textColor 3 'Install: TeamViewer'
     # @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
     curl -o /tmp/teamviewer.deb -fsSL "https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
-    # Fix TeamViewer missing packages
+    # Fix missing packages
     sudo apt -y install libminizip1
     sudo dpkg -i /tmp/teamviewer.deb
     # @bug Installation failed because packages missing
@@ -538,6 +538,8 @@ installAnyDesk() {
     wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | sudo apt-key add -
     echo "deb http://deb.anydesk.com/ all main" | sudo tee -a /etc/apt/sources.list.d/anydesk-stable.list
     sudo apt update
+    # Fix missing packages
+    sudo apt -y install libminizip1
     # @bug Installation failed because packages missing
     sudo apt -y install anydesk
 }
