@@ -19,10 +19,16 @@ getTmdbSeason() {
         echo -e "\033[0;32m# German\033[0m"
     fi
 
+    percent='Prozent'
+    if [[ "${language}" == "de-DE" ]]; then
+        percent='Prozent'
+    fi
+
     curl -H "Accept: application/json" -H "Authorization: Bearer ${tmdb_apiKeyV4}" \
         -fsSL "https://api.themoviedb.org/3/tv/${tvId}/season/${season}${appendCurl}" | \
         jq -r --arg season ${season} '.episodes[] | "s\($season | lpad(2))e\(.episode_number | lpad(2)) \(.name)"' | \
-        sed 's/[\?]//g; s/–/-/g'
+        sed "s/[\?]//g; s/–/-/g; s/’//g; s/:/ -/g; s/%/${percent}/g"
+
     echo
 }
 
