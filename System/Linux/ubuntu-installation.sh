@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# wget -O - https://raw.githubusercontent.com/Cyb10101/notes/master/System/Linux/ubuntu-installation.sh | bash
+
 # Exit on error
 set -e
 
@@ -811,7 +813,7 @@ installVirtualBox() {
 
 # Installation #################################################################
 installDependencies() {
-    selectedList=($(yad --on-top --width=600 --height=200 --title="Install Dependencies" \
+    selectedList=($(yad --on-top --width=600 --height=300 --title="Install Dependencies" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
         --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
