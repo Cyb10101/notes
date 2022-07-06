@@ -29,7 +29,8 @@ Close terminal and open a new terminal with elevated privileges:
 
 ```shell
 scoop list
-scoop status && scoop update && scoop update *
+scoop status && scoop update && scoop update --all
+scoop update --all --global
 ```
 
 ## Package Manager: Chocolatey

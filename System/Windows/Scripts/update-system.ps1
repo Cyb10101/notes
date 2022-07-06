@@ -18,13 +18,14 @@ class CybTools {
 $tools = [CybTools]::new()
 $tools.checkAdmin()
 
-& scoop status
-& scoop update
-& scoop update *
+scoop status
+scoop update
+scoop update --all
+scoop update --all --global
 
-& choco outdated
-& choco upgrade all
+choco outdated
+choco upgrade all
 
 start ms-windows-store://updates
-& control update
+control update
 sleep 10
