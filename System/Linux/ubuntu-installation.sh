@@ -120,6 +120,8 @@ installEssential() {
         "TRUE" "cifs-utils nfs-common sshfs" "File system tools" "Tools for SSH, Samba and NFS" \
         "TRUE" "ncdu" "NCurses Disk Usage" "Disk usage" \
         "TRUE" "exa" "Exa" "Prettier list filesystem" \
+        "TRUE" "duf" "Duf" "Disk Usage Utility" \
+        "TRUE" "df" "Df" "Disk Usage Utility" \
         "TRUE" "testdisk extundelete" "Recover files" "Packages: testdisk, extundelete" \
         "TRUE" "p7zip-full p7zip-rar" "7-Zip" "Compression tools (+7-Zip-Rar)" \
         "TRUE" "rar unrar-free" "Rar" "Compression tools" \
@@ -141,7 +143,7 @@ installFlatpak() {
 
 installWine() {
     textColor 3 'Install: Wine'
-    sudo apt -y install wine
+    sudo apt -y install wine winbind
 
     winecfg &
     yad --on-top --width=400 --title "Configure Wine" --button="gtk-ok:0" --text "\
@@ -165,6 +167,14 @@ installDocker() {
         exit 1;
     fi
     sudo usermod -aG docker ${selectedUsername}
+}
+
+installDockerCompose() {
+    textColor 3 'Install: Docker Compose'
+    local usernameRepository='docker/compose'
+    VERSION=$(getGithubReleaseLatest "${usernameRepository}")
+    curl -o /tmp/docker-compose -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/docker-compose-$(uname -s)-$(uname -m)"
+    sudo install /tmp/docker-compose /usr/local/bin/docker-compose
 }
 
 # Software #####################################################################
@@ -247,6 +257,12 @@ installDiscord() {
     sudo dpkg -i /tmp/discord.deb
     set -e
     sudo apt -y -f install
+}
+
+installThreema() {
+    textColor 3 'Install: Threema'
+    curl -o /tmp/threema.deb -fsSL "https://releases.threema.ch/web-electron/v1/release/Threema-Latest.deb"
+    sudo dpkg -i /tmp/threema.deb
 }
 
 installSignal() {
@@ -337,6 +353,12 @@ installVlc() {
 installMpv() {
     textColor 3 'Install: mpv'
     sudo apt -y install mpv
+}
+
+# https://flathub.org/apps/details/com.github.rafostar.Clapper
+installClapper() {
+    textColor 3 'Install: Clapper'
+    flatpak install flathub com.github.rafostar.Clapper
 }
 
 installKodi() {
@@ -450,6 +472,10 @@ installXnview() {
         # View > Tabs > Show = false
         crudini --set ~/.config/xnviewmp/xnview.ini '%General' useTabs false
 
+        # Always overwrite file
+        crudini --set ~/.config/xnviewmp/xnview.ini '%General' showAgain 65544
+        crudini --set ~/.config/xnviewmp/xnview.ini '%General' showAgainResults '@Variant(\0\0\0\b\0\0\0\x1\0\0\0\x2\0\x38\0\0\0\x2\0\0\x4\0)'
+
         # General > Tab: File operations > Confirm file delete = false
         crudini --set ~/.config/xnviewmp/xnview.ini 'Start' startInFull 0
 
@@ -511,14 +537,22 @@ installObsStudio() {
     sudo apt -y install obs-studio v4l2loopback-dkms ffmpeg
 }
 
+installPeek() {
+    textColor 3 'Install: Peek'
+    sudo apt -y install peek
+}
+
 installVideoTools() {
     textColor 3 'Install: Video tools'
     sudo apt -y install ffmpeg
 }
 
-installPeek() {
-    textColor 3 'Install: Peek'
-    sudo apt -y install peek
+# https://www.unifiedremote.com/
+# http://localhost:9510/web/
+installUnifiedRemote() {
+    textColor 3 'Install: Unified Remote'
+    curl -o /tmp/unifiedremote.deb -fsSL "https://www.unifiedremote.com/download/linux-x64-deb"
+    sudo dpkg -i /tmp/unifiedremote.deb
 }
 
 installRustDesk() {
@@ -533,18 +567,26 @@ installRustDesk() {
 
 installTeamViewer() {
     textColor 3 'Install: TeamViewer'
-    # @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
+    # @bug: Key is stored in deprecated trusted.gpg keychain
     curl -o /tmp/teamviewer.deb -fsSL "https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
     # Fix missing packages
     sudo apt -y install libminizip1
     sudo dpkg -i /tmp/teamviewer.deb
     # @bug Installation failed because packages missing
     sudo apt -f install
+
+    # @fixme: Key is stored in deprecated trusted.gpg keychain
+    sudo apt-key export 8CAE012EBFAC38B17A937CD8C5E224500C1289C0 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/teamviewer -2017.gpg
+    sudo apt-key export D2A5FEB3488160F028CC17918DA84BE5DEB49217 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/teamviewer.gpg
 }
 
 installAnyDesk() {
     textColor 3 'Install: AnyDesk'
-    # @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
+
+    # @fixme: Key is stored in deprecated trusted.gpg keychain
+    wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/anydesk.gpg
+
+    # @bug: Key is stored in deprecated trusted.gpg keychain
     wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | sudo apt-key add -
     echo "deb http://deb.anydesk.com/ all main" | sudo tee -a /etc/apt/sources.list.d/anydesk-stable.list
     sudo apt update
@@ -579,6 +621,9 @@ installBalenaEtcher() {
     # Fix
     sudo apt -y install gconf2 gconf-service libgconf-2-4 libgdk-pixbuf2.0-0
     sudo dpkg -i /tmp/etcher.deb
+
+    # @fixme: Key is stored in deprecated trusted.gpg keychain
+    sudo apt-key export 8F40D32ABF59D635B11612F270528471AFF9A051 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/balena-etcher.gpg
 }
 
 installK3b() {
@@ -661,7 +706,7 @@ EOF
 
 installDropbox() {
     textColor 3 'Install: Dropbox'
-    # @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
+    # @bug: Key is stored in deprecated trusted.gpg keychain
     curl -o /tmp/dropbox.deb -fsSL "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb"
     sudo apt -y install libpango1.0-0 python3-gpg
     sudo dpkg -i /tmp/dropbox.deb
@@ -750,6 +795,13 @@ installHeidiSql() {
     wine /tmp/heidisql.exe
 }
 
+installPutty() {
+    textColor 3 'Install: PuTTY'
+    curl -o /tmp/putty.zip -fsSL "https://the.earth.li/~sgtatham/putty/latest/w64/putty.zip"
+    mkdir -p ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
+    unzip /tmp/putty.zip -d ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
+}
+
 installVirtualBox() {
     textColor 3 'Install: VirtualBox'
     echo 'virtualbox-ext-pack virtualbox-ext-pack/license select true' | sudo debconf-set-selections
@@ -767,6 +819,7 @@ installDependencies() {
         "TRUE" "installWine" "Wine" "Run Windows applications" \
         "TRUE" "installPlayOnLinux" "PlayOnLinux" "Create multiple Wine prefixes" \
         "TRUE" "installDocker" "Docker" "Container Virtualisation" \
+        "TRUE" "installDockerCompose" "Docker Compose" "Container Virtualisation" \
         "TRUE" "reboot" "Reboot" "Reboot System" \
     ))
     for selected in "${selectedList[@]}"; do
@@ -800,6 +853,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installCalibre" "Calibre" "EBook Reader (epub)" \
         "${TICK:-FALSE}" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" \
         "${TICK:-FALSE}" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" \
+        "${TICK:-FALSE}" "installThreema" "Threema" "Instant messaging, Voice conferencing" \
         "${TICK:-FALSE}" "installSignal" "Signal" "Instant messaging, Voice conferencing" \
         "${TICK:-FALSE}" "installTelegram" "Telegram" "Instant messaging, Voice conferencing" \
         "${TICK:-FALSE}" "installSlack" "Slack" "Instant messaging, Voice conferencing" \
@@ -809,8 +863,9 @@ installSoftware() {
         "${TICK:-FALSE}" "installSpotify" "Spotify" "Audio streaming" \
         "${TICK:-FALSE}" "installAudacity" "Audacity" "Audio editor" \
         "${TICK:-FALSE}" "installFreac" "fre:ac" "Audio converter and CD ripper" \
-        "${TICK:-FALSE}" "installVlc" "VLC (Video Lan Client)" "Video player" \
-        "${TICK:-FALSE}" "installMpv" "mpv" "Video player" \
+        "${TICK:-TRUE}" "installVlc" "VLC (Video Lan Client)" "Video player" \
+        "${TICK:-TRUE}" "installMpv" "mpv" "Video player" \
+        "${TICK:-TRUE}" "installClapper" "Clapper" "Video player" \
         "${TICK:-FALSE}" "installKodi" "Kodi (XBMC)" "Media center" \
         "${TICK:-FALSE}" "installHandbrake" "Handbrake" "Video transcoder" \
         "${TICK:-FALSE}" "installKdenlive" "Kdenlive" "Video editor" \
@@ -829,6 +884,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installObsStudio" "ObsStudio" "Screen recorder" \
         "${TICK:-FALSE}" "installPeek" "Peek" "Screen recorder" \
         "${TICK:-FALSE}" "installVideoTools" "Video tools" "ffmpeg" \
+        "${TICK:-FALSE}" "installUnifiedRemote" "Unified Remote" "Remote control" \
         "${TICK:-FALSE}" "installRustDesk" "RustDesk" "Remote maintenance" \
         "${TICK:-FALSE}" "installTeamViewer" "TeamViewer" "Remote maintenance" \
         "${TICK:-FALSE}" "installAnyDesk" "AnyDesk" "Remote maintenance" \
@@ -854,6 +910,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installGo" "Go-Lang" "Go language" \
         "${TICK:-FALSE}" "installFileZilla" "FileZilla" "FTP/SFTP Client" \
         "${TICK:-FALSE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" \
+        "${TICK:-FALSE}" "installPutty" "PuTTY" "PuTTY utilities" \
         "${TICK:-FALSE}" "installVirtualBox" "VirtualBox" "Virtual machines" \
     ))
     for selected in "${selectedList[@]}"; do

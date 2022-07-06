@@ -696,15 +696,6 @@ flatpak install flathub org.phoenicis.playonlinux
 * [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)
 * [WinSCP](https://winscp.net/)
 
-Linux with Wine:
-
-```bash
-# Nobody need this?!
-aria2c --download-result=hide --dir=/tmp -o putty.zip https://the.earth.li/~sgtatham/putty/latest/w32/putty.zip
-mkdir -p ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
-unzip /tmp/putty.zip -d ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
-```
-
 Windows:
 
 ```shell
