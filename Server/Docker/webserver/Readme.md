@@ -28,6 +28,12 @@ passwd root
 adduser username
 ```
 
+### Install essentials
+
+```bash
+apt -y install curl jq rdiff-backup ncdu htop
+```
+
 ### SSH root login
 
 ```bash
@@ -214,7 +220,7 @@ ports:
 Check with nmap:
 
 ```bash
-sudo apt install nmap
+apt -y install nmap
 nmap localhost
 nmap server.com
 ```
@@ -304,9 +310,19 @@ FLUSH PRIVILEGES;
 Remove database and user:
 
 ```sql
+/* Show database and user */
+SELECT Host, Db, User FROM mysql.db;
 SELECT User, Host FROM mysql.user;
-DROP USER 'username'@'%';
+
+/* Show grants */
 SHOW GRANTS FOR 'username'@'%';
+
+/* Get drop username sql */
+SELECT CONCAT("DROP USER '", user, "'", "@", "'", HOST, "';") AS `SQL` FROM mysql.db WHERE `Db` IN ('website1_www');
+
+/* Drop database and user */
+DROP DATABASE `website_www`;
+DROP USER 'username'@'%';
 FLUSH PRIVILEGES;
 ```
 
