@@ -6,6 +6,16 @@ Requirements:
 sudo apt -y install ffmpeg faac faad flac lame libmad0 libmpcdec6 mppenc vorbis-tools wavpack
 ```
 
+## Image
+
+```bash
+# Vertical sprite
+convert image1.png image2.png image3.png -append result.png
+
+# Horizontal sprite
+convert image1.png image2.png image3.png +append result.png
+```
+
 ## Audio
 
 ```bash
