@@ -20,12 +20,12 @@ find -type f -regextype posix-extended -iregex '.*\.(jpg|jpeg|png|gif|tif|bmp|we
 echo "# Global" > ${TMP_FOLDER}/0-global.md
 
 echo "\n## Very Bad filename\n" >> ${TMP_FOLDER}/0-global.md
-find -type f | grep -P '[^a-zA-Z0-9\/\-_\.\s\(\)\+]' | sort > ${TMP_FOLDER}/0-special-character.md
+find -type f | grep -P '[^a-zA-Z0-9\/\-_\.\s\(\)\+]' | sort >> ${TMP_FOLDER}/0-global.md
 
 echo "\n## Bad filename\n" >> ${TMP_FOLDER}/0-global.md
-#find -regextype posix-extended -iregex '.*[~$&+,:;=?@#|^*<>(){}%!"].*' >> ${TMP_FOLDER}/0-global.md
-find -regextype posix-extended -iregex '.*[~$&+,:;=?@#|^*<>{}%!"].*' >> ${TMP_FOLDER}/0-global.md
-find -iname "*[']*" >> ${TMP_FOLDER}/0-global.md
+#find -regextype posix-extended -iregex '.*[~$&+,:;=?@#|^*<>(){}%!"].*' | sort >> ${TMP_FOLDER}/0-global.md
+find -regextype posix-extended -iregex '.*[~$&+,:;=?@#|^*<>{}%!"].*' | sort >> ${TMP_FOLDER}/0-global.md
+find -iname "*[']*" | sort >> ${TMP_FOLDER}/0-global.md
 
 echo "\n## Archive\n" >> ${TMP_FOLDER}/0-global.md
 find -type f -regextype posix-extended -iregex '.*\.(zip|z)$' | sort >> ${TMP_FOLDER}/0-global.md
