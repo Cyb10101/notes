@@ -37,3 +37,24 @@ mountvol Z: /D
 ```
 
 * Possibly restart
+
+## Windows Gamebar FPS
+
+FPS not shown in Windows Gamebar [Windows + G].
+
+Run `cmd.exe` as Administrator and add group "Performance Log Users" to current user.
+
+```bash
+# English: "Performance Log Users"
+net localgroup "Leistungsprotokollbenutzer" %USERNAME% /add
+```
+
+Additional help:
+
+```bash
+# List groups
+net localgroup
+
+# Show group
+net localgroup "Leistungsprotokollbenutzer"
+```

@@ -59,6 +59,19 @@ ffmpeg -i video.mov video.mp4
 ffmpeg -i movie.mkv -vf scale=-1:720 movie_720p.mkv
 ```
 
+## Cut Video
+
+```bash
+ffmpeg -i original.mp4 -ss 00:00:23 -c copy cutted.mp4
+```
+
+## 3D to 2D
+
+```bash
+# Side by side 3D (left and right) to 2D
+ffmpeg -i input.mkv -vf stereo3d=sbsl:ml -metadata:s:v:0 stereo_mode="mono" -aspect 16:9 output.mkv
+```
+
 ## Rotate Video
 
 ```bash
@@ -76,6 +89,51 @@ ffmpeg -i in.mp4 -vf "transpose=3" out.mp4
 
 # Flip the input video horizontally
 ffmpeg -i in.mp4 -vf "hflip" out.mp4
+```
+
+## Merge video & audio
+
+```bash
+ffmpeg -i video.mp4 -i audio.mp4 -c copy output.mp4
+ffmpeg -i video.mp4 -i audio.mp4 -c copy output.mkv
+```
+
+## Combine *.ts/m4s to audio or video
+
+```bash
+#for i in {0..3}; do curl -fsSL "https://example.org/file${i}.ts" -o "file${i}.ts"; cat "file${i}.ts" >> merged.ts; done
+
+for i in {0..3}; do curl -fsSL "https://example.org/file${i}.ts" >> merged.ts; done
+
+ffmpeg -i merged.ts video.mp4
+ffmpeg -i merged.ts audio.mp3
+```
+
+## Combine *.m4s (Servus TV)
+
+See playlist.m3u8:
+
+```text
+Audio: #EXT-X-MEDIA:TYPE=AUDIO,URI="https://host/audio.m3u8"
+Video: #EXT-X-STREAM-INF:RESOLUTION=1920x1080,{new line} https://host/video.m3u8
+```
+
+```bash
+mkdir audio video
+
+# Audio
+grep 'https://' audio.m3u8 > audio/download.txt
+cd audio && aria2c -i download.txt
+cat init.mp4 >> merged.m4s; for i in {0..952}; do cat "${i}.m4s" >> merged.m4s; done
+cd ..
+
+# Video
+grep 'https://' video.m3u8 > video/download.txt
+cd video && aria2c -i download.txt
+cat init.mp4 >> merged.m4s; for i in {0..952}; do cat "${i}.m4s" >> merged.m4s; done
+cd ..
+
+ffmpeg -i video/merged.m4s -i audio/merged.m4s -c copy output.mp4
 ```
 
 ## Convert svg to ico

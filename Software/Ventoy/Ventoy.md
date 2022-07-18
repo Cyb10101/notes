@@ -6,6 +6,15 @@
 * [Original Theme](https://github.com/vinceliuice/grub2-themes)
 * [Distribution Icons](https://github.com/AdisonCavani/distro-grub-themes/tree/master/assets/icons)
 
+Install:
+
+```bash
+VERSION='1.0.78'
+curl -o /tmp/ventoy.tar.gz -fsSL "https://github.com/ventoy/Ventoy/releases/download/v${VERSION}/ventoy-${VERSION}-linux.tar.gz"
+tar -C ~/opt -xf /tmp/ventoy.tar.gz
+mv ~/opt/ventoy-${VERSION} ~/opt/ventoy
+```
+
 Format USB with Ventoy GUI:
 
 * Options > Secure Boot Support = true

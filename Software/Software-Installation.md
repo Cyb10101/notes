@@ -168,6 +168,21 @@ sudo snap install slack
 sudo snap install skype
 ```
 
+## Signal
+
+* Install PC Windows, Laptop Windows
+
+```shell
+curl -L -o "%LOCALAPPDATA%\Temp\signal.exe" "https://updates.signal.org/desktop/signal-desktop-win-1.34.3.exe"
+"%LOCALAPPDATA%\Temp\signal.exe"
+del "%LOCALAPPDATA%\Temp\signal.exe"
+```
+
+* Linux PC & Acer: kein Autostart?
+
+sudo snap install signal-desktop
+??? /snap/bin/signal-desktop --start-in-tray --use-tray-icon
+
 ## Social: Matrix - Element
 
 * [Matrix](https://matrix.org/)
