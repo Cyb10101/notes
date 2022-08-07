@@ -27,7 +27,7 @@ lame -q 2 -b 320  -F file.wav file.mp3
 # Variable bitrate
 lame -q 2 -b 128 -m j -V 1 -B 320 -F file.wav file.mp3
 
--ffmpeg -i "${file}" "${file/%wav/ogg}"
+ffmpeg -i "${file}" "${file/%wav/ogg}"
 ffmpeg -i "${file}" "${file/%wav/mp3}"
 ffmpeg -i "${file}" "${file/%ogg/mp3}"
 ffmpeg -i "${file}" -acodec libvorbis "${file/%mp3/ogg}"
@@ -47,6 +47,7 @@ for file in ./*.mid; do timidity "${file}" -Ow -o - | lame - -b 192 "${file/%mid
 ## Video
 
 ```bash
+for file in ./*.mkv; do ffmpeg -i "${file}" "${file/%mkv/mp4}"; done
 for file in ./*.mov; do ffmpeg -i "${file}" "${file/%mov/mp4}"; done
 
 ffmpeg -i video.mkv video.mp4
