@@ -401,11 +401,11 @@ Configure service `autodiscover` in `mail/docker-compose.yml`.
 Add email mailboxes or forwardings:
 
 ```bash
-./setup.sh email list
-./setup.sh email add user@website.com
+./start.sh setup email list
+./start.sh setup email add user@website.com
 
-./setup.sh alias list
-./setup.sh alias add from@website.com to@website.com
+./start.sh setup alias list
+./start.sh setup alias add from@website.com to@website.com
 ```
 
 ### Mail: Certificate test
@@ -459,7 +459,8 @@ openssl rsa -in /etc/domainkeys/website.com/default -pubout
 Generate DKIM keys:
 
 ```bash
-./setup.sh config dkim
+./start.sh setup config dkim
+ls -1 ~/projects/mail/.docker/mail/config/opendkim/keys
 cat ~/projects/mail/.docker/mail/config/opendkim/keys/website.com/mail.txt
 ~/projects/mail/start.sh down && ~/projects/mail/start.sh up
 ```
