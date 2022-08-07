@@ -4,7 +4,7 @@ set -e
 # Requirements
 # sudo apt install mpv libttspico-utils
 
-# alias tts-pico=/home/cyb10101/Sync/notes/System/Linux/Scripts/tts-pico.sh
+# alias tts-pico=~/Sync/notes/System/Linux/Scripts/tts-pico.sh
 # alias tts-pico-de='tts-pico -l de'
 # alias tts-pico-en=tts-pico
 
