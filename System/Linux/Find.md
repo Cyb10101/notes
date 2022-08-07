@@ -19,6 +19,10 @@ find -type f -regextype posix-extended -iregex '.*\.(jpg|jpeg|png|gif|tif|bmp|we
 # Global
 echo "# Global" > ${TMP_FOLDER}/0-global.md
 
+echo "\n## Bad encoding\n" >> ${TMP_FOLDER}/0-global.md
+find -type d \( -name node_modules \) -prune -false -o -iname '*' \
+    | iconv -f windows-1252 | grep -P '[^a-zA-Z0-9\/\-_\.\s\(\)\+]' | sort >> ${TMP_FOLDER}/0-global.md
+
 echo "\n## Very Bad filename\n" >> ${TMP_FOLDER}/0-global.md
 find -type f | grep -P '[^a-zA-Z0-9\/\-_\.\s\(\)\+]' | sort >> ${TMP_FOLDER}/0-global.md
 
