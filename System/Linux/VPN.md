@@ -41,7 +41,10 @@ sudo apt install wireguard
 
 Then install Cyberghost.
 
-@todo 2019-02-04 Cyberghost can not be installed:
+2019-02-04 Cyberghost can not be installed, see:
+
+* [Issue](https://github.com/Cyb10101/notes/issues/2)
+* [Files](../../Bugfix/2022-08-11_cyberghostvpn-ubuntu-20.04-1.3.4)
 
 ```bash
 # Also run in the Cyberghost installation script:
