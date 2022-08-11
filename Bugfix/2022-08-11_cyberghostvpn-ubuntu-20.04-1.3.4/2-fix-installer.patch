@@ -1,0 +1,176 @@
+--- install.sh	2022-08-11 13:29:54.336788000 +0200
++++ install.sh	2022-04-28 18:26:16.534703000 +0200
+@@ -1,17 +1,32 @@
+ #!/bin/bash
+ 
+-# if user is not running the command as root
+-if [ "$UID" -ne 0 ]; then
++SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+ 
+-	# output message
+-	echo "Please run the installer with SUDO!"
++checkRoot() {
++	if [ "$UID" -ne 0 ]; then
++		echo "Please run the installer with SUDO!"
++		exit 1;
++	fi
++}
+ 
+-	# stop script
+-	exit
+-fi
++packageAptExists() {
++	apt-cache show "$1" &> /dev/null
++	return $?
++}
++
++updateSymlink() {
++	symlink="${1}"
++	target="${2}"
++	if [ -L ${target} ]; then
++		rm ${target}
++	fi
++	ln -sf ${symlink} ${target}
++}
++
++checkRoot
+ 
+ # check update
+-apt update > /dev/null 2>&1
++apt-get update > /dev/null 2>&1
+ 
+ # output message
+ echo -e "\nCyberGhost Installer ...\n"
+@@ -79,6 +94,19 @@
+ 
+ 	fi
+ 
++elif [ "$ubuntuDistroVersion" == "22.04" ]; then
++
++	if [ "$glibcVersion" == "2.35" ]; then
++
++		echo "Cyb: The glibc version is compatible, continue..."
++
++	else
++
++		echo "The glibc version is incompatible, exiting setup..."
++		exit
++
++	fi
++
+ elif [ "$distroName" == "Linuxmint" ] && [ "$distroVersion" == "20" ]; then
+ 
+ 	if [ "$glibcVersion" == "2.31" ]; then
+@@ -107,36 +135,33 @@
+ 
+ fi
+ 
+-
+ # define required packages
+ requiredPackages=(curl openvpn resolvconf wireguard)
+ 
+ # loop through packages
+ for package in "${requiredPackages[@]}"; do
+ 
+-	# set package
+-	p="$package"
+-
+-	# if package is opwireguardenvpn
+-	if [ "$package" == "wireguard" ]; then
+-
++	# if package is opwireguardenvpn https://www.wireguard.com/install/
++	if [ "$package" == "wireguard" ] && ! packageAptExists wireguard; then
++		echo "Add PPA for \"$package\" package..."
+ 		# check if wireguard ppa exist
+ 		responseCode=$(grep ^ /etc/apt/sources.list /etc/apt/sources.list.d/* | grep -c wireguard)
+ 
+-		# if ppa does not exist
++		# install wireguard ppa if does not exist
+ 		if [ "$responseCode" == "0" ]; then
+-
+-			# install wireguard ppa
+ 			add-apt-repository -y ppa:wireguard/wireguard > /dev/null 2>&1
+-			apt update > /dev/null 2>&1
++			apt-get update > /dev/null 2>&1
+ 		fi
++	fi
+ 
+-		# change package name
+-		p="wg"
++	# if package "wireguard" is not found, then use package "wg"
++	# @todo this is strange because ppa doen't exists for Ubuntu 20.04
++	if [ "$package" == "wireguard" ] && ! packageAptExists wireguard; then
++		package="wg"
+ 	fi
+ 
+ 	# check if package is installed and get exit code
+-	responseCode=$(which "$p" > /dev/null 2>&1; echo "$?")
++	responseCode=$(which "$package" > /dev/null 2>&1; echo "$?")
+ 
+ 	# output message
+ 	echo -n "Check if \"$package\" package is already installed ... "
+@@ -173,14 +198,14 @@
+ 				echo "Removing old package ... "
+ 
+ 				# uninstall package
+-				apt remove "$package" -y > /dev/null 2>&1
++				apt-get remove "$package" -y > /dev/null 2>&1
+ 
+ 				# output message
+ 				echo -n "Installing new package ... "
+ 				curl -s https://swupdate.openvpn.net/repos/repo-public.gpg | apt-key add -
+ 				echo "deb http://build.openvpn.net/debian/openvpn/stable xenial main" > /etc/apt/sources.list.d/openvpn-aptrepo.list
+-				apt update > /dev/null 2>&1
+-				apt install "$package" -y > /dev/null 2>&1
++				apt-get update > /dev/null 2>&1
++				apt-get install "$package" -y > /dev/null 2>&1
+ 
+ 				# output message
+ 				echo "Done."
+@@ -207,13 +232,13 @@
+ 			if [ $majorVersion -ge 2 ] && [ $minorVersion -lt 4 ]; then
+ 				curl -s https://swupdate.openvpn.net/repos/repo-public.gpg | apt-key add -
+ 				echo "deb http://build.openvpn.net/debian/openvpn/stable xenial main" > /etc/apt/sources.list.d/openvpn-aptrepo.list
+-				apt update > /dev/null 2>&1
++				apt-get update > /dev/null 2>&1
+ 			fi
+ 		fi
+ 
+ 
+ 		# install package
+-		apt install "$package" -y > /dev/null 2>&1
++		apt-get install "$package" -y > /dev/null 2>&1
+ 
+ 		# output message
+ 		echo "Done."
+@@ -240,23 +265,18 @@
+ fi
+ 
+ # copy certificates to local directory
+-cp -r cyberghost/* /usr/local/cyberghost
++cp -r ${SCRIPTPATH}/cyberghost/* /usr/local/cyberghost
+ 
+ # change directory permissions
+ chmod -R 755 /usr/local/cyberghost
+ 
+ # output message
+ echo "Create symlinks ..."
+-
+-# if symlink exist
+-if [ -L /usr/bin/cyberghostvpn ]; then
+-
+-	# remove old symlink
+-	rm /usr/bin/cyberghostvpn
+-fi
+-
+-# create symlink
+-ln -sf /usr/local/cyberghost/cyberghostvpn /usr/bin/cyberghostvpn
++updateSymlink /usr/local/cyberghost/cyberghostvpn /usr/bin/cyberghostvpn
+ 
+ # setup application
+-cyberghostvpn --setup
++if [ "${DEBIAN_FRONTEND}" == "noninteractive" ]; then
++	echo "To complete setup you need to run: cyberghostvpn --setup"
++else
++	cyberghostvpn --setup
++fi
