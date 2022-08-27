@@ -47,6 +47,7 @@ for file in ./*.mid; do timidity "${file}" -Ow -o - | lame - -b 192 "${file/%mid
 ## Video
 
 ```bash
+find -type f -regextype posix-extended -iregex '.*\.(avi|mov|mp3|mp4|mpg)$' -exec sh -c 'for file; do ffmpeg -i "${file}" "${file%.*}.mkv"; done' sh {} +
 for file in ./*.mkv; do ffmpeg -i "${file}" "${file/%mkv/mp4}"; done
 for file in ./*.mov; do ffmpeg -i "${file}" "${file/%mov/mp4}"; done
 
@@ -74,6 +75,18 @@ ffmpeg -i input.mkv -vf stereo3d=sbsl:ml -metadata:s:v:0 stereo_mode="mono" -asp
 ```
 
 ## Rotate Video
+
+Test or change with exiftool:
+
+```bash
+# Show rotation
+exiftool -rotation video.mp4
+
+# Set rotation
+exiftool -rotation=0 video.mp4
+```
+
+Transcode video:
 
 ```bash
 # 90 Counter Clockwise and Vertical Flip (default)
@@ -135,6 +148,46 @@ cat init.mp4 >> merged.m4s; for i in {0..952}; do cat "${i}.m4s" >> merged.m4s; 
 cd ..
 
 ffmpeg -i video/merged.m4s -i audio/merged.m4s -c copy output.mp4
+```
+
+## Download and concat from ARD Mediathek
+
+* [MediathekViewWeb](https://mediathekviewweb.de/)
+* [MediathekView](https://mediathekview.de/download/)
+* [ttconv](https://pypi.org/project/ttconv/)
+
+```bash
+# Convert subtitle from ttml to srt
+pip install ttconv
+python3 -c "import ttconv as _; print(_.__file__)"
+python3 ~/.local/lib/python3.10/site-packages/ttconv/tt.py convert -i "subtitle.ttml" -o "subtitle.srt"
+
+# Move and merge subtitle
+ffprobe -v error -sexagesimal -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 video1.mp4
+# 1:29:08.083000 -> 1h29m08s083ms
+sudo apt -y install python3-pysrt
+srt shift 1h29m08s83ms subtitle2.srt > subtitle2_shift.srt
+cat subtitle1.srt subtitle2_shift.srt > subtitle.srt
+
+# Clean subtitle file
+sed -i -r "s/^<font color=\"[^\"]+\">(.*)<\/font>$/\1/g" subtitle.srt
+
+# Concat video
+ffmpeg -f concat -safe 0 -i <(find -maxdepth 1 -type f -name '*.mp4' -printf "file '$PWD/%p'\n" | sort) -c copy output.mp4
+
+# Create Mkv file
+```
+
+## Concat *.mp4
+
+```bash
+# Re-encode
+filterComplex=$(for i in {0..2}; do echo -n "[${i}:v] [${i}:a] "; done; i=$((i+1)); echo "concat=n=${i}:v=1:a=1 [vv] [aa]")
+ffmpeg -i file1.mp4 -i file2.mp4 -i file3.mp4 \
+    -filter_complex "${filterComplex}" -map "[vv]" -map "[aa]" output.mp4
+
+# Just concat
+ffmpeg -f concat -safe 0 -i <(find -maxdepth 1 -type f -name '*.mp4' -printf "file '$PWD/%p'\n" | sort) -c copy output.mp4
 ```
 
 ## Convert svg to ico
