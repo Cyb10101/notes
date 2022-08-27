@@ -17,6 +17,10 @@ Wait until something in filesystem happen.
 ```bash
 sudo apt -y install inotify-tools
 
+# Only one file on modify event, test script
+echo '#!/bin/bash\n' > script.sh
+while inotifywait -e modify script.sh; do bash script.sh; done
+
 # Only one file on modify event
 while inotifywait -e modify ~/script.sh; do cp ~/script.sh ~/Downloads/public/; done
 
