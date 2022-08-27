@@ -1,0 +1,66 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "App: Java build file and run",
+            "type": "process",
+            "command": "bash",
+            "args": [
+                "-c",
+                "javac ${fileDirname}/${fileBasenameNoExtension}.java && java ${fileBasenameNoExtension}"
+            ],
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "-d",
+                    "Ubuntu",
+                    "-e",
+                    "bash",
+                    "-c",
+                    "javac ${fileDirname}/${fileBasenameNoExtension}.java && java ${fileBasenameNoExtension}"
+                ]
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${fileDirname}/"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "App: Java build jar file and run",
+            "type": "process",
+            "command": "bash",
+            "args": [
+                "-c",
+                "javac ${fileDirname}/${fileBasenameNoExtension}.java && jar -c -f ${fileDirname}/${fileBasenameNoExtension}.jar -e ${fileBasenameNoExtension} *.class Utility/*.class && java -jar ${fileDirname}/${fileBasenameNoExtension}.jar"
+            ],
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "-d",
+                    "Ubuntu",
+                    "-e",
+                    "bash",
+                    "-c",
+                    "javac ${fileDirname}/${fileBasenameNoExtension}.java && java ${fileBasenameNoExtension}"
+                ]
+            },
+            "group": "build",
+            "options": {
+                "cwd": "${fileDirname}/"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
