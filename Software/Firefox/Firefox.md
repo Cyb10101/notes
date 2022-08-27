@@ -42,6 +42,22 @@ layout.css.prefers-color-scheme.content-override = 2
 
 *Keywords: Content black by dark themes*
 
+## Firefox change user agent
+
+Get user agent via Javascript:
+
+```javascript
+navigator.userAgent
+```
+
+* Open Firefox configuration with `about:config`
+* Add `general.useragent.override` as string
+
+```yaml
+# Windows 11 Edge
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.66
+```
+
 ## Development
 
 Double encoding - Disable encoding (Gzip):
