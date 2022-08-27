@@ -51,7 +51,7 @@ echo "\n## Documents\n" >> ${TMP_FOLDER}/0-global.md
 find -type f -regextype posix-extended -iregex '.*\.(docx?|dot|odt|pdf|pps|pptx?|txt|xlsx?)$' | sort >> ${TMP_FOLDER}/0-global.md
 
 echo "\n## Videos\n" >> ${TMP_FOLDER}/0-global.md
-find -type f -regextype posix-extended -iregex '.*\.(avi|mov|mp3|mp4|MPG)$' | sort >> ${TMP_FOLDER}/0-global.md
+find -type f -regextype posix-extended -iregex '.*\.(avi|mov|mp3|mp4|mpg)$' | sort >> ${TMP_FOLDER}/0-global.md
 
 echo "\n## Bad Documents\n" >> ${TMP_FOLDER}/0-global.md
 find -type f -regextype posix-extended -iregex '.*\.(lnk|ini)$' | sort >> ${TMP_FOLDER}/0-global.md
