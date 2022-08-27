@@ -82,6 +82,15 @@ configureEnergy() {
 }
 
 prepareSystem() {
+    sudo add-apt-repository -y multiverse
+    sudo apt update && sudo apt -y full-upgrade
+
+    if [ ! -d ~/opt ]; then
+        mkdir -p ~/opt
+    fi
+}
+
+removePackages() {
     textColor 3 'Prepare System'
     packages=($(yad --on-top --width=600 --height=400 --title="Remove Software" \
         --list --checklist --multiple --separator=" " \
@@ -99,14 +108,7 @@ prepareSystem() {
         "TRUE" "totem" "Totem" "Video player" \
     ))
     sudo apt -y remove "${packages[@]}"
-
     sudo apt -y auto-remove
-    sudo add-apt-repository -y multiverse
-    sudo apt update && sudo apt -y full-upgrade
-
-    if [ ! -d ~/opt ]; then
-        mkdir -p ~/opt
-    fi
 }
 
 installEssential() {
@@ -498,6 +500,9 @@ installXnview() {
 
         # Fullscreen > Background Color = black
         crudini --set ~/.config/xnviewmp/xnview.ini 'Viewer' fullBackColor "0 0 0"
+
+        # Image management > Files > Tab: Custom filter
+        crudini --set ~/.config/xnviewmp/xnview.ini 'Browser' customFilter 3269
     fi
 }
 
@@ -789,7 +794,7 @@ installHeidiSql() {
     if [ ! -d ~/Dokumente/HeidiSQL ]; then
         mkdir -p ~/Dokumente/HeidiSQL
     fi
-    if [ -d ~/Dokumente/HeidiSQL/../../Sync/notes/Programming/SQL ]; then
+    if [ -d ~/Dokumente/HeidiSQL/../../Sync/notes/Programming/SQL ] && [ ! -d ~/Dokumente/HeidiSQL/Snippets ]; then
         ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
     fi
 
@@ -920,6 +925,30 @@ installSoftware() {
     done
 }
 
+updateSoftware() {
+    selectedList=($(yad --window-icon="gtk-ok" --on-top --width=600 --height=600 --title="Update Software" \
+        --list --checklist --multiple --separator=" " \
+        --column=" " --column="Action" --column="Application" --column="Description" \
+        --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        "FALSE" "installCroc" "Croc" "File transfer tool" \
+        "FALSE" "installCzkawka" "Czkawka" "Duplicate image finder" \
+        "FALSE" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" \
+        "FALSE" "installFluentReader" "Fluent Reader" "RSS Reader" \
+        "FALSE" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" \
+        "FALSE" "installLinphone" "Linphone" "Voice conferencing" \
+        "FALSE" "installNextcloudDesktop" "Nextcloud Desktop" "Sycronisation tool" \
+        "FALSE" "installOpenShot" "OpenShot" "Video editor" \
+        "FALSE" "installPutty" "PuTTY" "PuTTY utilities" \
+        "FALSE" "installRustDesk" "RustDesk" "Remote maintenance" \
+        "FALSE" "installUnifiedRemote" "Unified Remote" "Remote control" \
+        "FALSE" "installXnview" "Xnview" "Image viewer" \
+        "FALSE" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" \
+    ))
+    for selected in "${selectedList[@]}"; do
+        ${selected}
+    done
+}
+
 TICK="${1:-}"
 if [[ "${1}" == "true" ]]; then
     TICK='TRUE'
@@ -929,16 +958,18 @@ fi
 
 # Besser fragen, was gestartet werden soll
 checkYadInstalled
+prepareSystem
 
 selectedList=($(yad --window-icon="gtk-ok" --on-top --width=350 --height=250 --title="Installation Process" \
     --list --checklist --multiple --separator=" " \
     --column=" " --column="Action" --column="Application" \
     --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
     "${TICK:-FALSE}" "configureEnergy" "Configure Energy" \
-    "${TICK:-FALSE}" "prepareSystem" "Prepare System" \
+    "${TICK:-FALSE}" "removePackages" "Remove Packages" \
     "${TICK:-FALSE}" "installEssential" "Install Essential" \
-    "${TICK:-FALSE}" "installDependencies" "Install Dependencies" \
-    "${TICK:-TRUE}" "installSoftware" "Install Software" \
+    "${TICK:-FALSE}" "installDependencies" "Install Dependencies: Flatpak, Wine, Docker" \
+    "${TICK:-FALSE}" "installSoftware" "Install Software" \
+    "${TICK:-TRUE}" "updateSoftware" "Update Software" \
 ))
 for selected in "${selectedList[@]}"; do
     ${selected}
