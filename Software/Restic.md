@@ -5,6 +5,7 @@ Incremental backup creation.
 * [Website](https://restic.net/)
 * [GitHub Release](https://github.com/restic/restic/releases/latest)
 * [Documentation](https://restic.readthedocs.io/)
+* [Windows Scripts](../System/Windows/Backup/restic/)
 
 ## Installation
 
