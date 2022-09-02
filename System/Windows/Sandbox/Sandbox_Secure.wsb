@@ -5,8 +5,7 @@ shutdown /r /t 5 /c "Restart to activate Sandbox"
 -->
 <Configuration>
   <VGpu>Default</VGpu>
-  <Networking>Default</Networking>
-  <!-- <Networking>Disable</Networking> -->
+  <Networking>Disable</Networking>
   <MappedFolders>
     <!-- <MappedFolder>
       <HostFolder>C:\Users\Cyb10101\Downloads</HostFolder>
@@ -18,10 +17,10 @@ shutdown /r /t 5 /c "Restart to activate Sandbox"
     </MappedFolder>
     <MappedFolder>
       <HostFolder>C:\Users\Cyb10101\Sync\notes\System\Windows\Sandbox\deploy</HostFolder>
-      <ReadOnly>false</ReadOnly>
+      <ReadOnly>true</ReadOnly>
     </MappedFolder>
   </MappedFolders>
-  <LogonCommand>
+  <!-- <LogonCommand>
     <Command>C:\Users\WDAGUtilityAccount\Desktop\deploy\deploy.cmd</Command>
-  </LogonCommand>
+  </LogonCommand> -->
 </Configuration>

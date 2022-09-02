@@ -5,8 +5,12 @@
 
 . "$env:userprofile\Desktop\deploy\tools.ps1"
 
-$tools.installScoop()
-$tools.installChocolatey()
+# @todo not working with admin permissions
+# Write-Host "Install Scoop"
+# $tools.installScoop()
+
+# Write-Host "Install Chocolatey"
+# $tools.installChocolatey()
 
 #choco install microsoft-windows-terminal
 #scoop install jq --global
@@ -20,12 +24,14 @@ if ($development) {
   Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit Set-Location $($env:userprofile)\Desktop\deploy; . .\tools.ps1"
   #Start-Process -NoNewWindow -FilePath "wt" -ArgumentList "-d $($env:userprofile)\Desktop\deploy"
 } else {
-  Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit Set-Location $($env:userprofile)\Desktop\Downloads; . $($env:userprofile)\Desktop\deploy\tools.ps1"
-  Start-Process -FilePath "cmd.exe" -ArgumentList "/K cd /d $($env:userprofile)\Desktop\Downloads"
-  Start-Process -FilePath "explorer.exe" -ArgumentList "$($env:userprofile)\Desktop\Downloads"
-  #Start-Process -NoNewWindow -FilePath "wt" -ArgumentList "-d $($env:userprofile)\Desktop\Downloads"
+  Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit Set-Location $($env:userprofile)\Desktop\public; . $($env:userprofile)\Desktop\deploy\tools.ps1"
+  Start-Process -FilePath "cmd.exe" -ArgumentList "/K cd /d $($env:userprofile)\Desktop\public"
+  Start-Process -FilePath "explorer.exe" -ArgumentList "$($env:userprofile)\Desktop\public"
+  #Start-Process -NoNewWindow -FilePath "wt" -ArgumentList "-d $($env:userprofile)\Desktop\public"
 }
 
+Write-Host "Done"
+sleep 5
 exit
 # ------------------------------------------------------------------------------
 # %LOCALAPPDATA%\Temp
