@@ -26,6 +26,7 @@ Android 8 > Settings > System > Developer options > Debugging > USB-Debugging = 
 ```bash
 # Device list
 sudo adb devices
+# Note: Maybe set to PTP-Mode (Picture Transfer Protocol)
 
 # Restart ADB Server
 sudo adb kill-server; sudo adb start-server
