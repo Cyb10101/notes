@@ -116,6 +116,7 @@ ffmpeg -i video.mp4 -i audio.mp4 -c copy output.mkv
 
 ```bash
 #for i in {0..3}; do curl -fsSL "https://example.org/file${i}.ts" -o "file${i}.ts"; cat "file${i}.ts" >> merged.ts; done
+# ffmpeg -i merged.ts video.mkv
 
 for i in {0..3}; do curl -fsSL "https://example.org/file${i}.ts" >> merged.ts; done
 
