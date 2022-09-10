@@ -5,6 +5,14 @@
 $PSVersionTable
 ```
 
+Update Windows (run as user):
+
+```powershell
+start ms-windows-store://updates; control update
+scoop status; scoop update; scoop update --all
+sudo Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit choco outdated; sudo choco upgrade all"
+```
+
 ## Package Manager: Scoop
 
 *Note: Only english installations, if not handled in Software.*
@@ -12,6 +20,20 @@ $PSVersionTable
 * [Scoop: Website](https://scoop.sh)
 * [Scoop: Github](https://github.com/lukesampson/scoop)
 * [Scoop: Buckets](https://github.com/lukesampson/scoop#known-application-buckets)
+
+Install as user:
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+irm get.scoop.sh | iex
+
+scoop install aria2 7zip git croc restic sudo; scoop bucket add extras
+
+scoop list
+scoop status; scoop update; scoop update --all
+```
+
+### Scoop as Administrator
 
 Install as administrator (Website recommed as user):
 
