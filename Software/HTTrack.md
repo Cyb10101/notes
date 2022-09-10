@@ -4,7 +4,7 @@
 
 ```bash
 # Not needed: httrack
-sudo apt install webhttrack
+sudo apt -y install webhttrack
 ```
 
 Start HTTrack in Browser:
