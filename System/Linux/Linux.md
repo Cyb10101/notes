@@ -48,6 +48,16 @@ user    ALL=(ALL:ALL) NOPASSWD:ALL      # For a user
 %sudo   ALL=(ALL:ALL) NOPASSWD:ALL      # For a group
 ```
 
+## Repeat command
+
+```bash
+repeat() { for ((i=0; i < $1; i++)); do eval ${*:2}; done; }
+repeat 1 echo 'Do it'
+
+repeatFortune() { for ((i=0; i < $1; i++)); do fortuneBoxQuote ${*:2}; done; }
+repeatFortune linux wisdom
+```
+
 ## Folder icons
 
 ```bash
