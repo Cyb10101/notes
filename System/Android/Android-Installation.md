@@ -4,6 +4,9 @@ Useful for the first installation.
 
 * [F-Droid Store](https://f-droid.org/)
 
+* [F-Droid: Aurora Store](https://f-droid.org/de/packages/com.aurora.store/)
+* [Aurora Store](https://auroraoss.com/)
+
 ## Prepare SD card
 
 May not be recommended as Android is a bit strange.
