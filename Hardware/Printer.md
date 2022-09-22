@@ -1,5 +1,8 @@
 # Hardware: Printer / Scanner
 
+* [OpenPrinting CUPS (https)](https://localhost:631)
+* [OpenPrinting CUPS (http)](http://localhost:631)
+
 ## Brother DCP-9022CDW
 
 * [Download Driver](https://www.brother.de/support/dcp-9022cdw/downloads)
@@ -51,4 +54,21 @@ sudo dpkg -i brscan-skey-0.2.4-1.amd64.deb
 sudo dpkg -i brother-udev-rule-type1-1.0.2-0.all.deb
 
 sudo brsaneconfig4 -a name=Brother model=DCP-9022CDW ip=192.168.178.27
+```
+
+## Get total count of printed pages
+
+Only from local computer (questionable):
+
+```bash
+lpstat -a
+printerCompleted=$(lpstat -W completed | grep 'Printer name' | wc -l)
+```
+
+From a printer Webpage:
+
+```bash
+sudo apt -y install libxml2-utils
+
+echo 'cat //*[@id="pageContents"]//*[@class="contentsGroup"]//dt[text()="Page Counter"]/following-sibling::dd[1]/text()' | xmllint --html --shell <(curl -fsSL 'http://192.168.178.21/general/information.html?kind=item') | sed '/^\/ >/d' | sed 's/<[^>]*.//g'
 ```
