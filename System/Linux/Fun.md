@@ -70,7 +70,7 @@ boxesRandom What a message
 ```bash
 # sudo apt -y install cowsay boxes lolcat
 sudo apt -y install fortune fortunes-de
-sudo apt -y fortunes-debian-hints fortunes-ubuntu-server fortunes-off fortunes-mario fortunes-bofh-excuses
+sudo apt -y install fortunes-debian-hints fortunes-ubuntu-server fortunes-off fortunes-mario fortunes-bofh-excuses
 
 # Data files containing selected fortune cookies ???
 sudo apt -y install fortunes-min
