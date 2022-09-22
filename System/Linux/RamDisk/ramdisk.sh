@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-
+# ~/Sync/notes/System/Linux/RamDisk/ramdisk.sh start 5G
+# ~/Sync/notes/System/Linux/RamDisk/ramdisk.sh stop
 ramDisk='/mnt/ramdisk'
 ramDiskBackup='/mnt/ramdisk_backup'
-ramSize='2G'
 ramUser='cyb10101'
 
 isRamDiskMounted() {
@@ -14,11 +14,16 @@ isRamDiskMounted() {
 }
 
 start() {
+    ramSize='1G'
+    if [[ ! -z "${1}" ]]; then
+        ramSize="${1}"
+    fi
+
     if ! isRamDiskMounted; then
-        mkdir -p ${ramDisk} && \
-            mkdir -p ${ramDiskBackup} && \
-            mount -t tmpfs -o rw,size=${ramSize} tmpfs ${ramDisk} && \
-            chown -Rf ${ramUser} ${ramDisk}
+        sudo mkdir -p ${ramDisk} && \
+            sudo mkdir -p ${ramDiskBackup} && \
+            sudo mount -t tmpfs -o rw,size=${ramSize} tmpfs ${ramDisk} && \
+            sudo chown -Rf ${ramUser} ${ramDisk}
     fi
     if ! isRamDiskMounted; then
         echo '[ERROR] Can not create RAM Disk'
@@ -26,18 +31,20 @@ start() {
     fi
 
     if [ -d ${ramDiskBackup} ]; then
-        rsync -a ${ramDiskBackup}'/' ${ramDisk}'/'
-        chown -Rf ${ramUser} ${ramDisk}
+        sudo rsync -a ${ramDiskBackup}'/' ${ramDisk}'/'
+        sudo chown -Rf ${ramUser} ${ramDisk}
     fi
+
+    xdg-open ${ramDisk} &
 }
 
 stop() {
     if isRamDiskMounted; then
         if [ -d ${ramDiskBackup} ]; then
-            rsync -a --delete ${ramDisk}'/' ${ramDiskBackup}'/'
-            chown -Rf ${ramUser} ${ramDiskBackup}
+            sudo rsync -a --delete ${ramDisk}'/' ${ramDiskBackup}'/'
+            sudo chown -Rf ${ramUser} ${ramDiskBackup}
         fi
-        umount ${ramDisk}
+        sudo umount ${ramDisk}
     fi
 
     if isRamDiskMounted; then
@@ -56,7 +63,7 @@ status() {
 
 case "$1" in
 start)
-    start
+    start "${2}"
     ;;
 stop)
     stop
