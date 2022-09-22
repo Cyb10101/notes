@@ -2,8 +2,13 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Simple WSL: C++ build active file and run",
+            "label": "App: C++ build active file and run",
             "type": "process",
+            "command": "bash",
+            "args": [
+                "-c",
+                "mkdir -p ${workspaceFolder}/build && g++ -static -std=c++20 -o ${workspaceFolder}/build/${fileBasenameNoExtension} ${fileDirname}/${fileBasenameNoExtension}.cpp && ${workspaceFolder}/build/${fileBasenameNoExtension}"
+            ],
             "windows": {
                 "command": "wsl",
                 "args": [
@@ -11,13 +16,6 @@
                     "Ubuntu",
                     "-e",
                     "bash",
-                    "-c",
-                    "mkdir -p ${workspaceFolder}/build && g++ -static -std=c++20 -o ${workspaceFolder}/build/${fileBasenameNoExtension} ${fileDirname}/${fileBasenameNoExtension}.cpp && ${workspaceFolder}/build/${fileBasenameNoExtension}"
-                ]
-            },
-            "linux": {
-                "command": "bash",
-                "args": [
                     "-c",
                     "mkdir -p ${workspaceFolder}/build && g++ -static -std=c++20 -o ${workspaceFolder}/build/${fileBasenameNoExtension} ${fileDirname}/${fileBasenameNoExtension}.cpp && ${workspaceFolder}/build/${fileBasenameNoExtension}"
                 ]
@@ -32,7 +30,62 @@
             "presentation": {
                 "reveal": "always",
                 "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "App: C++ build active file",
+            "type": "process",
+            "command": "bash",
+            "args": [
+                "-c",
+                "mkdir -p ${workspaceFolder}/build && g++ -static -std=c++20 -o ${workspaceFolder}/build/${fileBasenameNoExtension} ${fileDirname}/${fileBasenameNoExtension}.cpp"
+            ],
+            "windows": {
+                "command": "wsl",
+                "args": [
+                    "-d",
+                    "Ubuntu",
+                    "-e",
+                    "bash",
+                    "-c",
+                    "mkdir -p ${workspaceFolder}/build && g++ -static -std=c++20 -o ${workspaceFolder}/build/${fileBasenameNoExtension} ${fileDirname}/${fileBasenameNoExtension}.cpp"
+                ]
+            },
+            "group": "build",
+            "options": {
+                "cwd": "${fileDirname}/"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
             }
+        },
+        {
+            "label": "App-Task: C++ build active file",
+            "type": "cppbuild",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-static",
+                "-std=c++20",
+                "-g",
+                "${file}",
+                "-o",
+                "${workspaceFolder}/build/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "detail": "Compiler: /usr/bin/g++"
         }
     ]
 }
