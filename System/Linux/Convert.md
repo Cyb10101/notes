@@ -47,12 +47,23 @@ for file in ./*.mid; do timidity "${file}" -Ow -o - | lame - -b 192 "${file/%mid
 ## Video
 
 ```bash
+# Convert multiple
 find -type f -regextype posix-extended -iregex '.*\.(avi|mov|mp3|mp4|mpg)$' -exec sh -c 'for file; do ffmpeg -i "${file}" "${file%.*}.mkv"; done' sh {} +
+
+# Convert files
 for file in ./*.mkv; do ffmpeg -i "${file}" "${file/%mkv/mp4}"; done
 for file in ./*.mov; do ffmpeg -i "${file}" "${file/%mov/mp4}"; done
 
-ffmpeg -i video.mkv video.mp4
-ffmpeg -i video.mov video.mp4
+# Show codec
+ffprobe input.avi
+
+# Copy do not re-encode
+ffmpeg -i input.avi -c:v copy -c:a copy output.mp4
+ffmpeg -i input.avi -c:v copy -c:a copy output.mkv
+
+# Re-encode Xvid to h264
+ffmpeg -i input.avi -c:a copy -c:v libx264 -crf 18 -preset slow output.mp4
+ffmpeg -i input.avi -c:a copy -c:v libx264 -crf 18 -preset slow output.mkv
 ```
 
 ## Video to 720p
