@@ -503,6 +503,9 @@ installXnview() {
 
         # Image management > Files > Tab: Custom filter
         crudini --set ~/.config/xnviewmp/xnview.ini 'Browser' customFilter 3269
+
+        # Sort by filename
+        crudini --set ~/.config/xnviewmp/xnview.ini 'Browser' sort 0
     fi
 }
 
