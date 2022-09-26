@@ -1,6 +1,6 @@
 # Android: Get Root
 
-See: [Developer Bridge](Developer-Bridge.md)
+See: [Android Debug Bridge](Android-Debug-Bridge.md)
 
 ## TWRP - Team Win Recovery Project (No Root Required)
 
