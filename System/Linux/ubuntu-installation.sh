@@ -125,7 +125,6 @@ installEssential() {
         "TRUE" "ncdu" "NCurses Disk Usage" "Disk usage" \
         "TRUE" "exa" "Exa" "Prettier list filesystem" \
         "TRUE" "duf" "Duf" "Disk Usage Utility" \
-        "TRUE" "df" "Df" "Disk Usage Utility" \
         "TRUE" "testdisk extundelete" "Recover files" "Packages: testdisk, extundelete" \
         "TRUE" "p7zip-full p7zip-rar" "7-Zip" "Compression tools (+7-Zip-Rar)" \
         "TRUE" "rar unrar-free" "Rar" "Compression tools" \
@@ -362,7 +361,7 @@ installMpv() {
 # https://flathub.org/apps/details/com.github.rafostar.Clapper
 installClapper() {
     textColor 3 'Install: Clapper'
-    flatpak install flathub com.github.rafostar.Clapper
+    flatpak install -y flathub com.github.rafostar.Clapper
 }
 
 installKodi() {
