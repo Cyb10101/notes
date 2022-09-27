@@ -95,7 +95,7 @@ removePackages() {
     packages=($(yad --on-top --width=600 --height=400 --title="Remove Software" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
-        --hide-column=2 --print-column=2 \
+        --search-column=3 --hide-column=2 --print-column=2 \
         "TRUE" "aisleriot" "AisleRiot" "Solitaire game" \
         "TRUE" "gnome-mahjongg" "Mahjongg" "Mahjongg game" \
         "TRUE" "gnome-mines" "Mines" "Mines game" \
@@ -120,7 +120,7 @@ installEssential() {
     packages=($(yad --on-top --width=600 --height=400 --title="Install Essential" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
-        --hide-column=2 --print-column=2 \
+        --search-column=3 --hide-column=2 --print-column=2 \
         "TRUE" "cifs-utils nfs-common sshfs" "File system tools" "Tools for SSH, Samba and NFS" \
         "TRUE" "ncdu" "NCurses Disk Usage" "Disk usage" \
         "TRUE" "exa" "Exa" "Prettier list filesystem" \
@@ -823,7 +823,7 @@ installDependencies() {
     selectedList=($(yad --on-top --width=600 --height=300 --title="Install Dependencies" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
-        --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
         "TRUE" "installFlatpak" "Flatpak" "Package manager" \
         "TRUE" "installWine" "Wine" "Run Windows applications" \
         "TRUE" "installPlayOnLinux" "PlayOnLinux" "Create multiple Wine prefixes" \
@@ -853,7 +853,7 @@ installSoftware() {
     selectedList=($(yad --window-icon="gtk-ok" --on-top --width=600 --height=600 --title="Install Software" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
-        --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
         "${TICK:-FALSE}" "installFirefox" "Firefox" "Webbrowser" \
         "${TICK:-FALSE}" "installThunderbird" "Thunderbird" "Mail client" \
         "${TICK:-FALSE}" "installLibreOffice" "LibreOffice" "Office Suite" \
@@ -931,7 +931,7 @@ updateSoftware() {
     selectedList=($(yad --window-icon="gtk-ok" --on-top --width=600 --height=600 --title="Update Software" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
-        --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
         "FALSE" "installCroc" "Croc" "File transfer tool" \
         "FALSE" "installCzkawka" "Czkawka" "Duplicate image finder" \
         "FALSE" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" \
@@ -965,7 +965,7 @@ prepareSystem
 selectedList=($(yad --window-icon="gtk-ok" --on-top --width=350 --height=250 --title="Installation Process" \
     --list --checklist --multiple --separator=" " \
     --column=" " --column="Action" --column="Application" \
-    --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+    --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
     "${TICK:-FALSE}" "configureEnergy" "Configure Energy" \
     "${TICK:-FALSE}" "removePackages" "Remove Packages" \
     "${TICK:-FALSE}" "installEssential" "Install Essential" \
