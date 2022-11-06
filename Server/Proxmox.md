@@ -3,36 +3,47 @@
 * [Proxmox](https://www.proxmox.com/)
 * [Proxmox Virtal Environment Images](https://www.proxmox.com/en/downloads/category/iso-images-pve)
 
-VirtualBox:
-
-* Network > Networkbridge 1 > Extended (German: Erweitert) > Promiscuous-Modus = erlauben für allen VMs und den Host
-
 Default username: root
 
-```bash
-# Remove enterprise notice by apt
-echo "DPkg::Post-Invoke { \"dpkg -V proxmox-widget-toolkit | grep -q '/proxmoxlib\.js$'; if [ \$? -eq 1 ]; then { echo 'Removing subscription nag from UI...'; sed -i '/data.status/{s/\!//;s/Active/NoMoreNagging/}' /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js; }; fi\"; };" > /etc/apt/apt.conf.d/no-nag-script
-apt --reinstall install proxmox-widget-toolkit
-# apt update && apt -y dist-upgrade
-# [ -f /var/run/reboot-required ] && sudo reboot -f
-```
+## VirtualBox
+
+* Network > Adapter 1
+  * Attached to = Networkbridge
+  * Advanced > Promiscuous Mode = Allow All
+
+## Adjust sources
+
+Remove enterprise sources and add community sources.
 
 ```bash
-# Remove enterprise sources, add community sources
 mv /etc/apt/sources.list.d/pve-enterprise.list /etc/apt/sources.list.d/pve-enterprise.list.disabled
+
 echo "deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription" > /etc/apt/sources.list.d/pve-community.list
 
-# @todo Maybe not needed
-# Remove enterprise notice 7.1
-sed -Ezi.bak "s/(Ext.Msg.show\(\{\s+title: gettext\('No valid sub)/void\(\{ \/\/\1/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
-
-# @todo Maybe not needed
-# Remove enterprise notice 7.2 - Line 512: nano -c /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
-sed -Ezi.bak "s/res === null \|\| res === undefined \|\| \!res \|\| res\s+\.data\.status(\.toLowerCase\(\))? \!== '[Aa]ctive'/false/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
-
-# @todo Maybe not needed
-# Restart service
 systemctl restart pveproxy.service
+```
+
+## Remove enterprise notice
+
+```bash
+echo 'DPkg::Post-Invoke { "/usr/local/sbin/dpkg_proxmox-fixes.sh"; }' > /etc/apt/apt.conf.d/99-proxmox-fixes
+
+cat << EOF | tee /usr/local/sbin/dpkg_proxmox-fixes.sh
+#!/bin/bash
+removeSubscriptionNotice() {
+    if [ -f /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js ]; then
+        echo 'Removing Proxmox subscription notice from UI ...'
+        sed -Ei "s/(\.data\.status(\.toLowerCase\(\))?) !== '[aA]ctive'/\1 === 'no-more-nagging'/" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+    fi
+}
+
+removeSubscriptionNotice
+EOF
+
+chmod 644 /etc/apt/apt.conf.d/99-proxmox-fixes
+chmod 744 /usr/local/sbin/dpkg_proxmox-fixes.sh
+
+apt --reinstall install proxmox-widget-toolkit
 ```
 
 ## Create Container
@@ -46,8 +57,12 @@ Network:
 
 ## Transfer files with croc
 
+```bash
 wget -O - https://getcroc.schollz.com | bash
 
+# Container dump/backup
 cd /var/lib/vz/dump/
+```
 
-* Add templates: /pve/local/Container Templates
+Add new templates:
+* Server View: Datacenter/pve/local/Container Templates (or CT Templates)
