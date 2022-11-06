@@ -1,5 +1,6 @@
 <!--
 # Enable Windows Sandbox
+copy %HOMEDRIVE%%HOMEPATH%\Sync\notes\System\Windows\Sandbox\Sandbox_Secure.wsb %HOMEDRIVE%%HOMEPATH%\Downloads\
 dism.exe /Online /Enable-Feature /FeatureName:Containers-DisposableClientVM /All /NoRestart
 shutdown /r /t 5 /c "Restart to activate Sandbox"
 -->
