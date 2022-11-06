@@ -11,6 +11,9 @@
 * [Aurora Store](https://auroraoss.com/)
 
 * [Root Checker](https://play.google.com/store/apps/details?id=com.joeykrim.rootcheck)
+* [DiskInfo](https://play.google.com/store/apps/details?id=com.drhowdydoo.diskinfo)
+* [DRM Info](https://play.google.com/store/apps/details?id=com.androidfung.drminfo)
+* [Device Info HW](https://play.google.com/store/apps/details?id=ru.andr7e.deviceinfohw)
 
 ## Root
 
