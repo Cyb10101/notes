@@ -41,8 +41,8 @@ Start `powershell` as administrator:
 # Add-Type -AssemblyName System.IO.Compression.FileSystem
 # function Unzip([string]$zipfile, [string]$outpath) {[System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath);}
 
-# Download and extract files
-$version = "1.18.1"
+# Download and extract files https://github.com/syncthing/syncthing/releases/latest
+$version = "1.22.0"
 mkdir C:\opt
 Invoke-WebRequest "https://github.com/syncthing/syncthing/releases/download/v$($version)/syncthing-windows-amd64-v$($version).zip" -OutFile C:\opt\syncthing.zip
 
