@@ -41,6 +41,9 @@ If you want to create a virtual disk for a virtual machine.
 Do not move or shrink Windows Partition with gparted!
 In my test GParted crashed. Use a Windows tool:
 
+**Note: You must disable hibernation in Windows with `powercfg.exe /h off`, see [Windows Shutdown](../Windows/Shutdown.md).**
+
+* [RedoRescue](http://redorescue.com/)
 * [MiniTool: Partition Wizard](https://www.minitool.com/partition-manager/partition-wizard-home.html)
 * Terminal on a [Windows ISO](https://www.microsoft.com/de-de/software-download)
 * Untested: [Macrium: Reflect](https://www.macrium.com/reflectfree)
