@@ -41,12 +41,20 @@ echo -e "\033[8;24;98t"
 
 ## Sudo without password
 
+```bash
 sudo visudo
+EDITOR=gedit sudo -E visudo
+```
 
 ```bash
-user    ALL=(ALL:ALL) NOPASSWD:ALL      # For a user
 %sudo   ALL=(ALL:ALL) NOPASSWD:ALL      # For a group
+user    ALL=(ALL:ALL) NOPASSWD:ALL      # For a user
+
+# At end of file
+user ALL=(ALL:ALL) NOPASSWD: /root/script.sh
 ```
+
+Run `sudo /root/script.sh`.
 
 ## Repeat command
 
