@@ -15,7 +15,6 @@ powershell -command "Invoke-WebRequest https://cygwin.com/setup-x86_64.exe -OutF
   --local-package-dir="%HOMEDRIVE%\opt\Cygwin-Setup" ^
   --site="http://ftp-stud.hs-esslingen.de/pub/Mirrors/sources.redhat.com/cygwin/" ^
   --packages="git,openssh,rsync,vim"
-
 ```
 
 Configure Cygwin Terminal:
