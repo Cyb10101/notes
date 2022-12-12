@@ -12,7 +12,7 @@ wsl --install
 
 # Install Linux
 wsl --list --online
-wsl --install -d Ubuntu-20.04
+wsl --install -d Ubuntu-22.04
 
 # Update Kernel
 wsl --status
@@ -44,6 +44,7 @@ wsl --set-default-version 2
 
 Install Linux via Windows Store:
 
+* [Ubuntu 20.04](https://apps.microsoft.com/store/detail/ubuntu-22041-lts/9PN20MSR04DW)
 * [Ubuntu 20.04](https://www.microsoft.com/store/apps/9nblggh4msv6)
 * [Ubuntu 18.04](https://www.microsoft.com/store/apps/9N9TNGVNDL3Q)
 * [Microsoft Store](https://aka.ms/wslstore)
@@ -55,7 +56,7 @@ Start Linux and configure it.
 ```bash
 wsl --list -v
 wsl --set-version Ubuntu 2
-wsl --set-default Ubuntu
+wsl --set-default Ubuntu-22.04
 ```
 
 Open Explorer:
@@ -67,6 +68,18 @@ Open Explorer:
 ## Configure WSL
 
 * [wsl-install.sh](wsl-install.sh)
+
+```bash
+bash /mnt/c/Users/Cyb10101/Sync/notes/System/Windows/WSL/wsl-install.sh
+```
+
+## Uninstall or move Distribution
+
+```bash
+wsl --list -v
+wsl --set-default Ubuntu-22.04
+# Uninstall via Settings: ms-settings:appsfeatures
+```
 
 ## Docker
 
