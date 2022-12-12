@@ -27,6 +27,10 @@ security.insecure_field_warning.contextual.enabled = false
 browser.fixup.alternate.enabled = false
 browser.urlbar.autoFill = false
 
+## Set default volume (Works only for default player)
+
+media.default_volume = 0.5
+
 ## Dark mode
 
 Currently choosen from theme without config. Maybe a bug:
