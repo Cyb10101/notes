@@ -20,8 +20,8 @@ createTempGenerated() {
   chmod og+r ${VAR_FOLDER}
 }
 
-#createTempDateTime 'cyb'
-createTempGenerated 'cyb'
+#createTempDateTime 'user'
+createTempGenerated 'user'
 
 xdg-open ${VAR_FOLDER} &
 exit 0;
