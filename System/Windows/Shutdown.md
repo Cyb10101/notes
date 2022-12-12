@@ -8,13 +8,17 @@ Some systems, such as Linux, require that Windows be completely shut down and no
 
 See: [Scripts/Complete-shutdown.lnk](Scripts/Complete-shutdown.lnk)
 
+Run as Administrator in Command/Powershell:
+
 ```bash
 %windir%\system32\shutdown.exe /s /t 0
 ```
 
-## permanently shut down completely
+## Permanently shut down completely
 
-Switch off hibernation:
+Switch off hibernation.
+
+Run as Administrator in Command/Powershell:
 
 ```bash
 powercfg.exe /h off
