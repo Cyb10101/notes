@@ -308,7 +308,7 @@ installElement() {
 
 installLinphone() {
     textColor 3 'Install: Linphone'
-    VERSION='4.4.1'
+    VERSION='4.4.11'
 
     sudo curl -o /tmp/Linphone.AppImage -fsSL "https://www.linphone.org/releases/linux/app/Linphone-${VERSION}.AppImage"
     sudo install /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
@@ -427,6 +427,7 @@ installVideoEffects() {
     sudo apt -y install frei0r-plugins
 }
 
+# https://mkvtoolnix.download/downloads.html#ubuntu
 installMkvToolNix() {
     textColor 3 'Install: MkvToolNix'
 
@@ -818,6 +819,20 @@ installVirtualBox() {
     sudo systemctl disable vboxweb.service
 }
 
+installUefiRebootLauncher() {
+    textColor 3 'Install: UEFI Firmware Setup Reboot Launcher'
+    cat << EOF | sudo tee /usr/share/applications/uefi-reboot.desktop
+[Desktop Entry]
+Name=UEFI Firmware Setup (Reboot)
+Comment=Access the motherboard configuration utility
+Exec=/bin/bash -c 'if [[ "$(ps --no-headers -o comm 1)" == "systemd" ]]; then if zenity --title="Reboot to UEFI Firmware Setup" --icon-name=warning --question --text="Do you want to reboot to UEFI Firmware Setup?"; then systemctl reboot --firmware-setup; fi; else zenity --error --text="Error Systemd not found!"; fi'
+Icon=system-restart
+Terminal=false
+Type=Application
+Categories=System;Settings;
+EOF
+}
+
 # Installation #################################################################
 installDependencies() {
     selectedList=($(yad --on-top --width=600 --height=300 --title="Install Dependencies" \
@@ -921,6 +936,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" \
         "${TICK:-FALSE}" "installPutty" "PuTTY" "PuTTY utilities" \
         "${TICK:-FALSE}" "installVirtualBox" "VirtualBox" "Virtual machines" \
+        "${TICK:-TRUE}" "installUefiRebootLauncher" "UEFI Firmware Setup Reboot Launcher" "UEFI Firmware Setup Reboot Launcher" \
     ))
     for selected in "${selectedList[@]}"; do
         ${selected}
@@ -942,6 +958,7 @@ updateSoftware() {
         "FALSE" "installOpenShot" "OpenShot" "Video editor" \
         "FALSE" "installPutty" "PuTTY" "PuTTY utilities" \
         "FALSE" "installRustDesk" "RustDesk" "Remote maintenance" \
+        "FALSE" "installThreema" "Threema" "Instant messaging, Voice conferencing" \
         "FALSE" "installUnifiedRemote" "Unified Remote" "Remote control" \
         "FALSE" "installXnview" "Xnview" "Image viewer" \
         "FALSE" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" \
