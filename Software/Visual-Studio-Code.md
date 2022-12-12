@@ -66,6 +66,9 @@ code --install-extension humao.rest-client
 
 # Hex Editor
 code --install-extension ms-vscode.hexeditor
+
+# Markdown Editor
+code --install-extension zaaack.markdown-editor
 ```
 
 ## Configuration
