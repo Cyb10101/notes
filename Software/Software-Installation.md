@@ -327,6 +327,12 @@ sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
 ## Multimedia: Screenshot
 
 * [Flameshot](https://github.com/flameshot-org/flameshot/releases/latest) (Recommended)
+  * Einstellungen > Tab "Benutzeroberfläche" > Field "Knopfauswahl" (@todo German language)
+    * Bild hochladen = false
+    * Anwendungsstarter = false (Maybe Bug)
+  * Einstellungen > Tab "Allgemein" > Automatisch starten = true
+  * Einstellungen > Tab "Allgemein" > Zeige Willkommensnachricht beim Start = true
+  * Einstellungen > Tab "Allgemein" > Speicherpfad = C:\Users\user\Downloads
 * [Greenshot](https://getgreenshot.org/)
 * [LightShot](https://app.prntscr.com/)
 
@@ -345,6 +351,10 @@ sudo apt -y install flameshot
 
 * [Vokoscreen](https://linuxecke.volkoh.de/vokoscreen/vokoscreen.html)
 * [OBS - Open Broadcaster Software](https://obsproject.com/)
+  * Einstellungen > Aufnahme > Modus Erweitert (@todo German language)
+    * Tab "Aufnahme" > Aufnahmeeinstellungen > Aufnahmepfad = C:\Users\user\Downloads
+    * Tab "Aufnahme" > Encodereinstellungen > Voreinstellung = Ununterscheidbare Aufnahme
+* [OBS plugin: win-capture-audio](https://github.com/bozbez/win-capture-audio/releases/latest)
 * [ffmpeg](https://www.ffmpeg.org/)
 
 * [Peek](https://github.com/phw/peek)
@@ -375,11 +385,13 @@ sudo apt -y install peek
 Linux:
 
 ```bash
+@todo German language
 @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
 aria2c --download-result=hide --dir=/tmp -o teamviewer.deb https://download.teamviewer.com/download/linux/teamviewer_amd64.deb
 sudo dpkg -i /tmp/teamviewer.deb
 sudo apt -f install
 
+@todo German language
 @bug: Schlüssel ist im veralteten Schlüsselbund trusted.gpg gespeichert (/etc/apt/trusted.gpg), siehe den Abschnitt MISSBILLIGUNG in apt-key(8) für Details.
 wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | sudo apt-key add -
 echo "deb http://deb.anydesk.com/ all main" | sudo tee -a /etc/apt/sources.list.d/anydesk-stable.list
@@ -402,7 +414,7 @@ sudo dpkg -i /tmp/nomachine.deb
 * [Balena Etcher: Github](https://github.com/balena-io/etcher)
 * [Rufus](https://rufus.akeo.ie/)
 
-* [ImgBurn](http://www.imgburn.com/)
+* [ImgBurn](https://www.imgburn.com/)
 * [InfraRecorder](http://infrarecorder.org/)
 * [CDBurnerXP](https://cdburnerxp.se/)
 * [WinCDEmu](https://wincdemu.sysprogs.org/)
@@ -436,7 +448,7 @@ sudo apt -y install k3b xfburn brasero
 * [Amazon - Prime Gaming](https://gaming.amazon.com/home)
 
 * [Epic Games Client](https://www.epicgames.com/store/de/download)
-* [EA Play - Origin Client](https://www.origin.com/deu/de-de/store/download)
+* [EA (Electronic Arts) Client](https://www.ea.com/de-de/ea-app)
 * [Itch Client](https://itch.io/app)
 
 * [CurseForge Client](https://download.curseforge.com/)
@@ -625,7 +637,9 @@ sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile'
 
 Disk space analyser:
 
+* [RidNacs](https://www.splashsoft.de/ridnacs-disk-space-usage-analyzer/)
 * [TreeSize](https://www.jam-software.de/treesize_free/)
+* [WizTree](https://www.diskanalyzer.com/download)
 * [WinDirStat](https://windirstat.net/)
 
 ## Internet / Server
