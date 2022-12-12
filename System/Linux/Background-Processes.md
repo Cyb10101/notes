@@ -9,25 +9,17 @@ Tmux is said to be the better choice.
 New session, session with a new name, session with a new name and command.
 
 ```bash
+# New session
 tmux
-tmux new -s {sessionName}
-tmux new -s {sessionName} '{command}'
-```
 
-### Detach running tmux
+# New session, detached, session name and command
+tmux new -d -s {sessionName} 'sleep 10'
 
-Either as a command: [STRG + B] then [D]
-
-Or in Tmux Console:
-
-```bash
-tmux detach
-```
-
-### Show Tmux list
-
-```bash
+# List sessions
 tmux ls
+
+# Detach or: Ctrl + b, then key 'd'
+tmux detach
 ```
 
 ### Rename Tmux window
