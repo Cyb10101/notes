@@ -109,3 +109,10 @@ Windows Registry Editor Version 5.00
 "BypassCPUCheck"=dword:00000001
 "BypassDiskCheck"=dword:00000001
 ```
+
+Bypass Windows 11 internet requirements:
+
+* Go though setup until you reach page: "Let's connect you to a network"
+* Open Command promt with: Shift + F10
+* Run: C:\Windows\System\oobe\BypassNRO.cmd
+* Reboot and click on "I don't have internet"
