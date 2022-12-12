@@ -15,7 +15,7 @@ reg add "HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\TimeZoneInformation
 Type `Windows + R` and run `ms-settings:dateandtime` (Settings > Time & Language > Date & Time).
 Toogle off and on "Set time automatically".
 
-*Keyword: Timezone, Same time for Windows and Linux*
+*Keyword: Windows Timezone, Same time for Windows and Linux*
 
 ## Delete Windows folders and files with trailing spaces
 
