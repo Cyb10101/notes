@@ -64,9 +64,6 @@ code --install-extension bibhasdn.unique-lines
 # Rest Client
 code --install-extension humao.rest-client
 
-# Hex Editor
-code --install-extension ms-vscode.hexeditor
-
 # Markdown Editor
 code --install-extension zaaack.markdown-editor
 ```
