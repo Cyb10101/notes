@@ -116,3 +116,11 @@ Bypass Windows 11 internet requirements:
 * Open Command promt with: Shift + F10
 * Run: C:\Windows\System\oobe\BypassNRO.cmd
 * Reboot and click on "I don't have internet"
+
+File `C:\Windows\System\oobe\BypassNRO.cmd`:
+
+```shell
+@echo off
+reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f
+shutdown /r /t 0
+```
