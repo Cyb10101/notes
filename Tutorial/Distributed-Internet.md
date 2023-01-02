@@ -24,6 +24,10 @@ Video platform:
 * [Lbry](https://lbry.com/)
 * [Lbry Tech](https://lbry.tech/)
 
+Information:
+
+* [How Odysee and LBRY Work](https://www.youtube.com/watch?v=RCB_udRbF7Q)
+
 ## Other
 
 * [IPFS - InterPlanetary File System](https://ipfs.tech/)
