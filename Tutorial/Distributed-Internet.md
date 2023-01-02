@@ -23,3 +23,8 @@ Video platform:
 * [Odysee](https://odysee.com/)
 * [Lbry](https://lbry.com/)
 * [Lbry Tech](https://lbry.tech/)
+
+## Other
+
+* [IPFS - InterPlanetary File System](https://ipfs.tech/)
+* [ZeroNet - Decentralized websites](https://zeronet.io/)
