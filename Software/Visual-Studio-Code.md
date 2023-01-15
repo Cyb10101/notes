@@ -66,6 +66,12 @@ code --install-extension humao.rest-client
 
 # Markdown Editor
 code --install-extension zaaack.markdown-editor
+
+# Hex Editor
+code --install-extension ms-vscode.hexeditor
+
+# Emoji
+code --install-extension Perkovec.emoji
 ```
 
 ## Configuration
