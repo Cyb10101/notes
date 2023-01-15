@@ -87,11 +87,6 @@ flatpak install flathub com.usebottles.bottles
     * soda = (Newest)
     * DXVK = (Newest)
     * VKD3D = (Newest)
-  * Display: Advanced Display Settings
-    * Renderer = GDI
-  * Perfomance
-    * @todo Syncronisation = Fsync ?
-    * Feral GameMode = true (Maybe)
   * Compatibility: Environment Variables
     * GALLIUM_HUD="simple,cpu+fps+temperature+buffer-wait-time"
     * DXVK_HUD="version,api,devinfo,fps,frametimes,gpuload"
