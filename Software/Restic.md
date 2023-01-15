@@ -205,6 +205,29 @@ set RESTIC_PASSWORD_FILE=%USERPROFILE%\restic-password.txt
 rem "C:\ProgramData\scoop\apps\restic\current\restic" %*
 ```
 
+## Diff added and changed files
+
+```bash
+sudo apt -y install jq
+
+sudo su
+export RESTIC_REPOSITORY="/mnt/backup/repository"
+export RESTIC_PASSWORD_FILE="/home/username/.config/restic/password.txt"
+
+# Get latest and previous snapshot
+PREVIOUS=$(restic snapshots --json | jq -r '.[-2].short_id')
+LATEST=$(restic snapshots --json | jq -r '.[-1].short_id')
+
+# Convert changes from snapshot to regular expression
+restic diff --metadata --json $PREVIOUS $LATEST | jq -r 'select(.modifier == "+" or .modifier == "M") | "\(.path)"' > pattern.txt
+
+# Get file list from latest snapshot
+restic ls --long --json $LATEST | jq -r 'select(.size != null) | "\(.size) \(.path)"' | sort -rnk 1 | numfmt --field=1 --to=iec-i --suffix=B --padding=7 > list.txt
+
+# Grep pattern file with file list
+grep -F -f pattern.txt list.txt > added.txt
+```
+
 ## Remote backup (Beta)
 
 Theoretical possibility to do a backup reverse.
