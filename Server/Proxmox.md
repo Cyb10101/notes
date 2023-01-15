@@ -43,26 +43,43 @@ EOF
 chmod 644 /etc/apt/apt.conf.d/99-proxmox-fixes
 chmod 744 /usr/local/sbin/dpkg_proxmox-fixes.sh
 
+/usr/local/sbin/dpkg_proxmox-fixes.sh
 apt --reinstall install proxmox-widget-toolkit
 ```
 
 ## Create Container
 
-Network:
+* General > Set Password
+* Network
+  * Name = eth0
+  * Bridge = vmbr0
+  * Firewall = true
+  * IPv4 & IPv6 = DHCP
 
-* Name = eth0
-* Bridge = vmbr0
-* Firewall = true
-* IPv4 & IPv6 = DHCP
-
-## Transfer files with croc
+## Transfer files with between Proxmox
 
 ```bash
 wget -O - https://getcroc.schollz.com | bash
 
 # Container dump/backup
 cd /var/lib/vz/dump/
+croc send *
 ```
 
 Add new templates:
+
 * Server View: Datacenter/pve/local/Container Templates (or CT Templates)
+
+Create CT (Create a Container by Container Template):
+
+* General > Set Password
+* Template > Use Backup file
+* Network
+  * Name = eth0
+  * Bridge = vmbr0
+  * Firewall = true
+  * IPv4 & IPv6 = DHCP
+
+Restore notes:
+
+* Datacenter/pve/100 (CT100) > Summary > Edit Notes
