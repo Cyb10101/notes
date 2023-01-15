@@ -1,6 +1,6 @@
 # Ventoy
 
-* [Ventoy](https://github.com/ventoy/Ventoy/releases)
+* [Ventoy](https://github.com/ventoy/Ventoy/releases/latest)
 * [Ventoy: Persistence images](https://github.com/ventoy/backend/releases)
 
 * [Original Theme](https://github.com/vinceliuice/grub2-themes)
@@ -9,7 +9,7 @@
 Install:
 
 ```bash
-VERSION='1.0.78'
+VERSION='1.0.86'
 curl -o /tmp/ventoy.tar.gz -fsSL "https://github.com/ventoy/Ventoy/releases/download/v${VERSION}/ventoy-${VERSION}-linux.tar.gz"
 tar -C ~/opt -xf /tmp/ventoy.tar.gz
 mv ~/opt/ventoy-${VERSION} ~/opt/ventoy
