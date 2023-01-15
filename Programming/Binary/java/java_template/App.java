@@ -4,7 +4,7 @@ import Utility.Tools;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hellow World");
+        System.out.println("Hello World");
 
         Tools tools = new Tools();
         System.out.println("Result: " + tools.add(3, 5));
