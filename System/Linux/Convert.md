@@ -66,16 +66,15 @@ ffmpeg -i input.avi -c:a copy -c:v libx264 -crf 18 -preset slow output.mp4
 ffmpeg -i input.avi -c:a copy -c:v libx264 -crf 18 -preset slow output.mkv
 ```
 
-## Video to 720p
-
 ```bash
-ffmpeg -i movie.mkv -vf scale=-1:720 movie_720p.mkv
-```
+# Scale to 720p
+ffmpeg -i input.mkv -vf scale=-1:720 output_720p.mkv
 
-## Cut Video
+# Change audio volume
+ffmpeg -i input.mp4 -vcodec copy -af "volume=20dB" output.mp4
 
-```bash
-ffmpeg -i original.mp4 -ss 00:00:23 -c copy cutted.mp4
+# Cut Video after 23 seconds
+ffmpeg -i input.mp4 -ss 00:00:23 -c copy output.mp4
 ```
 
 ## 3D to 2D
@@ -169,6 +168,9 @@ ffmpeg -i video/merged.m4s -i audio/merged.m4s -c copy output.mp4
 * [ttconv](https://pypi.org/project/ttconv/)
 
 ```bash
+curl -o /tmp/MediathekView.deb -fsSL 'https://download.mediathekview.de/stabil/MediathekView-latest-linux.deb'
+sudo dpkg -i /tmp/MediathekView.deb
+
 # Convert subtitle from ttml to srt
 pip install ttconv
 python3 -c "import ttconv as _; print(_.__file__)"
