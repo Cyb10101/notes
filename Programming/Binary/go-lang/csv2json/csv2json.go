@@ -41,7 +41,7 @@ func checkArguments(inputFile string) {
   }
 }
 
-func getContentByCsvFile(inputFile string) [][]string {
+func getContentByCsvFile(inputFile string, comma rune) [][]string {
   csvFile, err := os.Open(inputFile)
   if err != nil {
     log.Fatal("The file is not found!")
@@ -49,9 +49,13 @@ func getContentByCsvFile(inputFile string) [][]string {
   defer csvFile.Close()
 
   reader := csv.NewReader(csvFile)
+  reader.Comma = comma
+
   content, _ := reader.ReadAll()
   if len(content) < 1 {
-    log.Fatal("Something wrong, the file maybe empty or length of the lines are not greater than two!")
+    fmt.Println("Something wrong, the file maybe empty or length of the lines are not greater than two!")
+    fmt.Println("Maybe you need another comma demiliter: csv2json -comma ';' INPUT.csv OUTPUT.json")
+    os.Exit(1)
   }
 
   return content
@@ -107,10 +111,20 @@ func saveFile(path string, content []byte) {
 }
 
 func main() {
+  var comma rune
+  comma = ','
+
   // Parse arguments
   var inputFile string
   var outputFile string
+  var commaString string
+  flag.StringVar(&commaString, "comma", ",", "Field delimiter: , or ; or something else")
   flag.Parse()
+
+  // Convert string to rune
+  if len(commaString) > 0 {
+    comma = []rune(commaString)[0]
+  }
 
   arguments := flag.Args()
   if len(arguments) > 0 {
@@ -122,7 +136,7 @@ func main() {
 
   if len(flag.Args()) > 0 {
     checkArguments(inputFile)
-    contentCsv := getContentByCsvFile(inputFile)
+    contentCsv := getContentByCsvFile(inputFile, comma)
     headers, content := splitCsvHeaderAndContent(contentCsv)
   
     bytesJson := convertCsvPartsToJson(headers, content)

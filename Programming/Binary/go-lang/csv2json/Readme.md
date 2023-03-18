@@ -10,7 +10,7 @@ Compile and move to binary folder:
 
 ```bash
 # Linux
-sudo go build -o /usr/local/bin/csv2json
+sudo go build -o /usr/local/bin/csv2json -buildvcs=false
 
 # Windows
 env GOOS=windows GOARCH=amd64 go build
@@ -24,6 +24,9 @@ csv2json export.csv
 
 # Convert input.csv to output.json
 csv2json input.csv output.json
+
+# Convert input.csv to output.json with semikolon as demiliter
+csv2json -comma ';' input.csv output.json
 ```
 
 ## Other
