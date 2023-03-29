@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  app:
+    image: mono-api-middleware:latest
+    build: .
+    user: 1000:1000
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - .:/app
