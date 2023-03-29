@@ -22,6 +22,10 @@ These are Firefox Send forked projects.
 * [Git: timvisee/send-docker-compose](https://github.com/timvisee/send-docker-compose)
 * [Git: mozilla/send](https://github.com/mozilla/send)
 
+## LocalSend
+
+* [LocalSend](https://github.com/localsend/localsend)
+
 ## Croc
 
 * [Croc](https://github.com/schollz/croc)
