@@ -1,14 +1,36 @@
 # Linux
 
+## Guest Account
+
+```bash
+sudo useradd -s /bin/bash -d /home/guest -m -c Guest guest
+sudo passwd guest
+
+# Set icon
+sudo busctl call org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u guest) \
+    org.freedesktop.Accounts.User \
+    SetIconFile s /usr/share/pixmaps/faces/hummingbird.jpg
+
+# Clear guest filesystem
+sudo rm -rf ~guest
+sudo mkhomedir_helper guest
+```
+
+For automatic login without password edit `/etc/pam.d/gdm-password` and add `auth sufficient pam_succeed_if.so user ingroup guest` at the beginning on the file:
+
+```bash
+sudo sed -i '1s/^/auth sufficient pam_succeed_if.so user ingroup guest\n/' /etc/pam.d/gdm-password
+```
+
 ## Find
 
 ```bash
 # Find long filenames
-find . -regextype posix-extended -regex '.*[^/]{255,}$'
-find . -regextype posix-extended -regex '.*[^/]{128,}$'
+find -regextype posix-extended -regex '.*[^/]{255,}$'
+find -regextype posix-extended -regex '.*[^/]{128,}$'
 
 # Find file extensions
-find . -type f | sed -n 's/..*\.//p' | sort | uniq -c
+find -type f -iname '*.*' | sed -n 's/..*\.//p' | sort -u
 ```
 
 ## Rename
