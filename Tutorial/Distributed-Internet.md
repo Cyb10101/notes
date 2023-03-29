@@ -6,6 +6,7 @@ Social network:
 
 * [Mastodon](https://joinmastodon.org/)
 * [PeerTube](https://joinpeertube.org/)
+  * [PeerTube instances](https://instances.joinpeertube.org/instances)
 * [Pixelfed](https://pixelfed.org/)
 * [Lemmy](https://join-lemmy.org/)
 
