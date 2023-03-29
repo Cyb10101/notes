@@ -90,6 +90,16 @@ gpg -c --cipher-algo TWOFISH --digest-algo SHA512 secret.txt
 gpg --output secret.txt -d secure.txt.gpg
 ```
 
+## Chat
+
+```bash
+# Sender: Encrypt and send chat
+netcat -l -p 7779 | gpg --decrypt
+
+# Receiver: Receive and decrypt chat
+gpg -e -r test1@example.org | netcat 127.0.0.1 7779
+```
+
 ## GPA - Graphical frontend for the GNU Privacy Guard
 
 ```bash
