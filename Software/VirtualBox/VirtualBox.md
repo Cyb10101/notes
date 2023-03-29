@@ -124,3 +124,16 @@ File `C:\Windows\System\oobe\BypassNRO.cmd`:
 reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f
 shutdown /r /t 0
 ```
+
+## Bugfix: Failed to start VirtualBox Linux kernel module
+
+```bash
+#sudo systemctl status vboxdrv.service
+#sudo journalctl -xeu vboxdrv.service
+sudo apt install virtualbox-dkms
+
+# Error: VirtualBox - Kernel driver not installed (rc=-1908)
+sudo dpkg-reconfigure virtualbox-dkms
+sudo modprobe vboxdrv
+# No restart needed
+```

@@ -518,7 +518,8 @@ Windows:
 ```shell
 sudo scoop install aria2 croc --global
 
-croc --relay "example.de:9009" send [filename]
+croc --relay "example.de:9009" --pass="relay-password" send [filename]
+# CROC_RELAY='example.de:9009' CROC_PASS='relay-password' croc send --text 'Test'
 ```
 
 Windows Bugfix:

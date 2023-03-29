@@ -42,6 +42,8 @@ set RESTIC_PASSWORD=123456
 set RESTIC_PASSWORD_FILE=%USERPROFILE%\restic-password.txt
 ```
 
+Untested Windows mounts: https://winfsp.dev/
+
 ## Initialize Repository
 
 Linux:

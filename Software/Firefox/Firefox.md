@@ -13,6 +13,10 @@ Configure url: [about:config](about:config)
 extensions.pocket.enabled = false
 ```
 
+## Reader view
+
+reader.content_width = 9
+
 ## Switch off full screen message
 
 full-screen-api.warning.delay = 0

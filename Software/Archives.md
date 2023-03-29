@@ -7,8 +7,8 @@ Create archives and split files.
 Linux:
 
 ```bash
-# Create archive with password (-p) and split to 50 MB parts
-7z a -p -v50m archive.7z ~/Documents
+# Create archive with password (-p) and split to 1 GB / 50 MB parts
+7z a -p -v1g archive.7z ~/Documents
 7z a -p123456 -v50m archive.7z ~/Documents
 
 # Extract archive

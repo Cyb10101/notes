@@ -1,5 +1,6 @@
 # Visual Studio Code
 
+* [VSCodium](https://vscodium.com/)
 * [Visual Studio Code](https://code.visualstudio.com/)
 
 Ctrl + , = Settings
@@ -10,73 +11,82 @@ Ctrl + D = Multi selection
 
 Alt + Shit + Arrow-Key = Multi selection
 
+## Difference VSCodium
+
+VSCodium is a community-driven, freely-licensed binary distribution of Microsoft’s editor VS Code.
+
+This may not working:
+
+* Property Extension
+* VS Code Remote Development
+* Debugger: C#
+
 ## Extensions
 
 *Note: Restard needed!*
 
 ```bash
+binCode=$(which codium)
+binCode=$(which code)
+
 # Theme: One Dark Pro (Powerbar > Preferences: Color Theme)
-code --install-extension zhuangtongfa.material-theme
+${binCode} --install-extension zhuangtongfa.material-theme
 
 # German: (Powerbar > Configure Display Language)
-code --install-extension ms-ceintl.vscode-language-pack-de
-code --locale=de
-
-# Docker
-code --install-extension ms-azuretools.vscode-docker
-
-# Live Share
-code --install-extension ms-vsliveshare.vsliveshare
-
-# Language: Twig
-code --install-extension mblode.twig-language-2
-
-# Language: Apache Conf
-code --install-extension mrmlnc.vscode-apache
-
-# Language: PHP
-code --install-extension bmewburn.vscode-intelephense-client
-
-# Language: Markdown
-code --install-extension yzhang.markdown-all-in-one
-
-# Language: Windows Registry Script
-code --install-extension ionutvmi.reg
-
-# Language: Better Shell Syntax (Highlighting)
-code --install-extension jeff-hykin.better-shellscript-syntax
-
-# Language: C++
-code --install-extension ms-vscode.cpptools
-
-# Activitybar: Workspace sidebar
-code --install-extension sketchbuch.vsc-workspace-sidebar
+${binCode} --install-extension ms-ceintl.vscode-language-pack-de
+${binCode} --locale=de
 
 # Shortcut menu
-code --install-extension jerrygoyal.shortcut-menu-bar
+${binCode} --install-extension jerrygoyal.shortcut-menu-bar
+
+# ----------------------------------------------------------
+
+# Language: Apache Conf
+#${binCode} --install-extension mrmlnc.vscode-apache
+
+# Language: Twig
+${binCode} --install-extension mblode.twig-language-2
+
+# Language: PHP
+${binCode} --install-extension bmewburn.vscode-intelephense-client
+
+# Language: Markdown
+${binCode} --install-extension yzhang.markdown-all-in-one
+
+# Language: Windows Registry Script
+${binCode} --install-extension ionutvmi.reg
+
+# Language: Better Shell Syntax (Highlighting)
+${binCode} --install-extension jeff-hykin.better-shellscript-syntax
 
 # Todo Tree
-code --install-extension gruntfuggly.todo-tree
+${binCode} --install-extension gruntfuggly.todo-tree
 
 # Unique Lines
 code --install-extension bibhasdn.unique-lines
 
 # Rest Client
-code --install-extension humao.rest-client
+${binCode} --install-extension humao.rest-client
 
 # Markdown Editor
-code --install-extension zaaack.markdown-editor
+${binCode} --install-extension zaaack.markdown-editor
 
 # Hex Editor
-code --install-extension ms-vscode.hexeditor
+${binCode} --install-extension ms-vscode.hexeditor
+
+# Language: C++
+code --install-extension ms-vscode.cpptools
 
 # Emoji
 code --install-extension Perkovec.emoji
+
+# Live Share
+code --install-extension ms-vsliveshare.vsliveshare
 ```
 
 ## Configuration
 
-* Powerbar > Preferences: Open Settings (JSON)
+* Powerbar > Preferences: Open User Settings (JSON)
 * Or: File > Preferences > Settings > User
 
 ```json
