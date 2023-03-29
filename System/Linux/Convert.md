@@ -22,15 +22,15 @@ convert image1.png image2.png image3.png +append result.png
 for file in ./*.m4a; do ffmpeg -i "${file}" "${file/%m4a/mp3}"; done
 
 # Static bitrate
-lame -q 2 -b 320  -F file.wav file.mp3
+lame -q 2 -b 320 -F file.wav file.mp3
 
 # Variable bitrate
 lame -q 2 -b 128 -m j -V 1 -B 320 -F file.wav file.mp3
 
-ffmpeg -i "${file}" "${file/%wav/ogg}"
-ffmpeg -i "${file}" "${file/%wav/mp3}"
-ffmpeg -i "${file}" "${file/%ogg/mp3}"
-ffmpeg -i "${file}" -acodec libvorbis "${file/%mp3/ogg}"
+for file in ./*.wav; do ffmpeg -i "${file}" "${file/%wav/ogg}"; done
+for file in ./*.wav; do ffmpeg -i "${file}" "${file/%wav/mp3}"; done
+for file in ./*.ogg; do ffmpeg -i "${file}" "${file/%ogg/mp3}"; done
+for file in ./*.mp3; do ffmpeg -i "${file}" -acodec libvorbis "${file/%mp3/ogg}"; done
 ```
 
 ## Audio from Stereo to Mono
@@ -72,6 +72,9 @@ ffmpeg -i input.mkv -vf scale=-1:720 output_720p.mkv
 
 # Change audio volume
 ffmpeg -i input.mp4 -vcodec copy -af "volume=20dB" output.mp4
+
+# Cut Video from-to position
+ffmpeg -i input.mkv -vcodec copy -acodec copy -ss 01:40:29.017 -to 02:04:26.020 output.mkv
 
 # Cut Video after 23 seconds
 ffmpeg -i input.mp4 -ss 00:00:23 -c copy output.mp4
