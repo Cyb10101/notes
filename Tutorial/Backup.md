@@ -4,6 +4,8 @@ In most cases there is no need to make a full backup of a hard drive. More under
 
 But what you want is as simple a tool as possible to back up the most important and personal files.
 
+* Another example: [Linux backup manually](../System/Linux/Backup-Manually.md)
+
 ## Inexperienced users
 
 For most inexperienced users, it is a good choice.
