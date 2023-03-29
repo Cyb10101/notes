@@ -4,7 +4,7 @@
  * mcs dual-number-to-decimal.cs && mono dual-number-to-decimal.exe
  */
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
