@@ -5,6 +5,7 @@ Sometimes you just want to send a file quickly and securely.
 Useful tools are:
 
 * [Wormhole](https://wormhole.app/)
+* [LocalSend](https://github.com/localsend/localsend)
 * [Croc](https://github.com/schollz/croc)
 * [Magic Wormhole](https://magic-wormhole.readthedocs.io/en/latest/)
 
