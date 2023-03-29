@@ -22,6 +22,7 @@ Android ? > Settings > Info > Software information > More > Tap 7x on "Build num
 Enable USB-Debugging:
 
 ```text
+Android 12 > Settings > System > Developer options > Debugging: USB-Debugging = true
 Android 8 > Settings > System > Developer options > Debugging > USB-Debugging = true
 ```
 
@@ -108,8 +109,8 @@ adb shell pm list packages -3 -f
 If you want to fetch all apk of your installed apps:
 
 ```bash
-for APP in $(adb shell pm list packages -3 -f | sed "s/^package://g; s/base.apk=/base.apk /g"); do
-  adb pull echo ${APP}.apk
+for APP in $(adb shell pm list packages -3 -f | sed "s/^package://g; s/base.apk=/base.apk /g"); do \
+  adb pull echo ${APP}.apk; \
 done
 ```
 

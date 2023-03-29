@@ -7,6 +7,8 @@ sudo apt -y install scrcpy
 
 scrcpy --push-target=/storage/emulated/0/Download --shortcut-mod=lalt --show-touches --stay-awake
 
+scrcpy -s 192.168.178.21:42047 --push-target=/storage/emulated/0/Download --shortcut-mod=lalt --show-touches --stay-awake
+
 scrcpy --push-target=/storage/emulated/0/Download --shortcut-mod=lalt --show-touches --stay-awake --turn-screen-off
 ```
 
