@@ -141,6 +141,7 @@ Gnome extensions:
 * [Sound Input & Output Device Chooser](https://extensions.gnome.org/extension/906/sound-output-device-chooser/)
 * [Notification Banner Reloaded](https://extensions.gnome.org/extension/4651/notification-banner-reloaded/) (Recommended)
 * [Notification Banner Position](https://extensions.gnome.org/extension/4105/notification-banner-position/)
+* [Blur my Shell](https://extensions.gnome.org/extension/3193/blur-my-shell/)
 
 ```bash
 sudo apt install gnome-shell-extension-manager

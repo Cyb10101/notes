@@ -2,6 +2,9 @@
 
 # wget -O - https://raw.githubusercontent.com/Cyb10101/notes/master/System/Linux/ubuntu-installation.sh | bash
 
+# Development:
+# echo ~/Sync/notes/System/Linux/ubuntu-installation.sh | entr cp ~/Sync/notes/System/Linux/ubuntu-installation.sh ~/Downloads/public/
+
 # Exit on error
 set -e
 
@@ -17,6 +20,10 @@ set -e
 
 # Useful for script
 scriptPath="$(cd "$(dirname "${0}")" >/dev/null 2>&1; pwd -P)"
+
+# Get current XDG (X Desktop Group) user directories
+test -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+DIR_DESKTOP="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
 
 textColor() {
     echo -e "\033[0;3${1}m${2}\033[0m"
@@ -35,7 +42,7 @@ checkYadInstalled() {
 }
 
 getUsername() {
-    local selectedUsername=($(yad --on-top --width=600 --height=200 --title="Select User" \
+    local selectedUsername=($(yad --center --on-top --width=600 --height=200 --title="Select current user" \
         --list --radiolist --separator=" " \
         --column=" " --column="Username" \
         --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
@@ -55,7 +62,7 @@ getGithubReleaseLatest() {
 # Script #######################################################################
 reboot() {
     set +e
-    yad --on-top --image="gtk-dialog-warning" --width=300 --title "Reboot" \
+    yad --center --on-top --image="gtk-dialog-warning" --width=300 --title "Reboot" \
         --button="gtk-cancel:1" --button="gtk-ok:0" --text "Reboot System?"
     if [ $? -eq 0 ]; then
        sudo reboot
@@ -64,38 +71,94 @@ reboot() {
     set -e
 }
 
-configureEnergy() {
-    textColor 3 'Configure: Energy'
-    selected=$(yad --on-top --width=400 --height=200 --title="Configure Energy" --list --separator="" \
-        --print-column=1 --column="Action" --column="Description" \
-        "Default" "Default: Monitor off in 15 minutes" \
-        "Development" "Monitor always on" \
-    )
-
-    if [ "${selected}" == "Development" ]; then
-        gsettings set org.gnome.desktop.session idle-delay 0
-        gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
-    else
-        # Monitor off in 15 minutes
-        gsettings set org.gnome.desktop.session idle-delay 900
-    fi
-}
-
 prepareSystem() {
-    sudo add-apt-repository -y multiverse
-    sudo apt update && sudo apt -y full-upgrade
-
     if [ ! -d ~/opt ]; then
         mkdir -p ~/opt
     fi
 }
 
-removePackages() {
-    textColor 3 'Prepare System'
-    packages=($(yad --on-top --width=600 --height=400 --title="Remove Software" \
+configure() {
+    textColor 3 'Configure'
+    selectedList=($(yad --center --on-top --width=600 --height=400 --title="Configure" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
         --search-column=3 --hide-column=2 --print-column=2 \
+        "FALSE" "monitor15" "Monitor: 15" "Monitor off in 15 minutes" \
+        "FALSE" "monitor0" "Monitor: 0" "Monitor always on" \
+        "FALSE" "battery0" "Battery: nothing" "Sleep inactive battery type do nothing" \
+        "TRUE" "grubBootMenu" "Grub: Boot menu" "Show boot menu" \
+        "TRUE" "grubDisableQuiteSplash" "Grub: Disable Quit Splash" "Disable quite and splash scree" \
+    ))
+
+    updateGrub=0
+    for selected in "${selectedList[@]}"; do
+        if [ "${selected}" == "monitor15" ]; then
+            echo 'Monitor off in 15 minutes'
+            gsettings set org.gnome.desktop.session idle-delay 0
+        elif [ "${selected}" == "monitor0" ]; then
+            echo 'Monitor always on'
+            gsettings set org.gnome.desktop.session idle-delay 900
+        elif [ "${selected}" == "battery0" ]; then
+            echo 'Sleep inactive battery type do nothing'
+            gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
+        elif [ "${selected}" == "grubBootMenu" ]; then
+            echo 'Grub: Show boot menu'
+            updateGrub=1
+            sudo sed -i -r 's/^#?(GRUB_TIMEOUT_STYLE=hidden)$/#\1/g' /etc/default/grub
+            sudo sed -i -r 's/^#?(GRUB_TIMEOUT)=[0-9]+$/\1=10/g' /etc/default/grub
+        elif [ "${selected}" == "grubDisableQuiteSplash" ]; then
+            echo 'Grub: Disable quite and splash screen'
+            updateGrub=1
+            sudo sed -i -r 's/^#?(GRUB_CMDLINE_LINUX_DEFAULT=".*)quiet(.*")$/\1\2/g' /etc/default/grub
+            sudo sed -i -r 's/^#?(GRUB_CMDLINE_LINUX_DEFAULT=".*)splash(.*")$/\1\2/g' /etc/default/grub
+            sudo sed -i -r 's/^#?(GRUB_CMDLINE_LINUX_DEFAULT=")[ ]+(")$/\1\2/g' /etc/default/grub
+        fi
+    done
+
+    if [[ updateGrub -eq 1 ]]; then
+        echo 'Grub: Update'
+        sudo update-grub
+    fi
+}
+
+systemUpdate() {
+    textColor 3 'System update'
+    selectedList=($(yad --center --on-top --width=600 --height=200 --title="System update" \
+        --list --checklist --multiple --separator=" " \
+        --column=" " --column="Action" --column="Application" --column="Description" \
+        --search-column=3 --hide-column=2 --print-column=2 \
+        "FALSE" "addAptSources" "Add apt sources" "Add apt sources: main, universe, restricted, multiverse" \
+        "TRUE" "apt" "Update System" "apt full-upgrade" \
+        "TRUE" "snap" "Update Snap" "snap refresh" \
+        "FALSE" "flatpak" "Update Flatpak" "flatpak update and uninstall unused" \
+    ))
+    for selected in "${selectedList[@]}"; do
+        if [ "${selected}" == "addAptSources" ]; then
+            # Main:       Officially Supported, Open-Source
+            # Restricted: Officially Supported, Closed-Source (Proprietary)
+            # Universe:   Community-Maintained, Open-Source
+            # Multiverse: Unsupported, Closed-Source and Patent-Encumbered
+            sudo add-apt-repository -y main universe restricted multiverse
+            #sudo apt update
+        elif [ "${selected}" == "apt" ]; then
+            echo 'Update System...'
+            sudo apt update && sudo apt -y full-upgrade
+        elif [ "${selected}" == "snap" ]; then
+            echo 'Update Snap...'
+            sudo snap refresh
+        elif [ "${selected}" == "flatpak" ]; then
+            echo 'Update Flatpak...'
+            flatpak update && flatpak uninstall --unused
+        fi
+    done
+}
+
+removePackages() {
+    textColor 3 'Remove Software (APT)'
+    packages=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=400 --title="Remove Software" \
+        --list --checklist --multiple --separator=" " \
+        --column=" " --column="Action" --column="Application" --column="Description" \
+        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
         "TRUE" "aisleriot" "AisleRiot" "Solitaire game" \
         "TRUE" "gnome-mahjongg" "Mahjongg" "Mahjongg game" \
         "TRUE" "gnome-mines" "Mines" "Mines game" \
@@ -109,6 +172,16 @@ removePackages() {
     ))
     sudo apt -y remove "${packages[@]}"
     sudo apt -y auto-remove
+
+    selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=400 --title="Remove Software (Snap)" \
+        --list --checklist --multiple --separator=" " \
+        --column=" " --column="Action" --column="Application" --column="Description" \
+        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        "TRUE" "removeFirefoxSnap" "Remove Firefox" "Web Browser" \
+    ))
+    for selected in "${selectedList[@]}"; do
+        ${selected}
+    done
 }
 
 installEssential() {
@@ -117,19 +190,18 @@ installEssential() {
 
     sudo update-alternatives --set editor /usr/bin/vim.basic
 
-    packages=($(yad --on-top --width=600 --height=400 --title="Install Essential" \
+    packages=($(yad --center --on-top --width=600 --height=400 --title="Install Essential" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
         --search-column=3 --hide-column=2 --print-column=2 \
         "TRUE" "cifs-utils nfs-common sshfs" "File system tools" "Tools for SSH, Samba and NFS" \
-        "TRUE" "ncdu" "NCurses Disk Usage" "Disk usage" \
+        "TRUE" "ncdu" "Ncdu" "NCurses Disk Usage" \
         "TRUE" "exa" "Exa" "Prettier list filesystem" \
         "TRUE" "duf" "Duf" "Disk Usage Utility" \
         "TRUE" "testdisk extundelete" "Recover files" "Packages: testdisk, extundelete" \
         "TRUE" "p7zip-full p7zip-rar" "7-Zip" "Compression tools (+7-Zip-Rar)" \
         "TRUE" "rar unrar-free" "Rar" "Compression tools" \
         "TRUE" "diffutils" "Diff Utils" "Compare files" \
-        "TRUE" "conky-all" "Conky" "Desktop tools" \
         "TRUE" "gparted" "GParted" "Partition Editor" \
         "FALSE" "openssh-server" "OpenSSH Server" "Server for Secure Shell" \
         "FALSE" "whois" "Whois" "Client for directory service" \
@@ -149,7 +221,7 @@ installWine() {
     sudo apt -y install wine winbind
 
     winecfg &
-    yad --on-top --width=400 --title "Configure Wine" --button="gtk-ok:0" --text "\
+    yad --center --on-top --width=400 --title "Configure Wine" --button="gtk-ok:0" --text "\
 Application > Windows-Version = Windows 10\
 "
 }
@@ -181,9 +253,25 @@ installDockerCompose() {
 }
 
 # Software #####################################################################
-installFirefox() {
-    textColor 3 'Install: Firefox'
+installFirefoxSnap() {
+    textColor 3 'Install: Firefox (Snap)'
     sudo snap install firefox
+}
+removeFirefoxSnap() {
+    textColor 3 'Remove: Firefox (Snap)'
+    if [ -d ~/snap/firefox/common/.mozilla ]; then
+        echo 'Create a backup on desktop: Firefox'
+        tar -C ~/snap/firefox/common/ -Jcf "${DIR_DESKTOP}/firefox_snap_$(date +%Y-%m-%d).tar.xz" .mozilla
+    fi
+    sudo snap remove firefox
+}
+
+installFirefoxForceApt() {
+    textColor 3 'Install: Firefox (Force Apt, Replace Snap)'
+    sudo add-apt-repository -y ppa:mozillateam/ppa
+    printf "Package: *\nPin: release o=LP-PPA-mozillateam\nPin-Priority: 1001" | sudo tee /etc/apt/preferences.d/mozilla-firefox
+    echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+    sudo apt -y install firefox
 }
 
 installThunderbird() {
@@ -202,6 +290,7 @@ installPdfArranger() {
     sudo apt -y install pdfarranger
 }
 
+# https://github.com/yang991178/fluent-reader/releases/latest
 installFluentReader() {
     textColor 3 'Install: Fluent Reader'
     local usernameRepository='yang991178/fluent-reader'
@@ -234,6 +323,14 @@ installCalibre() {
     sudo apt -y install calibre
 }
 
+# https://comix.sourceforge.net/
+installComix() {
+    textColor 3 'Install: Comix (mComix)'
+    sudo apt -y install mcomix
+}
+
+# https://www.yacreader.com/
+# flatpak remove flathub com.yacreader.YACReader
 installYacReader() {
     textColor 3 'Install: YACReader'
     echo 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/home:selmf.list
@@ -242,6 +339,7 @@ installYacReader() {
     sudo apt -y install yacreader
 }
 
+# https://discord.com/
 installDiscord() {
     textColor 3 'Install: Discord'
     curl -o /tmp/discord.deb -fsSL "https://discord.com/api/download?platform=linux&format=deb"
@@ -252,22 +350,14 @@ installDiscord() {
     sudo apt -y -f install
 }
 
-installDiscord() {
-    textColor 3 'Install: Discord'
-    curl -o /tmp/discord.deb -fsSL "https://discord.com/api/download?platform=linux&format=deb"
-    # @bug Installation failed because packages missing
-    set +e
-    sudo dpkg -i /tmp/discord.deb
-    set -e
-    sudo apt -y -f install
-}
-
+# https://threema.ch/
 installThreema() {
     textColor 3 'Install: Threema'
     curl -o /tmp/threema.deb -fsSL "https://releases.threema.ch/web-electron/v1/release/Threema-Latest.deb"
     sudo dpkg -i /tmp/threema.deb
 }
 
+# https://signal.org/
 installSignal() {
     textColor 3 'Install: Signal'
     # sudo snap install signal-desktop
@@ -277,10 +367,15 @@ installSignal() {
     sudo apt -y install signal-desktop
 }
 
+# https://telegram.org/
 installTelegram() {
     textColor 3 'Install: Telegram'
     # @bug Problems with file permissions
     #sudo snap install telegram-desktop
+
+    # flatpak install -y flathub org.telegram.desktop
+
+    # @todo Ubuntu 23.04 will install apt as snap
     curl -o /tmp/telegram.tar.xz -fsSL "https://telegram.org/dl/desktop/linux"
     tar -C ~/opt -xf /tmp/telegram.tar.xz
     ~/opt/Telegram/Telegram &
@@ -306,11 +401,12 @@ installElement() {
     sudo apt -y install element-desktop
 }
 
+# https://download.linphone.org/releases/linux/app/
 installLinphone() {
     textColor 3 'Install: Linphone'
-    VERSION='4.4.11'
+    VERSION='5.0.12'
 
-    sudo curl -o /tmp/Linphone.AppImage -fsSL "https://www.linphone.org/releases/linux/app/Linphone-${VERSION}.AppImage"
+    sudo curl -o /tmp/Linphone.AppImage -fsSL "https://download.linphone.org/releases/linux/app/Linphone-${VERSION}.AppImage"
     sudo install /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
     if [ ! -d /usr/local/share/icons ]; then
@@ -333,11 +429,13 @@ TryExec=/usr/local/bin/Linphone.AppImage
 EOF
 }
 
+# https://www.spotify.com/de/download/linux/
 installSpotify() {
     textColor 3 'Install: Spotify'
     sudo snap install spotify
 }
 
+# Check if another exists like https://codeberg.org/tenacityteam/tenacity
 installAudacity() {
     textColor 3 'Install: Audacity'
     sudo apt -y install audacity
@@ -346,6 +444,12 @@ installAudacity() {
 installFreac() {
     textColor 3 'Install: fre:ac'
     sudo snap install freac
+}
+
+# https://flathub.org/apps/details/org.jdownloader.JDownloader
+installJDownloader() {
+    textColor 3 'Install: JDownloader'
+    flatpak install -y flathub org.jdownloader.JDownloader
 }
 
 installVlc() {
@@ -374,6 +478,7 @@ installHandbrake() {
     sudo apt -y install handbrake
 }
 
+# https://kdenlive.org/
 installKdenlive() {
     textColor 3 'Install: Kdenlive'
     sudo add-apt-repository -y ppa:kdenlive/kdenlive-stable
@@ -382,7 +487,6 @@ installKdenlive() {
 
 installFlowblade() {
     textColor 3 'Install: Flowblade'
-    sudo apt -y install libmlt-data
     sudo apt -y install flowblade
 }
 
@@ -454,7 +558,7 @@ installXnview() {
     sudo dpkg -i /tmp/XnViewMP.deb
 
     xnview &
-    yad --on-top --width=400 --title "Configure XnView" --button="gtk-ok:0" --text "Run XnView, initialize config file and close it!"
+    yad --center --on-top --width=400 --title "Configure XnView" --button="gtk-ok:0" --text "Run XnView, initialize config file and close it!"
 
     if [ -f ~/.config/xnviewmp/xnview.ini ]; then
         sudo apt -y install crudini
@@ -547,11 +651,6 @@ installObsStudio() {
     sudo apt -y install obs-studio v4l2loopback-dkms ffmpeg
 }
 
-installPeek() {
-    textColor 3 'Install: Peek'
-    sudo apt -y install peek
-}
-
 installVideoTools() {
     textColor 3 'Install: Video tools'
     sudo apt -y install ffmpeg
@@ -565,6 +664,20 @@ installUnifiedRemote() {
     sudo dpkg -i /tmp/unifiedremote.deb
 }
 
+installConky() {
+    sudo apt -y install conky-all
+}
+
+# https://www.hoptodesk.com/
+installHopToDesk() {
+    textColor 3 'Install: HopToDesk'
+    curl -o /tmp/hoptodesk.deb -fsSL "https://www.hoptodesk.com/hoptodesk.deb"
+    # Fix missing packages
+    sudo apt -y install libxdo3
+    sudo dpkg -i /tmp/hoptodesk.deb
+}
+
+# https://rustdesk.com/
 installRustDesk() {
     textColor 3 'Install: RustDesk'
     local usernameRepository='rustdesk/rustdesk'
@@ -575,6 +688,7 @@ installRustDesk() {
     sudo dpkg -i /tmp/rustdesk.deb
 }
 
+# https://teamviewer.com/
 installTeamViewer() {
     textColor 3 'Install: TeamViewer'
     # @bug: Key is stored in deprecated trusted.gpg keychain
@@ -583,13 +697,14 @@ installTeamViewer() {
     sudo apt -y install libminizip1
     sudo dpkg -i /tmp/teamviewer.deb
     # @bug Installation failed because packages missing
-    sudo apt -f install
+    #sudo apt -f install
 
     # @fixme: Key is stored in deprecated trusted.gpg keychain
-    sudo apt-key export 8CAE012EBFAC38B17A937CD8C5E224500C1289C0 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/teamviewer -2017.gpg
-    sudo apt-key export D2A5FEB3488160F028CC17918DA84BE5DEB49217 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/teamviewer.gpg
+    #sudo apt-key export 8CAE012EBFAC38B17A937CD8C5E224500C1289C0 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/teamviewer -2017.gpg
+    #sudo apt-key export D2A5FEB3488160F028CC17918DA84BE5DEB49217 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/teamviewer.gpg
 }
 
+# https://anydesk.com/
 installAnyDesk() {
     textColor 3 'Install: AnyDesk'
 
@@ -601,35 +716,37 @@ installAnyDesk() {
     echo "deb http://deb.anydesk.com/ all main" | sudo tee -a /etc/apt/sources.list.d/anydesk-stable.list
     sudo apt update
     # Fix missing packages
-    sudo apt -y install libminizip1
+    #sudo apt -y install libminizip1
     # @bug Installation failed because packages missing
     sudo apt -y install anydesk
 }
 
 installNoMachine() {
     textColor 3 'Install: NoMachine'
-    # NoMachine Linux 64bit - https://www.nomachine.com/download/download&id=4
-    NOMACHINE_VERSION="7.9.2_1"
-    NOMACHINE_MD5="a24aa0b09543d207034e8198972cbd24"
+    # NoMachine Linux 64bit - https://downloads.nomachine.com/download/?id=3
+    NOMACHINE_VERSION="8.4.2_1"
+    NOMACHINE_MD5="35d9c2af67707a9e7cd764e3aeda4624"
     NOMACHINE_OS="Linux" && NOMACHINE_ARCHITECTURE="amd64"
     NOMACHINE_VERSION_SHORT=`echo ${NOMACHINE_VERSION} | cut -d. -f1-2`
     curl -o /tmp/nomachine.deb -fsSL "https://download.nomachine.com/download/${NOMACHINE_VERSION_SHORT}/${NOMACHINE_OS}/nomachine_${NOMACHINE_VERSION}_${NOMACHINE_ARCHITECTURE}.deb"
 
     if ! echo "${NOMACHINE_MD5} /tmp/nomachine.deb" | md5sum -c -; then
-        yad --on-top --image="gtk-dialog-error" --width=400 --title "NoMachine" --button="gtk-close:1" --text "Error installing NoMachine!\nMD5 checksum not match!"
+        yad --center --on-top --image="gtk-dialog-error" --width=400 --title "NoMachine" --button="gtk-close:1" --text "Error installing NoMachine!\nMD5 checksum not match!"
     else
         sudo dpkg -i /tmp/nomachine.deb
     fi
 }
 
+# https://github.com/balena-io/etcher
 installBalenaEtcher() {
     textColor 3 'Install: Balena Etcher'
     local usernameRepository='balena-io/etcher'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
+    curl -o /tmp/etcher.deb -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/balena-etcher_${VERSION}_amd64.deb"
 
-    curl -o /tmp/etcher.deb -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/balena-etcher-electron_${VERSION}_amd64.deb"
-    # Fix
-    sudo apt -y install gconf2 gconf-service libgconf-2-4 libgdk-pixbuf2.0-0
+    ## Fix
+    sudo apt -y install gconf2 gconf-service libgconf-2-4
+    #sudo apt -y install gconf2 gconf-service libgconf-2-4 libgdk-pixbuf2.0-0
     sudo dpkg -i /tmp/etcher.deb
 
     # @fixme: Key is stored in deprecated trusted.gpg keychain
@@ -680,7 +797,7 @@ installNextcloudDesktop() {
 
     curl -o /tmp/nextcloud.AppImage -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Nextcloud-${VERSION}-x86_64.AppImage"
     sudo install /tmp/nextcloud.AppImage /usr/local/bin/nextcloud.AppImage
-    #yad --on-top --width=400 --title "Configure Wine" --button="gtk-ok:0" --text "Run XnView, initialize config file and close it!"
+    #yad --center --on-top --width=400 --title "Configure Wine" --button="gtk-ok:0" --text "Run XnView, initialize config file and close it!"
 
     if [ ! -d /usr/local/share/icons ]; then
         sudo mkdir -p /usr/local/share/icons
@@ -714,6 +831,7 @@ Name[de]=Nextcloud Beenden
 EOF
 }
 
+# https://www.dropbox.com/install
 installDropbox() {
     textColor 3 'Install: Dropbox'
     # @bug: Key is stored in deprecated trusted.gpg keychain
@@ -748,20 +866,15 @@ installDeluge() {
     sudo apt -y install deluge
 }
 
+# https://vscodium.com/
+installVSCodium() {
+    textColor 3 'Install: VSCodium'
+    sudo snap install codium --classic
+}
+
 installVisualStudioCode() {
     textColor 3 'Install: Visual Studio Code'
     sudo snap install code --classic
-}
-
-installAtom() {
-    textColor 3 'Install: Atom'
-    sudo apt -y install wget
-
-    # @bug Crashed!
-    wget -qO - https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
-    echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" | sudo tee /etc/apt/sources.list.d/atom.list
-    sudo apt-get update
-    sudo apt -y install atom
 }
 
 installPhpStorm() {
@@ -790,9 +903,10 @@ installFileZilla() {
     sudo apt -y install filezilla
 }
 
+# https://www.heidisql.com/
 installHeidiSql() {
     textColor 3 'Install: HeidiSQL'
-    VERSION='12.0.0.6468'
+    VERSION='12.4.0.6659'
 
     if [ ! -d ~/Dokumente/HeidiSQL ]; then
         mkdir -p ~/Dokumente/HeidiSQL
@@ -816,7 +930,7 @@ installVirtualBox() {
     textColor 3 'Install: VirtualBox'
     echo 'virtualbox-ext-pack virtualbox-ext-pack/license select true' | sudo debconf-set-selections
     sudo apt -y install virtualbox virtualbox-ext-pack
-    sudo systemctl disable vboxweb.service
+    #sudo systemctl disable vboxweb.service
 }
 
 installUefiRebootLauncher() {
@@ -835,15 +949,15 @@ EOF
 
 # Installation #################################################################
 installDependencies() {
-    selectedList=($(yad --on-top --width=600 --height=300 --title="Install Dependencies" \
+    selectedList=($(yad --center --on-top --width=600 --height=300 --title="Install Dependencies" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
         --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
         "TRUE" "installFlatpak" "Flatpak" "Package manager" \
         "TRUE" "installWine" "Wine" "Run Windows applications" \
-        "TRUE" "installPlayOnLinux" "PlayOnLinux" "Create multiple Wine prefixes" \
-        "TRUE" "installDocker" "Docker" "Container Virtualisation" \
-        "TRUE" "installDockerCompose" "Docker Compose" "Container Virtualisation" \
+        "FALSE" "installPlayOnLinux" "PlayOnLinux" "Create multiple Wine prefixes" \
+        "FALSE" "installDocker" "Docker" "Container Virtualisation" \
+        "FALSE" "installDockerCompose" "Docker Compose" "Container Virtualisation" \
         "TRUE" "reboot" "Reboot" "Reboot System" \
     ))
     for selected in "${selectedList[@]}"; do
@@ -853,7 +967,7 @@ installDependencies() {
 
 installSoftware() {
     set +e
-    yad --on-top --image="gtk-dialog-warning" --width=300 --title "Preselect Software" \
+    yad --center --on-top --image="gtk-dialog-warning" --width=300 --title "Preselect Software" \
         --button="Use Bash Variable:4" --button="Nothing:3" --button="All:1" --button="Recommed:0" --text "Do you wan't to preselect Software?"
     REPLY=$?
     if [ ${REPLY} -eq 0 ]; then
@@ -865,78 +979,83 @@ installSoftware() {
     fi
     set -e
 
-    selectedList=($(yad --window-icon="gtk-ok" --on-top --width=600 --height=600 --title="Install Software" \
+    selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=800 --height=600 --title="Install Software" \
         --list --checklist --multiple --separator=" " \
-        --column=" " --column="Action" --column="Application" --column="Description" \
+        --column=" " --column="Action" --column="Application" --column="Description" --column="Source" \
         --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
-        "${TICK:-FALSE}" "installFirefox" "Firefox" "Webbrowser" \
-        "${TICK:-FALSE}" "installThunderbird" "Thunderbird" "Mail client" \
-        "${TICK:-FALSE}" "installLibreOffice" "LibreOffice" "Office Suite" \
-        "${TICK:-FALSE}" "installPdfArranger" "PDF Arranger" "PDF Arranger" \
-        "${TICK:-FALSE}" "installFluentReader" "Fluent Reader" "RSS Reader" \
-        "${TICK:-FALSE}" "installCalibre" "Calibre" "EBook Reader (epub)" \
-        "${TICK:-FALSE}" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" \
-        "${TICK:-FALSE}" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" \
-        "${TICK:-FALSE}" "installThreema" "Threema" "Instant messaging, Voice conferencing" \
-        "${TICK:-FALSE}" "installSignal" "Signal" "Instant messaging, Voice conferencing" \
-        "${TICK:-FALSE}" "installTelegram" "Telegram" "Instant messaging, Voice conferencing" \
-        "${TICK:-FALSE}" "installSlack" "Slack" "Instant messaging, Voice conferencing" \
-        "${TICK:-FALSE}" "installSkype" "Skype" "Instant messaging, Voice conferencing" \
-        "${TICK:-FALSE}" "installElement" "Element" "Instant messaging" \
-        "${TICK:-FALSE}" "installLinphone" "Linphone" "Voice conferencing" \
-        "${TICK:-FALSE}" "installSpotify" "Spotify" "Audio streaming" \
-        "${TICK:-FALSE}" "installAudacity" "Audacity" "Audio editor" \
-        "${TICK:-FALSE}" "installFreac" "fre:ac" "Audio converter and CD ripper" \
-        "${TICK:-TRUE}" "installVlc" "VLC (Video Lan Client)" "Video player" \
-        "${TICK:-TRUE}" "installMpv" "mpv" "Video player" \
-        "${TICK:-TRUE}" "installClapper" "Clapper" "Video player" \
-        "${TICK:-FALSE}" "installKodi" "Kodi (XBMC)" "Media center" \
-        "${TICK:-FALSE}" "installHandbrake" "Handbrake" "Video transcoder" \
-        "${TICK:-FALSE}" "installKdenlive" "Kdenlive" "Video editor" \
-        "${TICK:-FALSE}" "installFlowblade" "Flowblade" "Video editor" \
-        "${TICK:-FALSE}" "installOpenShot" "OpenShot" "Video editor" \
-        "${TICK:-FALSE}" "installPitivi" "Pitivi" "Video editor" \
-        "${TICK:-FALSE}" "installVideoEffects" "Video effects" "Video effects" \
-        "${TICK:-FALSE}" "installMkvToolNix" "MkvToolNix" "Matroska media container tools" \
-        "${TICK:-FALSE}" "installGwenview" "Gwenview" "Image viewer" \
-        "${TICK:-TRUE}" "installXnview" "Xnview" "Image viewer" \
-        "${TICK:-FALSE}" "installGimp" "Gimp" "Image editor" \
-        "${TICK:-FALSE}" "installInkscape" "Inkscape" "Vector image editor" \
-        "${TICK:-FALSE}" "installCzkawka" "Czkawka" "Duplicate image finder" \
-        "${TICK:-FALSE}" "installFlameshot" "Flameshot" "Screenshot tools" \
-        "${TICK:-FALSE}" "installVokoScreen" "VokoScreen" "Screen recorder" \
-        "${TICK:-FALSE}" "installObsStudio" "ObsStudio" "Screen recorder" \
-        "${TICK:-FALSE}" "installPeek" "Peek" "Screen recorder" \
-        "${TICK:-FALSE}" "installVideoTools" "Video tools" "ffmpeg" \
-        "${TICK:-FALSE}" "installUnifiedRemote" "Unified Remote" "Remote control" \
-        "${TICK:-FALSE}" "installRustDesk" "RustDesk" "Remote maintenance" \
-        "${TICK:-FALSE}" "installTeamViewer" "TeamViewer" "Remote maintenance" \
-        "${TICK:-FALSE}" "installAnyDesk" "AnyDesk" "Remote maintenance" \
-        "${TICK:-FALSE}" "installNoMachine" "NoMachine" "Remote maintenance" \
-        "${TICK:-FALSE}" "installBalenaEtcher" "Balena Etcher" "USB burning tool" \
-        "${TICK:-FALSE}" "installK3b" "K3b" "Disc burning tool" \
-        "${TICK:-FALSE}" "installXfburn" "Xfburn" "Disc burning tool" \
-        "${TICK:-FALSE}" "installBrasero" "Brasero" "Disc burning tool" \
-        "${TICK:-FALSE}" "installSteam" "Steam" "Game client" \
-        "${TICK:-FALSE}" "installSyncthing" "Syncthing" "Sycronisation tool" \
-        "${TICK:-FALSE}" "installNextcloudDesktop" "Nextcloud Desktop" "Sycronisation tool" \
-        "${TICK:-FALSE}" "installDropbox" "Dropbox" "Sycronisation tool" \
-        "${TICK:-TRUE}" "installRestic" "Restic" "Backup tool" \
-        "${TICK:-TRUE}" "installRdiffBackup" "RdiffBackup" "Backup tool" \
-        "${TICK:-TRUE}" "installCroc" "Croc" "File transfer tool" \
-        "${TICK:-TRUE}" "installAria2" "Aria2" "File download tool" \
-        "${TICK:-FALSE}" "installDeluge" "Deluge" "BitTorrent client" \
-        "${TICK:-FALSE}" "installVisualStudioCode" "Visual Studio Code" "Editor, IDE (Integrated Development Environment)" \
-        "${TICK:-FALSE}" "installAtom" "Atom" "Editor, IDE (Integrated Development Environment)" \
-        "${TICK:-FALSE}" "installPhpStorm" "PhpStorm" "Editor, IDE (Integrated Development Environment)" \
-        "${TICK:-FALSE}" "installMeld" "Meld" "Visual diff and merge tool" \
-        "${TICK:-TRUE}" "installJqYqXq" "Jq, Yq, Xq" "Json/Yaml/Xml processor" \
-        "${TICK:-FALSE}" "installGo" "Go-Lang" "Go language" \
-        "${TICK:-FALSE}" "installFileZilla" "FileZilla" "FTP/SFTP Client" \
-        "${TICK:-FALSE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" \
-        "${TICK:-FALSE}" "installPutty" "PuTTY" "PuTTY utilities" \
-        "${TICK:-FALSE}" "installVirtualBox" "VirtualBox" "Virtual machines" \
-        "${TICK:-TRUE}" "installUefiRebootLauncher" "UEFI Firmware Setup Reboot Launcher" "UEFI Firmware Setup Reboot Launcher" \
+        --expand-column=4 \
+        "${TICK:-FALSE}" "installFirefoxSnap" "Firefox (Snap)" "Webbrowser" "Snap" \
+        "${TICK:-TRUE}" "installFirefoxForceApt" "Firefox (Force Apt)" "Webbrowser directly from mozilla repository" "Apt" \
+        "${TICK:-FALSE}" "installThunderbird" "Thunderbird" "Mail client" "Apt" \
+        "${TICK:-TRUE}" "installLibreOffice" "LibreOffice" "Office Suite" "Apt" \
+        "${TICK:-TRUE}" "installPdfArranger" "PDF Arranger" "PDF Arranger" "Apt" \
+        "${TICK:-FALSE}" "installFluentReader" "Fluent Reader" "RSS Reader" "Github" \
+        "${TICK:-FALSE}" "installCalibre" "Calibre" "EBook Reader (epub)" "Apt" \
+        "${TICK:-FALSE}" "installComix" "Comix (mComix)" "Comic Book Reader (cbz, cbr)" "Apt" \
+        "${TICK:-FALSE}" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" "Debian Repository" \
+        "${TICK:-TRUE}" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" "Debian Repository" \
+        "${TICK:-TRUE}" "installThreema" "Threema" "Instant messaging, Voice conferencing" "Debian Repository" \
+        "${TICK:-TRUE}" "installSignal" "Signal" "Instant messaging, Voice conferencing" "Debian Repository" \
+        "${TICK:-TRUE}" "installTelegram" "Telegram" "Instant messaging, Voice conferencing" "Archive" \
+        "${TICK:-FALSE}" "installSlack" "Slack" "Instant messaging, Voice conferencing" "Snap" \
+        "${TICK:-FALSE}" "installSkype" "Skype" "Instant messaging, Voice conferencing" "Snap" \
+        "${TICK:-FALSE}" "installElement" "Element" "Instant messaging" "Debian Repository" \
+        "${TICK:-FALSE}" "installLinphone" "Linphone" "Voice conferencing" "AppImage" \
+        "${TICK:-TRUE}" "installSpotify" "Spotify" "Audio streaming" "Snap" \
+        "${TICK:-FALSE}" "installAudacity" "Audacity" "Audio editor" "Apt" \
+        "${TICK:-FALSE}" "installFreac" "fre:ac" "Audio converter and CD ripper" "Snap" \
+        "${TICK:-FALSE}" "installJDownloader" "JDownloader" "Download manager" "Flatpak" \
+        "${TICK:-TRUE}" "installVlc" "VLC (Video Lan Client)" "Video player" "Apt" \
+        "${TICK:-TRUE}" "installMpv" "mpv" "Video player" "Apt" \
+        "${TICK:-TRUE}" "installClapper" "Clapper" "Video player" "Flatpak" \
+        "${TICK:-FALSE}" "installKodi" "Kodi (XBMC)" "Media center" "Apt" \
+        "${TICK:-FALSE}" "installHandbrake" "Handbrake" "Video transcoder" "Apt" \
+        "${TICK:-FALSE}" "installKdenlive" "Kdenlive" "Video editor" "Apt+PPA" \
+        "${TICK:-FALSE}" "installFlowblade" "Flowblade" "Video editor" "Apt" \
+        "${TICK:-FALSE}" "installOpenShot" "OpenShot" "Video editor" "Github" \
+        "${TICK:-FALSE}" "installPitivi" "Pitivi" "Video editor" "Apt" \
+        "${TICK:-FALSE}" "installVideoEffects" "Video effects" "Video effects" "Apt" \
+        "${TICK:-FALSE}" "installMkvToolNix" "MkvToolNix" "Matroska media container tools" "Apt + Repository" \
+        "${TICK:-FALSE}" "installGwenview" "Gwenview" "Image viewer" "Apt" \
+        "${TICK:-TRUE}" "installXnview" "Xnview" "Image viewer" "Debian Package + Config" \
+        "${TICK:-TRUE}" "installGimp" "Gimp" "Image editor" "Apt" \
+        "${TICK:-FALSE}" "installInkscape" "Inkscape" "Vector image editor" "Apt" \
+        "${TICK:-TRUE}" "installCzkawka" "Czkawka" "Duplicate image finder" "Github" \
+        "${TICK:-TRUE}" "installFlameshot" "Flameshot" "Screenshot tools" "Apt" \
+        "${TICK:-FALSE}" "installVokoScreen" "VokoScreen" "Screen recorder" "Apt" \
+        "${TICK:-TRUE}" "installObsStudio" "ObsStudio" "Screen recorder" "Apt + Repository" \
+        "${TICK:-TRUE}" "installVideoTools" "Video tools" "ffmpeg" "Apt" \
+        "${TICK:-FALSE}" "installUnifiedRemote" "Unified Remote" "Remote control" "Debian Package" \
+        "${TICK:-TRUE}" "installConky" "Conky" "Desktop tools" "Apt" \
+        "${TICK:-TRUE}" "installHopToDesk" "HopToDesk" "Remote maintenance" "Debian Package" \
+        "${TICK:-TRUE}" "installRustDesk" "RustDesk" "Remote maintenance" "Git + Debian Package" \
+        "${TICK:-FALSE}" "installTeamViewer" "TeamViewer" "Remote maintenance" "Debian Package" \
+        "${TICK:-FALSE}" "installAnyDesk" "AnyDesk" "Remote maintenance" "Debian Repository" \
+        "${TICK:-FALSE}" "installNoMachine" "NoMachine" "Remote maintenance" "Debian Package" \
+        "${TICK:-FALSE}" "installBalenaEtcher" "Balena Etcher" "USB burning tool" "Debian Package" \
+        "${TICK:-FALSE}" "installK3b" "K3b" "Disc burning tool" "Apt" \
+        "${TICK:-FALSE}" "installXfburn" "Xfburn" "Disc burning tool" "Apt" \
+        "${TICK:-FALSE}" "installBrasero" "Brasero" "Disc burning tool" "Apt" \
+        "${TICK:-TRUE}" "installSteam" "Steam" "Game client" "Apt" \
+        "${TICK:-TRUE}" "installSyncthing" "Syncthing" "Sycronisation tool" "Debian Repository" \
+        "${TICK:-FALSE}" "installNextcloudDesktop" "Nextcloud Desktop" "Sycronisation tool" "AppImage" \
+        "${TICK:-FALSE}" "installDropbox" "Dropbox" "Sycronisation tool" "Debian Package" \
+        "${TICK:-TRUE}" "installRestic" "Restic" "Backup tool" "Apt + Self" \
+        "${TICK:-TRUE}" "installRdiffBackup" "RdiffBackup" "Backup tool" "Apt" \
+        "${TICK:-TRUE}" "installCroc" "Croc" "File transfer tool" "External" \
+        "${TICK:-TRUE}" "installAria2" "Aria2" "File download tool" "Apt" \
+        "${TICK:-FALSE}" "installDeluge" "Deluge" "BitTorrent client" "Apt" \
+        "${TICK:-TRUE}" "installVSCodium" "VSCodium" "Visual Studio Code but without Microsoft" "Snap Classic" \
+        "${TICK:-TRUE}" "installVisualStudioCode" "Visual Studio Code" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
+        "${TICK:-FALSE}" "installPhpStorm" "PhpStorm" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
+        "${TICK:-TRUE}" "installMeld" "Meld" "Visual diff and merge tool" "Apt" \
+        "${TICK:-TRUE}" "installJqYqXq" "Jq, Yq, Xq" "Json/Yaml/Xml processor" "Apt + Python" \
+        "${TICK:-FALSE}" "installGo" "Go-Lang" "Go language" "Snap Classic" \
+        "${TICK:-FALSE}" "installFileZilla" "FileZilla" "FTP/SFTP Client" "Apt" \
+        "${TICK:-FALSE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" "Wine" \
+        "${TICK:-FALSE}" "installPutty" "PuTTY" "PuTTY utilities" "Wine" \
+        "${TICK:-FALSE}" "installVirtualBox" "VirtualBox" "Virtual machines" "Apt" \
+        "${TICK:-TRUE}" "installUefiRebootLauncher" "UEFI Launcher" "UEFI Firmware Setup Launcher: Reboot" "Script" \
     ))
     for selected in "${selectedList[@]}"; do
         ${selected}
@@ -944,7 +1063,7 @@ installSoftware() {
 }
 
 updateSoftware() {
-    selectedList=($(yad --window-icon="gtk-ok" --on-top --width=600 --height=600 --title="Update Software" \
+    selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=600 --title="Update Software" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
         --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
@@ -979,11 +1098,12 @@ fi
 checkYadInstalled
 prepareSystem
 
-selectedList=($(yad --window-icon="gtk-ok" --on-top --width=350 --height=250 --title="Installation Process" \
+selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=350 --height=250 --title="Installation Process" \
     --list --checklist --multiple --separator=" " \
     --column=" " --column="Action" --column="Application" \
     --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
-    "${TICK:-FALSE}" "configureEnergy" "Configure Energy" \
+    "${TICK:-FALSE}" "configure" "Configure" \
+    "${TICK:-TRUE}" "systemUpdate" "System update" \
     "${TICK:-FALSE}" "removePackages" "Remove Packages" \
     "${TICK:-FALSE}" "installEssential" "Install Essential" \
     "${TICK:-FALSE}" "installDependencies" "Install Dependencies: Flatpak, Wine, Docker" \
@@ -995,10 +1115,10 @@ for selected in "${selectedList[@]}"; do
 done
 
 #if [ ! -f /tmp/ubuntu-installation.lock ]; then
-    #yad --on-top --image="gtk-dialog-info" --width=400 --title "Prepare System" \
+    #yad --center --on-top --image="gtk-dialog-info" --width=400 --title "Prepare System" \
     #    --button="gtk-close:1" --button="gtk-ok:0" --text "Prepare System?"
     #if [ $? -eq 0 ]; then
- #       configureEnergy
+ #       configure
  #       prepareSystem
     #fi
 
