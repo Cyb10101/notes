@@ -51,7 +51,7 @@ class RunAsRootTerminalExtension(GObject.GObject, Nautilus.MenuProvider):
 
         # App.msgInformation("Open Code...")
         if isDirectory:
-            call('gnome-terminal -- sudo bash -c \'cd ' + safepaths + ' && bash\'&', shell = True)
+            call('gnome-terminal -- sudo ${SHELL} -c \'cd ' + safepaths + ' && ${SHELL}\'&', shell = True)
         else:
             call('gnome-terminal -- sudo ' + safepaths + '&', shell = True)
 
