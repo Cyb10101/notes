@@ -5,9 +5,9 @@ Sometimes you just want to send a file quickly and securely.
 Useful tools are:
 
 * [Wormhole](https://wormhole.app/)
-* [LocalSend](https://github.com/localsend/localsend)
 * [Croc](https://github.com/schollz/croc)
 * [Magic Wormhole](https://magic-wormhole.readthedocs.io/en/latest/)
+* [LocalSend](https://localsend.org/)
 
 Others are either questionable or have a more specific use case.
 
@@ -22,10 +22,6 @@ These are Firefox Send forked projects.
 * [Git: timvisee/send](https://gitlab.com/timvisee/send)
 * [Git: timvisee/send-docker-compose](https://github.com/timvisee/send-docker-compose)
 * [Git: mozilla/send](https://github.com/mozilla/send)
-
-## LocalSend
-
-* [LocalSend](https://github.com/localsend/localsend)
 
 ## Croc
 
@@ -80,6 +76,10 @@ wormhole receive [CODE]
 wormhole-william send [FILE/DIRECTORY]
 wormhole-william receive [CODE]
 ```
+
+## LocalSend
+
+* [LocalSend](https://localsend.org/)
 
 ## Websites
 
