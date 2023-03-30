@@ -96,6 +96,7 @@ gio info -a metadata::custom-icon ${HOME}/folder
 
 # Set icon file
 gio set ${HOME}/folder metadata::custom-icon file:///usr/share/icons/Yaru/256x256/emblems/emblem-favorite.png
+gio set ${HOME}/folder metadata::custom-icon file://${HOME}/.local/share/icons/emblem-favorite.png
 
 # Set icon to standard
 gio set ${HOME}/folder -t unset metadata::custom-icon

@@ -9,7 +9,7 @@ Ctrl + Shift + P = Powerbar / Command Palette
 
 Ctrl + D = Multi selection
 
-Alt + Shit + Arrow-Key = Multi selection
+Alt + Shift + Arrow-Key = Multi selection
 
 ## Difference VSCodium
 
