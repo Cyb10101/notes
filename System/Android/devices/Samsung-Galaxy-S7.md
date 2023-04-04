@@ -19,8 +19,8 @@
    1. Install: Samsung Mobile Phone Drivers
    2. Download TWRP.tar for herolte (Do not extract)
 3. Reboot device into Odin/Download mode
-   1. Reboot device from the power menu and hold the [Volume Down] + [Home] + [Power]
-   2. Download mode warning screen: Press [Volume Up] to continue
+   1. `adb reboot download` or reboot device from the power menu and hold the [Volume Down] + [Home] + [Power]
+   3. Download mode warning screen: Press [Volume Up] to continue
 4. Run Samsung Odin on computer
    1. Check if ID:COM is connectet with "0:[COM?]"
    2. Tab "Options" > Auto Reboot = false
@@ -50,3 +50,29 @@
    3. Reboot System and go back to Recovery with [Volume Up] + [Home] + [Power]
 10. Wait 2-5 minutes for your device to finish setting itself up.
 11. Check Root with SuperSu
+
+## Flash TWRP as recovery
+
+```bash
+adb reboot download
+heimdall flash --RECOVERY twrp.img --no-reboot
+```
+
+## Flash e.OS
+
+* [/e/OS](https://e.foundation/e-os/)
+* [Install /e/OS on a Samsung Galaxy S7 - herolte](https://doc.e.foundation/devices/herolte/install)
+
+* `adb reboot recovery`
+* TWRP > Wipe > Format Data > Type "yes"
+* TWRP > Wipe > Advanced Wipe > Select: System, Cache > Swipe to Wipe
+* TWRP > Advanced > ADB Sideload
+* `adb sideload filename.zip`
+* Reboot
+
+## Install Open GApps
+
+* `adb reboot recovery`
+* TWRP > Advanced > ADB Sideload
+* `adb sideload open_gapps.zip`
+
