@@ -1,5 +1,14 @@
 # Drive health
 
+The larger the HDD disk, the more likely it is that the disk will fail.
+As a rule of thumb, a hard drive should be replaced every 5-10 years.
+Larger hard drives, from around 8 TB, can also fail earlier, within 3 years.
+
+SSD hard drives last longer. Nevertheless, I would recommend everyone to create a backup of their most important data.
+
+Windows alone will not display a message when a hard drive fails.
+You can install CrystalDiskInfo for this.
+
 ## CrystalDiskInfo (GUI)
 
 For Windows users.
