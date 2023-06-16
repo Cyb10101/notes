@@ -207,6 +207,29 @@ ffmpeg -i file1.mp4 -i file2.mp4 -i file3.mp4 \
 ffmpeg -f concat -safe 0 -i <(find -maxdepth 1 -type f -name '*.mp4' -printf "file '$PWD/%p'\n" | sort) -c copy output.mp4
 ```
 
+## Concat *.mov
+
+```bash
+# Note: https://www.internalpointers.com/post/convert-vob-files-mkv-ffmpeg
+ffmpeg \
+  -analyzeduration 100M -probesize 100M \
+  -i "concat:$(find -regextype egrep -regex '.*VTS_01_([1-9])\.VOB' | sort -u | tr '\n' '|' | sed 's/|$//')" \
+  -codec:v libx264 -crf 21 \
+  -codec:a libmp3lame -qscale:a 2 \
+  -codec:s copy \
+  output.mkv
+```
+
+## Crop Video
+
+```bash
+# Preview Video
+ffplay -i input.mkv -vf "crop=in_w:in_h-100"
+
+# Crop Video
+ffmpeg -i input.mkv -filter:v "crop=in_w:in_h-100" output.mkv
+```
+
 ## Convert svg to ico
 
 Convert filename.svg to filename.ico.
