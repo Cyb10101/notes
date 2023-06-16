@@ -10,18 +10,18 @@ createTempDateTime() {
   VAR_TIME=`date +%H-%M-%S`
   VAR_FOLDER='/tmp/'${1}'_'${VAR_DATE}'_'${VAR_TIME}
   mkdir -p ${VAR_FOLDER}
-  chmod og+r ${VAR_FOLDER}
+  chmod 750 ${VAR_FOLDER}
 }
 
 # Variant 2 - Generated
 createTempGenerated() {
   VAR_TIME=`date +%H-%M`
   VAR_FOLDER=`mktemp -d /tmp/${1}_${VAR_TIME}_XXXXXXXX`
-  chmod og+r ${VAR_FOLDER}
+  chmod 750 ${VAR_FOLDER}
 }
 
-#createTempDateTime 'user'
-createTempGenerated 'user'
+#createTempDateTime "${USER}"
+createTempGenerated "${USER}"
 
 xdg-open ${VAR_FOLDER} &
 exit 0;
