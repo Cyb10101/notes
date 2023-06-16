@@ -8,8 +8,8 @@
 
 ## Connect to device / Android debug bridge (ADB)
 
-* [Android Debug Bridge (adb)](https://developer.android.com/studio/command-line/adb)
-* [SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools)
+* [Android Debug Bridge (adb)](https://developer.android.com/tools/adb)
+* [SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools)
 
 * [Heimdall](https://www.glassechidna.com.au/heimdall/)
 
@@ -133,7 +133,6 @@ Download and install Zip.
 * `adb reboot recovery`
 * TWRP > Advanced > ADB Sideload
 * `adb sideload open_gapps.zip`
-
 
 ## Fetch application APK (not recommended)
 
