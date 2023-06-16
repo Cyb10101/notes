@@ -1,5 +1,34 @@
 # Linux
 
+* [DistroWatch](https://distrowatch.com/)
+
+Debian based distributions:
+
+* [Debian](https://www.debian.org/)
+* [Ubuntu](https://ubuntu.com/)
+* [Kubuntu](https://kubuntu.org/)
+* [Xubuntu](https://xubuntu.org/)
+* [Linux Mint](https://linuxmint.com/)
+
+Arch based distributions:
+
+* [Manjaro](https://manjaro.org/)
+
+Rasperry Pi distributions:
+
+* [Rasperry Pi](https://www.raspberrypi.com/software/)
+* [Armbian](https://www.armbian.com/)
+
+Special distributions:
+
+* [Proxmox (Virtualization)](https://www.proxmox.com/en/)
+* [TrueNAS](https://www.truenas.com/)
+* [Redo Rescue (Backup)](http://redorescue.com/)
+* [Tails (Privacy)](https://tails.boum.org/)
+* [Kali (Penetration Testing)](https://www.kali.org/)
+* [Kaisen Linux - For Professional IT](https://kaisenlinux.org/downloads)
+* [Kodachi - The Secure OS](https://www.digi77.com/linux-kodachi/)
+
 ## Guest Account
 
 ```bash
@@ -12,7 +41,7 @@ sudo busctl call org.freedesktop.Accounts /org/freedesktop/Accounts/User$(id -u 
     SetIconFile s /usr/share/pixmaps/faces/hummingbird.jpg
 
 # Clear guest filesystem
-sudo rm -rf ~guest
+sudo rm -rf /home/guest
 sudo mkhomedir_helper guest
 ```
 
