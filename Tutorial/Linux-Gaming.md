@@ -73,7 +73,7 @@ Sometimes the best patch is sunglasses and some ear protectors.
 * [Flatpak: Bottles](https://flathub.org/apps/details/com.usebottles.bottles)
 
 ```bash
-flatpak install flathub com.usebottles.bottles
+sudo flatpak install flathub com.usebottles.bottles
 ```
 
 * Menü > Settings:
