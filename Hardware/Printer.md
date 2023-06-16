@@ -1,19 +1,22 @@
 # Hardware: Printer / Scanner
 
-* [OpenPrinting CUPS (https)](https://localhost:631)
 * [OpenPrinting CUPS (http)](http://localhost:631)
+* [OpenPrinting CUPS (https)](https://localhost:631)
 
 ## Brother DCP-9022CDW
 
 * [Download Driver](https://www.brother.de/support/dcp-9022cdw/downloads)
-* [Printer Web Interface](https://192.168.178.27/)
+* [Printer Web Interface](http://192.168.178.27/)
 
-### Without installing drivers
+Without installing drivers (Recommend):
 
-Recommend:
+* Get node name: [Printer Web Interface > Network](http://192.168.178.27/net/net/net.html)
 
 ```bash
+# Add printer
 lpadmin -p Brother_DCP-9022CDW_IPP -E -v ipp://BRWACD1B84ED6B9:631/ipp -m everywhere
+
+# Set default printer
 lpadmin -d Brother_DCP-9022CDW_IPP
 ```
 
