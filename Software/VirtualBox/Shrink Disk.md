@@ -22,7 +22,7 @@ For Linux partitions (ext4):
 
 ```bash
 sudo apt update
-sudo apt install zerofree
+sudo apt -y install zerofree
 sudo fdisk -l
 sudo zerofree -v /dev/sda1
 ```
