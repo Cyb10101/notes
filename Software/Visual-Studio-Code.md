@@ -63,7 +63,11 @@ ${binCode} --install-extension jeff-hykin.better-shellscript-syntax
 ${binCode} --install-extension gruntfuggly.todo-tree
 
 # Unique Lines
-code --install-extension bibhasdn.unique-lines
+# ${binCode} --install-extension bibhasdn.unique-lines
+${binCode} --install-extension earshinov.filter-lines
+${binCode} --install-extension earshinov.simple-alignment
+${binCode} --install-extension earshinov.sort-lines-by-selection
+${binCode} --install-extension earshinov.permute-lines
 
 # Rest Client
 ${binCode} --install-extension humao.rest-client
