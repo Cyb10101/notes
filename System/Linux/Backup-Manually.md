@@ -9,9 +9,23 @@ Even if a backup is made here, something can always go wrong.
 
 ## Cleanup Space
 
+* Remove downloaded games (Steam, ...)
+* Remove downloaded streams (Spotify, Netflix, ...)
+
+Check disk usage:
+
+```bash
+sudo apt -y install ncdu
+ncdu --exclude-kernfs --exclude=/mnt /
+```
+
+Remove docker
+
 ```bash
 # Remove Docker images, build cache
 docker system df
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
 docker image prune -a
 docker builder prune -a
 
@@ -19,9 +33,9 @@ docker builder prune -a
 sudo snap saved
 sudo snap forget <id/groupId>
 
-# Remove old Snaps
+# Remove old Snaps (questionable)
 LANG=C sudo snap list --all | awk '/disabled/{print $1, $3}' | while read snapname revision; do
-    sudo snap remove "$snapname" --revision="$revision"
+    sudo snap remove "${snapname}" --revision="${revision}"
 done
 ```
 
