@@ -39,6 +39,14 @@ gzip -cd ${SOURCE} | pv | VBoxManage convertfromraw stdin disk.vdi $(gzip -cd ${
 
 ## UEFI Secure Boot
 
+### Reboot from Ubuntu to EFI Shell
+
+```bash
+sudo efibootmgr -v
+sudo efibootmgr --bootnext 0004
+reboot
+```
+
 ### Virtualbox EFI Startup
 
 Mount EFI and add startup for Virtualbox EFI Shell.
@@ -54,10 +62,24 @@ sudo echo '\EFI\ubuntu\grubx64.efi' > /mnt/startup.nsh
 * Windows: bootmgfw.efi
 
 ```bash
-fs0:
+# List devices
+map
+
+# Boot efi
+FS0:
 cd EFI
 cd ubuntu
 grubx64.efi
+
+# Boot Linux
+FS0:\EFI\ubuntu\grubx64.efi
+
+# Boot Windows
+FS0:\EFI\Microsoft\Boot\bootmgfw.efi
+FS0:\EFI\BOOT\BOOTX64.EFI
+
+# Reboot
+reset
 ```
 
 ## Ubuntu: Don't show a dialog box on automatic shutdown
