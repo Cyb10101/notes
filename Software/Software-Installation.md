@@ -623,7 +623,7 @@ sudo apt install golang-go
 
 # Or manually
 # Uninstall: sudo rm -rf /usr/local/go
-VERSION="1.17.7"
+VERSION="1.20.4"
 curl -o /tmp/golang.tar.gz -fsSL "https://go.dev/dl/go${VERSION}.linux-amd64.tar.gz"
 sudo tar -C /usr/local -xzf /tmp/golang.tar.gz
 sudo sh -c 'echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile'

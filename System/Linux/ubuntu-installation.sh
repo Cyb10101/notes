@@ -87,7 +87,7 @@ configure() {
         "FALSE" "monitor0" "Monitor: 0" "Monitor always on" \
         "FALSE" "battery0" "Battery: nothing" "Sleep inactive battery type do nothing" \
         "TRUE" "grubBootMenu" "Grub: Boot menu" "Show boot menu" \
-        "TRUE" "grubDisableQuiteSplash" "Grub: Disable Quit Splash" "Disable quite and splash scree" \
+        "TRUE" "grubDisableQuiteSplash" "Grub: Disable Quit Splash" "Disable quite and splash screen" \
     ))
 
     updateGrub=0
@@ -123,14 +123,16 @@ configure() {
 
 systemUpdate() {
     textColor 3 'System update'
+    existsSnap=$([ -e /usr/bin/snap ] && echo 'TRUE' || echo 'FALSE')
+    existsFlatpak=$([ -e /usr/bin/flatpak ] && echo 'TRUE' || echo 'FALSE')
     selectedList=($(yad --center --on-top --width=600 --height=200 --title="System update" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
         --search-column=3 --hide-column=2 --print-column=2 \
         "FALSE" "addAptSources" "Add apt sources" "Add apt sources: main, universe, restricted, multiverse" \
         "TRUE" "apt" "Update System" "apt full-upgrade" \
-        "TRUE" "snap" "Update Snap" "snap refresh" \
-        "FALSE" "flatpak" "Update Flatpak" "flatpak update and uninstall unused" \
+        "${existsSnap}" "snap" "Update Snap" "snap refresh" \
+        "${selectedList}" "flatpak" "Update Flatpak" "flatpak update and uninstall unused" \
     ))
     for selected in "${selectedList[@]}"; do
         if [ "${selected}" == "addAptSources" ]; then
@@ -145,70 +147,20 @@ systemUpdate() {
             sudo apt update && sudo apt -y full-upgrade
         elif [ "${selected}" == "snap" ]; then
             echo 'Update Snap...'
-            sudo snap refresh
+            if [ -e /usr/bin/snap ]; then
+                sudo snap refresh
+            fi
         elif [ "${selected}" == "flatpak" ]; then
             echo 'Update Flatpak...'
-            flatpak update && flatpak uninstall --unused
+            if [ -e /usr/bin/flatpak ]; then
+                sudo flatpak update -y && sudo flatpak uninstall --unused
+            fi
         fi
     done
 }
 
-removePackages() {
-    textColor 3 'Remove Software (APT)'
-    packages=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=400 --title="Remove Software" \
-        --list --checklist --multiple --separator=" " \
-        --column=" " --column="Action" --column="Application" --column="Description" \
-        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
-        "TRUE" "aisleriot" "AisleRiot" "Solitaire game" \
-        "TRUE" "gnome-mahjongg" "Mahjongg" "Mahjongg game" \
-        "TRUE" "gnome-mines" "Mines" "Mines game" \
-        "TRUE" "gnome-sudoku" "Sudoku" "Sudoku game" \
-        "TRUE" "gnome-todo" "Todo" "Todo list" \
-        "TRUE" "transmission-gtk" "Transmission" "BitTorrent client" \
-        "TRUE" "rhythmbox" "Rhythmbox" "Music player" \
-        "TRUE" "shotwell" "Shotwell" "Photo management" \
-        "TRUE" "thunderbird" "Thunderbird" "Mail client" \
-        "TRUE" "totem" "Totem" "Video player" \
-    ))
-    sudo apt -y remove "${packages[@]}"
-    sudo apt -y auto-remove
-
-    selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=400 --title="Remove Software (Snap)" \
-        --list --checklist --multiple --separator=" " \
-        --column=" " --column="Action" --column="Application" --column="Description" \
-        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
-        "TRUE" "removeFirefoxSnap" "Remove Firefox" "Web Browser" \
-    ))
-    for selected in "${selectedList[@]}"; do
-        ${selected}
-    done
-}
-
-installEssential() {
-    textColor 3 'Install: Essential'
-    sudo apt -y install git htop inxi aria2 curl iputils-ping vim jq
-
-    sudo update-alternatives --set editor /usr/bin/vim.basic
-
-    packages=($(yad --center --on-top --width=600 --height=400 --title="Install Essential" \
-        --list --checklist --multiple --separator=" " \
-        --column=" " --column="Action" --column="Application" --column="Description" \
-        --search-column=3 --hide-column=2 --print-column=2 \
-        "TRUE" "cifs-utils nfs-common sshfs" "File system tools" "Tools for SSH, Samba and NFS" \
-        "TRUE" "ncdu" "Ncdu" "NCurses Disk Usage" \
-        "TRUE" "exa" "Exa" "Prettier list filesystem" \
-        "TRUE" "duf" "Duf" "Disk Usage Utility" \
-        "TRUE" "testdisk extundelete" "Recover files" "Packages: testdisk, extundelete" \
-        "TRUE" "p7zip-full p7zip-rar" "7-Zip" "Compression tools (+7-Zip-Rar)" \
-        "TRUE" "rar unrar-free" "Rar" "Compression tools" \
-        "TRUE" "diffutils" "Diff Utils" "Compare files" \
-        "TRUE" "gparted" "GParted" "Partition Editor" \
-        "FALSE" "openssh-server" "OpenSSH Server" "Server for Secure Shell" \
-        "FALSE" "whois" "Whois" "Client for directory service" \
-    ))
-    sudo apt -y install "${packages[@]}"
-}
-
+# https://flatpak.org/
+# https://flathub.org/
 installFlatpak() {
     textColor 3 'Install: Flatpak'
     sudo apt -y install flatpak
@@ -226,11 +178,7 @@ Application > Windows-Version = Windows 10\
 "
 }
 
-installPlayOnLinux() {
-    textColor 3 'Install: Play on Linux'
-    sudo apt -y install playonlinux
-}
-
+# https://docker.com
 installDocker() {
     textColor 3 'Install: Docker'
     sudo apt -y install docker.io
@@ -244,15 +192,17 @@ installDocker() {
     sudo usermod -aG docker ${selectedUsername}
 }
 
+# https://docs.docker.com/compose/
 installDockerCompose() {
     textColor 3 'Install: Docker Compose'
     local usernameRepository='docker/compose'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
-    curl -o /tmp/docker-compose -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/docker-compose-$(uname -s)-$(uname -m)"
+    curl --progress-bar -o /tmp/docker-compose -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/docker-compose-$(uname -s)-$(uname -m)"
     sudo install /tmp/docker-compose /usr/local/bin/docker-compose
 }
 
 # Software #####################################################################
+# https://www.mozilla.org/firefox/
 installFirefoxSnap() {
     textColor 3 'Install: Firefox (Snap)'
     sudo snap install firefox
@@ -261,11 +211,10 @@ removeFirefoxSnap() {
     textColor 3 'Remove: Firefox (Snap)'
     if [ -d ~/snap/firefox/common/.mozilla ]; then
         echo 'Create a backup on desktop: Firefox'
-        tar -C ~/snap/firefox/common/ -Jcf "${DIR_DESKTOP}/firefox_snap_$(date +%Y-%m-%d).tar.xz" .mozilla
+        tar -C ~/snap/firefox/common/ -czf "${DIR_DESKTOP}/firefox_snap_$(date +%Y-%m-%d).tar.gz" .mozilla
     fi
     sudo snap remove firefox
 }
-
 installFirefoxForceApt() {
     textColor 3 'Install: Firefox (Force Apt, Replace Snap)'
     sudo add-apt-repository -y ppa:mozillateam/ppa
@@ -274,11 +223,13 @@ installFirefoxForceApt() {
     sudo apt -y install firefox
 }
 
+# https://www.thunderbird.net/
 installThunderbird() {
     textColor 3 'Install: Thunderbird'
     sudo apt -y install thunderbird
 }
 
+# https://libreoffice.org
 installLibreOffice() {
     textColor 3 'Install: LibreOffice'
     sudo add-apt-repository -y ppa:libreoffice/ppa
@@ -290,21 +241,21 @@ installPdfArranger() {
     sudo apt -y install pdfarranger
 }
 
-# https://github.com/yang991178/fluent-reader/releases/latest
+# https://hyliu.me/fluent-reader/
 installFluentReader() {
     textColor 3 'Install: Fluent Reader'
     local usernameRepository='yang991178/fluent-reader'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
 
-    curl -o /tmp/fluent-reader.AppImage -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Fluent.Reader.${VERSION}.AppImage"
+    curl --progress-bar -o /tmp/fluent-reader.AppImage -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Fluent.Reader.${VERSION}.AppImage"
     sudo install /tmp/fluent-reader.AppImage /usr/local/bin/fluent-reader.AppImage
 
     if [ ! -d /usr/local/share/icons ]; then
         sudo mkdir -p /usr/local/share/icons
     fi
-    sudo curl -o /usr/local/share/icons/fluent-reader.png -fsSL "https://raw.githubusercontent.com/${usernameRepository}/master/build/icon.png"
+    sudo curl --progress-bar -o /usr/local/share/icons/fluent-reader.png -fL "https://raw.githubusercontent.com/${usernameRepository}/master/build/icon.png"
 
-    cat <<EOF | sudo tee /usr/share/applications/fluent-reader.desktop
+    cat << EOF | sudo tee /usr/share/applications/fluent-reader.desktop
 [Desktop Entry]
 Name=Fluent Reader
 Comment=Modern desktop RSS reader built with Electron, React, and Fluent UI.
@@ -330,7 +281,6 @@ installComix() {
 }
 
 # https://www.yacreader.com/
-# flatpak remove flathub com.yacreader.YACReader
 installYacReader() {
     textColor 3 'Install: YACReader'
     echo 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/home:selmf.list
@@ -339,10 +289,19 @@ installYacReader() {
     sudo apt -y install yacreader
 }
 
+# https://www.yacreader.com/
+installYacReaderFlatpak() {
+    textColor 3 'Install: YACReader'
+    sudo flatpak install -y flathub com.yacreader.YACReader
+    #flatpak override --user com.yacreader.YACReader --filesystem=/mnt/books --filesystem=/mnt/comic
+    #flatpak override --user --show com.yacreader.YACReader
+    #flatpak override --user --reset com.yacreader.YACReader
+}
+
 # https://discord.com/
 installDiscord() {
     textColor 3 'Install: Discord'
-    curl -o /tmp/discord.deb -fsSL "https://discord.com/api/download?platform=linux&format=deb"
+    curl --progress-bar -o /tmp/discord.deb -fL "https://discord.com/api/download?platform=linux&format=deb"
     # @bug Installation failed because packages missing
     set +e
     sudo dpkg -i /tmp/discord.deb
@@ -353,7 +312,7 @@ installDiscord() {
 # https://threema.ch/
 installThreema() {
     textColor 3 'Install: Threema'
-    curl -o /tmp/threema.deb -fsSL "https://releases.threema.ch/web-electron/v1/release/Threema-Latest.deb"
+    curl --progress-bar -o /tmp/threema.deb -fL "https://releases.threema.ch/web-electron/v1/release/Threema-Latest.deb"
     sudo dpkg -i /tmp/threema.deb
 }
 
@@ -373,10 +332,10 @@ installTelegram() {
     # @bug Problems with file permissions
     #sudo snap install telegram-desktop
 
-    # flatpak install -y flathub org.telegram.desktop
+    # sudo flatpak install -y flathub org.telegram.desktop
 
     # @todo Ubuntu 23.04 will install apt as snap
-    curl -o /tmp/telegram.tar.xz -fsSL "https://telegram.org/dl/desktop/linux"
+    curl --progress-bar -o /tmp/telegram.tar.xz -fL "https://telegram.org/dl/desktop/linux"
     tar -C ~/opt -xf /tmp/telegram.tar.xz
     ~/opt/Telegram/Telegram &
 }
@@ -395,26 +354,34 @@ installElement() {
     textColor 3 'Install: Element'
     sudo apt -y install wget apt-transport-https
 
-    sudo curl -o /usr/share/keyrings/element-io-archive-keyring.gpg -fsSL "https://packages.element.io/debian/element-io-archive-keyring.gpg"
+    sudo curl --progress-bar -o /usr/share/keyrings/element-io-archive-keyring.gpg -fL "https://packages.element.io/debian/element-io-archive-keyring.gpg"
     echo 'deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main' | sudo tee /etc/apt/sources.list.d/element.list
     sudo apt update
     sudo apt -y install element-desktop
 }
 
+# https://zoom.us/download
+installZoom() {
+    textColor 3 'Install: Zoom'
+    curl --progress-bar -o /tmp/zoom.deb -fL "https://zoom.us/client/latest/zoom_amd64.deb"
+    sudo apt -y install libgl1-mesa-glx libegl1-mesa libxcb-xtest0 libxcb-cursor0
+    sudo dpkg -i /tmp/zoom.deb
+}
+
 # https://download.linphone.org/releases/linux/app/
 installLinphone() {
     textColor 3 'Install: Linphone'
-    VERSION='5.0.12'
+    VERSION='5.0.15'
 
-    sudo curl -o /tmp/Linphone.AppImage -fsSL "https://download.linphone.org/releases/linux/app/Linphone-${VERSION}.AppImage"
+    sudo curl --progress-bar -o /tmp/Linphone.AppImage -fL "https://download.linphone.org/releases/linux/app/Linphone-${VERSION}.AppImage"
     sudo install /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
     if [ ! -d /usr/local/share/icons ]; then
         sudo mkdir -p /usr/local/share/icons
     fi
-    sudo curl -o /usr/local/share/icons/linphone.png -fsSL "https://github.com/BelledonneCommunications/linphone-desktop/raw/master/linphone-app/assets/icons/hicolor/64x64/apps/icon.png"
+    sudo curl --progress-bar -o /usr/local/share/icons/linphone.png -fL "https://github.com/BelledonneCommunications/linphone-desktop/raw/master/linphone-app/assets/icons/hicolor/64x64/apps/icon.png"
 
-    cat <<EOF | sudo tee /usr/share/applications/Linphone.desktop
+    cat << EOF | sudo tee /usr/share/applications/Linphone.desktop
 [Desktop Entry]
 Name=Linphone
 Comment=Linphone is an open source SIP phone for voice/video calls and instant messaging.
@@ -449,7 +416,7 @@ installFreac() {
 # https://flathub.org/apps/details/org.jdownloader.JDownloader
 installJDownloader() {
     textColor 3 'Install: JDownloader'
-    flatpak install -y flathub org.jdownloader.JDownloader
+    sudo flatpak install -y flathub org.jdownloader.JDownloader
 }
 
 installVlc() {
@@ -465,7 +432,7 @@ installMpv() {
 # https://flathub.org/apps/details/com.github.rafostar.Clapper
 installClapper() {
     textColor 3 'Install: Clapper'
-    flatpak install -y flathub com.github.rafostar.Clapper
+    sudo flatpak install -y flathub com.github.rafostar.Clapper
 }
 
 installKodi() {
@@ -490,20 +457,21 @@ installFlowblade() {
     sudo apt -y install flowblade
 }
 
+# https://www.openshot.org/
 installOpenShot() {
     textColor 3 'Install: OpenShot'
     local usernameRepository='OpenShot/openshot-qt'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
 
-    curl -o /tmp/OpenShot.AppImage -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/OpenShot-v${VERSION}-x86_64.AppImage"
+    curl --progress-bar -o /tmp/OpenShot.AppImage -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/OpenShot-v${VERSION}-x86_64.AppImage"
     sudo install /tmp/OpenShot.AppImage /usr/local/bin/OpenShot.AppImage
 
     if [ ! -d /usr/local/share/icons ]; then
         sudo mkdir -p /usr/local/share/icons
     fi
-    sudo curl -o /usr/local/share/icons/openshot.svg -fsSL "https://raw.githubusercontent.com/${usernameRepository}/master/images/openshot.svg"
+    sudo curl --progress-bar -o /usr/local/share/icons/openshot.svg -fL "https://raw.githubusercontent.com/${usernameRepository}/master/images/openshot.svg"
 
-    cat <<EOF | sudo tee /usr/share/applications/OpenShot.desktop
+    cat << EOF | sudo tee /usr/share/applications/OpenShot.desktop
 [Desktop Entry]
 Name=OpenShot Video Editor
 GenericName=Video Editor
@@ -536,7 +504,7 @@ installMkvToolNix() {
     textColor 3 'Install: MkvToolNix'
 
     # Optional: Updates
-    sudo curl -o /usr/share/keyrings/gpg-pub-moritzbunkus.gpg -fsSL "https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg"
+    sudo curl --progress-bar -o /usr/share/keyrings/gpg-pub-moritzbunkus.gpg -fL "https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg"
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/mkvtoolnix.list
     echo "deb-src [arch=amd64 signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/mkvtoolnix.list
     sudo apt update
@@ -552,7 +520,7 @@ installGwenview() {
 installXnview() {
     textColor 3 'Install: Xnview'
 
-    curl -o /tmp/XnViewMP.deb -fsSL "https://download.xnview.com/XnViewMP-linux-x64.deb"
+    curl --progress-bar -o /tmp/XnViewMP.deb -fL "https://download.xnview.com/XnViewMP-linux-x64.deb"
     # Fix missing
     sudo apt -y install libgdk-pixbuf2.0-0 libxcb-xinerama0
     sudo dpkg -i /tmp/XnViewMP.deb
@@ -623,16 +591,38 @@ installInkscape() {
     sudo apt -y install inkscape
 }
 
+# https://github.com/qarmin/czkawka
 installCzkawka() {
     textColor 3 'Install: Czkawka'
     local usernameRepository='qarmin/czkawka'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
-    curl -o /tmp/czkawka-gui -fsSL "https://github.com/${usernameRepository}/releases/download/${VERSION}/linux_czkawka_gui"
+    curl --progress-bar -o /tmp/czkawka-gui -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/linux_czkawka_gui"
     sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
+
+    if [ ! -d /usr/local/share/icons ]; then
+        sudo mkdir -p /usr/local/share/icons
+    fi
+    sudo curl --progress-bar -o /usr/local/share/icons/czkawka.png -fL "https://raw.githubusercontent.com/${usernameRepository}/master/czkawka_gui/icons/icon_about.png"
+
+    cat << EOF | sudo tee /usr/share/applications/Czkawka.desktop
+[Desktop Entry]
+Name=Czkawka
+Comment=Czkawka is a app to remove unnecessary files from your computer.
+Exec="/usr/local/bin/czkawka-gui"
+TryExec=/usr/local/bin/czkawka-gui
+Terminal=false
+Type=Application
+Icon=/usr/local/share/icons/czkawka.png
+StartupWMClass=czkawka
+Categories=Utility;
+EOF
 }
 
+# https://flameshot.org/
 installFlameshot() {
     textColor 3 'Install: Flameshot'
+    # sudo flatpak install flathub org.flameshot.Flameshot
+    # sudo snap install flameshot
     sudo apt -y install flameshot
 }
 
@@ -660,7 +650,7 @@ installVideoTools() {
 # http://localhost:9510/web/
 installUnifiedRemote() {
     textColor 3 'Install: Unified Remote'
-    curl -o /tmp/unifiedremote.deb -fsSL "https://www.unifiedremote.com/download/linux-x64-deb"
+    curl --progress-bar -o /tmp/unifiedremote.deb -fL "https://www.unifiedremote.com/download/linux-x64-deb"
     sudo dpkg -i /tmp/unifiedremote.deb
 }
 
@@ -671,7 +661,7 @@ installConky() {
 # https://www.hoptodesk.com/
 installHopToDesk() {
     textColor 3 'Install: HopToDesk'
-    curl -o /tmp/hoptodesk.deb -fsSL "https://www.hoptodesk.com/hoptodesk.deb"
+    curl --progress-bar -o /tmp/hoptodesk.deb -fL "https://www.hoptodesk.com/hoptodesk.deb"
     # Fix missing packages
     sudo apt -y install libxdo3
     sudo dpkg -i /tmp/hoptodesk.deb
@@ -682,7 +672,7 @@ installRustDesk() {
     textColor 3 'Install: RustDesk'
     local usernameRepository='rustdesk/rustdesk'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
-    curl -o /tmp/rustdesk.deb -fsSL "https://github.com/${usernameRepository}/releases/download/${VERSION}/rustdesk-${VERSION}.deb"
+    curl --progress-bar -o /tmp/rustdesk.deb -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/rustdesk-${VERSION}.deb"
     # Fix missing packages
     sudo apt -y install libxdo3
     sudo dpkg -i /tmp/rustdesk.deb
@@ -691,8 +681,8 @@ installRustDesk() {
 # https://teamviewer.com/
 installTeamViewer() {
     textColor 3 'Install: TeamViewer'
+    curl --progress-bar -o /tmp/teamviewer.deb -fL "https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
     # @bug: Key is stored in deprecated trusted.gpg keychain
-    curl -o /tmp/teamviewer.deb -fsSL "https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
     # Fix missing packages
     sudo apt -y install libminizip1
     sudo dpkg -i /tmp/teamviewer.deb
@@ -724,11 +714,11 @@ installAnyDesk() {
 installNoMachine() {
     textColor 3 'Install: NoMachine'
     # NoMachine Linux 64bit - https://downloads.nomachine.com/download/?id=3
-    NOMACHINE_VERSION="8.4.2_1"
-    NOMACHINE_MD5="35d9c2af67707a9e7cd764e3aeda4624"
+    NOMACHINE_VERSION="8.5.3_1"
+    NOMACHINE_MD5="91e3e70e3de7bc062151b9b771838f93"
     NOMACHINE_OS="Linux" && NOMACHINE_ARCHITECTURE="amd64"
     NOMACHINE_VERSION_SHORT=`echo ${NOMACHINE_VERSION} | cut -d. -f1-2`
-    curl -o /tmp/nomachine.deb -fsSL "https://download.nomachine.com/download/${NOMACHINE_VERSION_SHORT}/${NOMACHINE_OS}/nomachine_${NOMACHINE_VERSION}_${NOMACHINE_ARCHITECTURE}.deb"
+    curl --progress-bar -o /tmp/nomachine.deb -fL "https://download.nomachine.com/download/${NOMACHINE_VERSION_SHORT}/${NOMACHINE_OS}/nomachine_${NOMACHINE_VERSION}_${NOMACHINE_ARCHITECTURE}.deb"
 
     if ! echo "${NOMACHINE_MD5} /tmp/nomachine.deb" | md5sum -c -; then
         yad --center --on-top --image="gtk-dialog-error" --width=400 --title "NoMachine" --button="gtk-close:1" --text "Error installing NoMachine!\nMD5 checksum not match!"
@@ -742,15 +732,14 @@ installBalenaEtcher() {
     textColor 3 'Install: Balena Etcher'
     local usernameRepository='balena-io/etcher'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
-    curl -o /tmp/etcher.deb -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/balena-etcher_${VERSION}_amd64.deb"
+    curl --progress-bar -o /tmp/etcher.deb -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/balena-etcher_${VERSION}_amd64.deb"
 
     ## Fix
     sudo apt -y install gconf2 gconf-service libgconf-2-4
-    #sudo apt -y install gconf2 gconf-service libgconf-2-4 libgdk-pixbuf2.0-0
     sudo dpkg -i /tmp/etcher.deb
 
     # @fixme: Key is stored in deprecated trusted.gpg keychain
-    sudo apt-key export 8F40D32ABF59D635B11612F270528471AFF9A051 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/balena-etcher.gpg
+    #sudo apt-key export 8F40D32ABF59D635B11612F270528471AFF9A051 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/balena-etcher.gpg
 }
 
 installK3b() {
@@ -768,14 +757,20 @@ installBrasero() {
     sudo apt -y install brasero
 }
 
+installPlayOnLinux() {
+    textColor 3 'Install: Play on Linux'
+    sudo apt -y install playonlinux
+}
+
 installSteam() {
     textColor 3 'Install: Steam'
     sudo apt -y install steam
 }
 
+# https://syncthing.net/
 installSyncthing() {
     textColor 3 'Install: Syncthing'
-    sudo curl -o /usr/share/keyrings/syncthing-archive-keyring.gpg -fsSL "https://syncthing.net/release-key.gpg"
+    sudo curl --progress-bar -o /usr/share/keyrings/syncthing-archive-keyring.gpg -fL "https://syncthing.net/release-key.gpg"
     echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
     sudo apt update
     sudo apt install syncthing
@@ -786,25 +781,25 @@ installSyncthing() {
     if [ ! -d ~/.local/share/applications ]; then
         mkdir -p ~/.local/share/applications
     fi
-    curl -o ~/.config/autostart/syncthing-start.desktop -fsSL "https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-start.desktop"
-    curl -o ~/.local/share/applications/syncthing-ui.desktop -fsSL "https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-ui.desktop"
+    curl --progress-bar -o ~/.config/autostart/syncthing-start.desktop -fL "https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-start.desktop"
+    curl --progress-bar -o ~/.local/share/applications/syncthing-ui.desktop -fL "https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-ui.desktop"
 }
 
+# https://nextcloud.com/
 installNextcloudDesktop() {
     textColor 3 'Install: Nextcloud Desktop'
     local usernameRepository='nextcloud/desktop'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
 
-    curl -o /tmp/nextcloud.AppImage -fsSL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Nextcloud-${VERSION}-x86_64.AppImage"
+    curl --progress-bar -o /tmp/nextcloud.AppImage -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Nextcloud-${VERSION}-x86_64.AppImage"
     sudo install /tmp/nextcloud.AppImage /usr/local/bin/nextcloud.AppImage
-    #yad --center --on-top --width=400 --title "Configure Wine" --button="gtk-ok:0" --text "Run XnView, initialize config file and close it!"
 
     if [ ! -d /usr/local/share/icons ]; then
         sudo mkdir -p /usr/local/share/icons
     fi
-    sudo curl -o /usr/local/share/icons/nextcloud.svg -fsSL "https://raw.githubusercontent.com/${usernameRepository}/master/theme/colored/Nextcloud-icon.svg"
+    sudo curl --progress-bar -o /usr/local/share/icons/nextcloud.svg -fL "https://raw.githubusercontent.com/${usernameRepository}/master/theme/colored/Nextcloud-icon.svg"
 
-    cat <<EOF | sudo tee /usr/share/applications/nextcloud.desktop
+    cat << EOF | sudo tee /usr/share/applications/nextcloud.desktop
 [Desktop Entry]
 Categories=Utility;X-SuSE-SyncUtility;
 Type=Application
@@ -835,22 +830,25 @@ EOF
 installDropbox() {
     textColor 3 'Install: Dropbox'
     # @bug: Key is stored in deprecated trusted.gpg keychain
-    curl -o /tmp/dropbox.deb -fsSL "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb"
+    curl --progress-bar -o /tmp/dropbox.deb -fL "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2020.03.04_amd64.deb"
     sudo apt -y install libpango1.0-0 python3-gpg
     sudo dpkg -i /tmp/dropbox.deb
 }
 
+# https://restic.net/
 installRestic() {
     textColor 3 'Install: Restic'
     sudo apt -y install restic
     sudo restic self-update
 }
 
+# https://rdiff-backup.net/
 installRdiffBackup() {
     textColor 3 'Install: RdiffBackup'
     sudo apt -y install rdiff-backup
 }
 
+# https://github.com/schollz/croc
 installCroc() {
     textColor 3 'Install: Croc'
     curl https://getcroc.schollz.com | bash
@@ -872,32 +870,38 @@ installVSCodium() {
     sudo snap install codium --classic
 }
 
+# https://code.visualstudio.com/
 installVisualStudioCode() {
     textColor 3 'Install: Visual Studio Code'
     sudo snap install code --classic
 }
 
+# https://www.jetbrains.com/phpstorm/
 installPhpStorm() {
     textColor 3 'Install: PhpStorm'
     sudo snap install phpstorm --classic
 }
 
+# https://meldmerge.org/
 installMeld() {
     textColor 3 'Install: Meld'
     sudo apt -y install meld
 }
 
+# https://github.com/jqlang/jq
 installJqYqXq() {
     textColor 3 'Install: Jq, Yq, Xq (Json/Yaml/Xml processor)'
     sudo apt -y install jq python3 python3-pip
     sudo pip3 install yq
 }
 
+# https://go.dev/
 installGo() {
     textColor 3 'Install: Go-Lang'
     sudo snap install go --classic
 }
 
+# https://filezilla-project.org/
 installFileZilla() {
     textColor 3 'Install: FileZilla'
     sudo apt -y install filezilla
@@ -906,7 +910,7 @@ installFileZilla() {
 # https://www.heidisql.com/
 installHeidiSql() {
     textColor 3 'Install: HeidiSQL'
-    VERSION='12.4.0.6659'
+    VERSION='12.5.0.6677'
 
     if [ ! -d ~/Dokumente/HeidiSQL ]; then
         mkdir -p ~/Dokumente/HeidiSQL
@@ -915,22 +919,40 @@ installHeidiSql() {
         ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
     fi
 
-    curl -o /tmp/heidisql.exe -fsSL "https://www.heidisql.com/installers/HeidiSQL_${VERSION}_Setup.exe"
+    curl --progress-bar -o /tmp/heidisql.exe -fL "https://www.heidisql.com/installers/HeidiSQL_${VERSION}_Setup.exe"
     wine /tmp/heidisql.exe
 }
 
+# https://www.chiark.greenend.org.uk/~sgtatham/putty/
 installPutty() {
     textColor 3 'Install: PuTTY'
-    curl -o /tmp/putty.zip -fsSL "https://the.earth.li/~sgtatham/putty/latest/w64/putty.zip"
+    curl --progress-bar -o /tmp/putty.zip -fL "https://the.earth.li/~sgtatham/putty/latest/w64/putty.zip"
     mkdir -p ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
     unzip /tmp/putty.zip -d ~/.wine/drive_c/Program\ Files\ \(x86\)/PuTTY
 }
 
+# https://www.virtualbox.org/
 installVirtualBox() {
     textColor 3 'Install: VirtualBox'
     echo 'virtualbox-ext-pack virtualbox-ext-pack/license select true' | sudo debconf-set-selections
     sudo apt -y install virtualbox virtualbox-ext-pack
     #sudo systemctl disable vboxweb.service
+}
+
+installUbuntuRestrictedExtras() {
+    textColor 3 'Install: Ubuntu Restricted Extras'
+
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+    sudo apt-get install ttf-mscorefonts-installer
+
+    sudo apt -y install ubuntu-restricted-extras
+}
+
+# https://peterlevi.com/variety/
+installVariety() {
+    textColor 3 'Install: Variety'
+    sudo add-apt-repository -y ppa:variety/stable
+    sudo apt -y install variety variety-slideshow
 }
 
 installUefiRebootLauncher() {
@@ -947,17 +969,90 @@ Categories=System;Settings;
 EOF
 }
 
+# https://bitwarden.com/
+installBitwarden() {
+    textColor 3 'Install: Bitwarden'
+    curl --progress-bar -o /tmp/bitwarden.deb -fL "https://vault.bitwarden.com/download/?app=desktop&platform=linux&variant=deb"
+    sudo dpkg -i /tmp/bitwarden.deb
+}
+
+# https://keepassxc.org/
+installKeePassXC() {
+    textColor 3 'Install: KeePassXC'
+    sudo apt -y install keepassxc
+}
+
 # Installation #################################################################
+removePackages() {
+    textColor 3 'Remove Software (APT)'
+    packages=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=400 --title="Remove Software" \
+        --list --checklist --multiple --separator=" " \
+        --column=" " --column="Action" --column="Application" --column="Description" \
+        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        "TRUE" "aisleriot" "AisleRiot" "Solitaire game" \
+        "TRUE" "gnome-mahjongg" "Mahjongg" "Mahjongg game" \
+        "TRUE" "gnome-mines" "Mines" "Mines game" \
+        "TRUE" "gnome-sudoku" "Sudoku" "Sudoku game" \
+        "TRUE" "gnome-todo" "Todo" "Todo list" \
+        "TRUE" "transmission-gtk" "Transmission" "BitTorrent client" \
+        "TRUE" "rhythmbox" "Rhythmbox" "Music player" \
+        "TRUE" "shotwell" "Shotwell" "Photo management" \
+        "TRUE" "totem" "Totem" "Video player" \
+    ))
+    sudo apt -y remove "${packages[@]}"
+    sudo apt -y auto-remove
+
+    if [ -e /usr/bin/snap ]; then
+        selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=400 --title="Remove Software (Snap)" \
+            --list --checklist --multiple --separator=" " \
+            --column=" " --column="Action" --column="Application" --column="Description" \
+            --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+            "TRUE" "removeFirefoxSnap" "Remove Firefox" "Web Browser" \
+        ))
+        for selected in "${selectedList[@]}"; do
+            ${selected}
+        done
+    fi
+}
+
+# https://github.com/junegunn/fzf
+installEssential() {
+    textColor 3 'Install: Essential'
+    sudo apt -y install git htop inxi aria2 curl iputils-ping vim jq
+
+    sudo update-alternatives --set editor /usr/bin/vim.basic
+
+    packages=($(yad --center --on-top --width=600 --height=400 --title="Install Essential" \
+        --list --checklist --multiple --separator=" " \
+        --column=" " --column="Action" --column="Application" --column="Description" \
+        --search-column=3 --hide-column=2 --print-column=2 \
+        "TRUE" "cifs-utils nfs-common sshfs" "File system tools" "Tools for SSH, Samba and NFS" \
+        "TRUE" "ncdu" "Ncdu" "NCurses Disk Usage" \
+        "TRUE" "exa" "Exa" "Prettier list filesystem" \
+        "TRUE" "fzf" "fzf" "Fuzzy finder" \
+        "TRUE" "duf" "Duf" "Disk Usage Utility" \
+        "TRUE" "testdisk extundelete" "Recover files" "Packages: testdisk, extundelete" \
+        "TRUE" "p7zip-full p7zip-rar" "7-Zip" "Compression tools (+7-Zip-Rar)" \
+        "TRUE" "rar unrar-free" "Rar" "Compression tools" \
+        "TRUE" "diffutils" "Diff Utils" "Compare files" \
+        "TRUE" "gparted" "GParted" "Partition Editor" \
+        "FALSE" "openssh-server" "OpenSSH Server" "Server for Secure Shell" \
+    ))
+    sudo apt -y install "${packages[@]}"
+}
+
 installDependencies() {
+    notExistsFlatpak=$([ ! -e /usr/bin/flatpak ] && echo 'TRUE' || echo 'FALSE')
+    notExistsWine=$([ ! -e /usr/bin/wine ] && echo 'TRUE' || echo 'FALSE')
+    notExistsDocker=$([ ! -e /usr/bin/docker ] && echo 'TRUE' || echo 'FALSE')
     selectedList=($(yad --center --on-top --width=600 --height=300 --title="Install Dependencies" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
         --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
-        "TRUE" "installFlatpak" "Flatpak" "Package manager" \
-        "TRUE" "installWine" "Wine" "Run Windows applications" \
-        "FALSE" "installPlayOnLinux" "PlayOnLinux" "Create multiple Wine prefixes" \
-        "FALSE" "installDocker" "Docker" "Container Virtualisation" \
-        "FALSE" "installDockerCompose" "Docker Compose" "Container Virtualisation" \
+        "${notExistsFlatpak}" "installFlatpak" "Flatpak" "Package manager" \
+        "${notExistsWine}" "installWine" "Wine" "Run Windows applications" \
+        "${notExistsDocker}" "installDocker" "Docker" "Container Virtualisation" \
+        "${notExistsDocker}" "installDockerCompose" "Docker Compose" "Container Virtualisation" \
         "TRUE" "reboot" "Reboot" "Reboot System" \
     ))
     for selected in "${selectedList[@]}"; do
@@ -993,6 +1088,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installCalibre" "Calibre" "EBook Reader (epub)" "Apt" \
         "${TICK:-FALSE}" "installComix" "Comix (mComix)" "Comic Book Reader (cbz, cbr)" "Apt" \
         "${TICK:-FALSE}" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" "Debian Repository" \
+        "${TICK:-FALSE}" "installYacReaderFlatpak" "YACReader" "Comic Book Reader (cbz, cbr)" "Flatpak" \
         "${TICK:-TRUE}" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" "Debian Repository" \
         "${TICK:-TRUE}" "installThreema" "Threema" "Instant messaging, Voice conferencing" "Debian Repository" \
         "${TICK:-TRUE}" "installSignal" "Signal" "Instant messaging, Voice conferencing" "Debian Repository" \
@@ -1000,6 +1096,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installSlack" "Slack" "Instant messaging, Voice conferencing" "Snap" \
         "${TICK:-FALSE}" "installSkype" "Skype" "Instant messaging, Voice conferencing" "Snap" \
         "${TICK:-FALSE}" "installElement" "Element" "Instant messaging" "Debian Repository" \
+        "${TICK:-TRUE}" "installZoom" "Zoom" "Zoom meeting client" "Debian Package" \
         "${TICK:-FALSE}" "installLinphone" "Linphone" "Voice conferencing" "AppImage" \
         "${TICK:-TRUE}" "installSpotify" "Spotify" "Audio streaming" "Snap" \
         "${TICK:-FALSE}" "installAudacity" "Audacity" "Audio editor" "Apt" \
@@ -1036,6 +1133,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installK3b" "K3b" "Disc burning tool" "Apt" \
         "${TICK:-FALSE}" "installXfburn" "Xfburn" "Disc burning tool" "Apt" \
         "${TICK:-FALSE}" "installBrasero" "Brasero" "Disc burning tool" "Apt" \
+        "${TICK:-FALSE}" "installPlayOnLinux" "PlayOnLinux" "Create multiple Wine prefixes" "Apt" \
         "${TICK:-TRUE}" "installSteam" "Steam" "Game client" "Apt" \
         "${TICK:-TRUE}" "installSyncthing" "Syncthing" "Sycronisation tool" "Debian Repository" \
         "${TICK:-FALSE}" "installNextcloudDesktop" "Nextcloud Desktop" "Sycronisation tool" "AppImage" \
@@ -1055,6 +1153,10 @@ installSoftware() {
         "${TICK:-FALSE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" "Wine" \
         "${TICK:-FALSE}" "installPutty" "PuTTY" "PuTTY utilities" "Wine" \
         "${TICK:-FALSE}" "installVirtualBox" "VirtualBox" "Virtual machines" "Apt" \
+        "${TICK:-FALSE}" "installBitwarden" "Bitwarden" "Password manager" "Debian Package" \
+        "${TICK:-FALSE}" "installKeePassXC" "KeePassXC" "Password manager" "Apt" \
+        "${TICK:-FALSE}" "installUbuntuRestrictedExtras" "Ubuntu Restricted Extras" "Ubuntu Restricted Extras" "Apt" \
+        "${TICK:-TRUE}" "installVariety" "Variety" "Background changer" "Debian Repository" \
         "${TICK:-TRUE}" "installUefiRebootLauncher" "UEFI Launcher" "UEFI Firmware Setup Launcher: Reboot" "Script" \
     ))
     for selected in "${selectedList[@]}"; do
