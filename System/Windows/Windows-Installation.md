@@ -29,10 +29,19 @@ Run `powershell` as user.
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 irm get.scoop.sh | iex
 
-scoop install aria2 7zip git croc restic sudo
+# Recommended
+scoop install aria2 7zip git sudo
+
+# Without buckets
+scoop install croc
+scoop install restic
+scoop install yt-dlp ffmpeg
+
+# Bucket: Extas
 scoop bucket add extras
 scoop install mpv ffmpeg
 
+# Other
 scoop list
 scoop status; scoop update; scoop update --all
 ```
@@ -70,6 +79,144 @@ Preinstalled on Windows 11 22H2.
 * [WinGet: Store](https://www.microsoft.com/de-de/p/app-installer/9nblggh4nns1) (Recommended)
 * [WinGet: Github](https://github.com/microsoft/winget-cli)
 * [WinGet Packages Manifests](https://github.com/microsoft/winget-pkgs/tree/master/manifests)
+
+Commands:
+
+```shell
+winget upgrade
+winget upgrade --all
+
+winget search firefox
+winget install --exact --id=Mozilla.Firefox
+```
+
+Search multiple applications:
+
+```shell
+$apps = @(
+  "firefox",
+  "thunderbird"
+)
+foreach ($id in $apps) {
+  Write-Host "## Website: $($id)"
+  winget search $id
+  Write-Host ""
+}
+```
+
+Combine name, website and id for quick installation:
+
+```shell
+$apps = @(
+  "Mozilla.Firefox",      # Fuck
+  "Mozilla.Thunderbird"   # Me
+)
+foreach ($id in $apps) {
+  Write-Host "-> Website: $($id)"
+  #Write-Host "$(winget show --exact --id=$id | Select-String -Pattern '^Startseite:.*$')"
+  #Write-Host ""
+  echo "# $($(winget show --exact --id=$id | Select-String -Pattern '^Gefunden.*$')) ($(winget show --exact --id=$id | Select-String -Pattern '^Startseite:.*$'))" >> list.txt
+  echo "`"$($id)`"," >> list.txt
+}
+```
+
+Install multiple applications:
+
+```shell
+$apps = @(
+  "JetBrains.PHPStorm",                 # PhpStorm (https://www.jetbrains.com/phpstorm)
+  "Meld.Meld",                          # Meld (http://meldmerge.org/)
+  # Error: "jqlang.jq",                 # jq (https://github.com/jqlang/jq)
+  "GoLang.Go",                          # Go Programming Language (https://go.dev)
+  "HeidiSQL.HeidiSQL",                  # HeidiSQL (https://www.heidisql.com/)
+  "PuTTY.PuTTY",                        # PuTTY (https://putty.org)
+  "Oracle.VirtualBox",                  # Oracle VM VirtualBox (https://www.virtualbox.org)
+  "Docker.DockerDesktop",               # Docker Desktop (https://www.docker.com/products/docker-desktop)
+  "Mozilla.Firefox",                    # Mozilla Firefox (https://www.mozilla.org/de/firefox/)
+  "Mozilla.Thunderbird",                # Mozilla Thunderbird (https://www.thunderbird.net/de/)
+  "TheDocumentFoundation.LibreOffice",  # LibreOffice (https://www.libreoffice.org/)
+  "PDFArranger.PDFArranger",            # PDFArranger (https://github.com/pdfarranger/pdfarranger)
+  "yang991178.fluent-reader",           # Fluent Reader (https://github.com/yang991178/fluent-reader)
+  "calibre.calibre",                    # Calibre (https://calibre-ebook.com)
+  "YACReader.YACReader",                # YACReader (https://www.yacreader.com)
+  # Error Hash: "Threema.Threema",      # Threema (https://threema.ch/download)
+  "OpenWhisperSystems.Signal",          # Signal (https://www.signal.org)
+  "Telegram.TelegramDesktop",           # Telegram Desktop (https://desktop.telegram.org)
+  "SlackTechnologies.Slack",            # Slack (https://slack.com)
+  "Microsoft.Skype",                    # Skype (https://www.skype.com/)
+  "Element.Element",                    # Element (https://element.io)
+  "Zoom.Zoom",                          # Zoom (https://zoom.us/)
+  "BelledonneCommunications.Linphone",  # Linphone (https://linphone.org/)
+  # Error: "Spotify.Spotify",           # Spotify (https://www.spotify.com/download/windows/)
+  "Audacity.Audacity",                  # Audacity (https://www.audacityteam.org/)
+  "AppWork.JDownloader",                # JDownloader 2 (https://jdownloader.org/)
+  "VideoLAN.VLC",                       # VLC media player (https://www.videolan.org/vlc/)
+  "XBMCFoundation.Kodi",                # Kodi (https://kodi.tv)
+  "HandBrake.HandBrake",                # HandBrake (https://handbrake.fr)
+  # Error installer hangs: "OpenShot.OpenShot", # OpenShot Video Editor (https://github.com/OpenShot/openshot-qt)
+  "MoritzBunkus.MKVToolNix",            # MKVToolNix (https://mkvtoolnix.download/)
+  "XnSoft.XnViewMP",                    # XnViewMP (https://www.xnview.com/en/xnviewmp/)
+  "GIMP.GIMP",                          # GIMP (https://www.gimp.org)
+  "Inkscape.Inkscape",                  # Inkscape (https://inkscape.org/)
+  "Flameshot.Flameshot",                # Flameshot (https://flameshot.org)
+  "OBSProject.OBSStudio",               # OBS Studio (https://obsproject.com/)
+  "RustDesk.RustDesk",                  # RustDesk (https://rustdesk.com/)
+  "TeamViewer.TeamViewer",              # TeamViewer (https://www.teamviewer.com/de/)
+  # Error Hash: "AnyDeskSoftwareGmbH.AnyDesk", # AnyDesk (https://anydesk.com)
+  "NoMachine.NoMachine",                # NoMachine (https://nomachine.com/)
+  "Balena.Etcher",                      # balenaEtcher (https://www.balena.io/etcher)
+  "Valve.Steam",                        # Steam (https://store.steampowered.com)
+  # Error: "Syncthing.Syncthing",       # Syncthing (https://github.com/syncthing/syncthing)
+  "Nextcloud.NextcloudDesktop",         # Nextcloud (https://nextcloud.com)
+  "Dropbox.Dropbox",                    # Dropbox (https://www.dropbox.com)
+  # Error: "restic.restic",             # Restic (https://github.com/restic/restic)
+  "Microsoft.VisualStudioCode",         # Visual Studio Code (https://code.visualstudio.com)
+  "VSCodium.VSCodium",                  # VSCodium (https://vscodium.com)
+  "DelugeTeam.Deluge",                  # Deluge BitTorrent Client (https://deluge-torrent.org)
+  "aria2.aria2",                        # Aria2 (https://aria2.github.io/)
+  "schollz.croc",                       # Croc (https://github.com/schollz/croc)
+  "Bitwarden.Bitwarden",                # Bitwarden (https://bitwarden.com/download)
+  "KeePassXCTeam.KeePassXC",            # KeePassXC (https://keepassxc.org)
+  "Google.Chrome",                      # Google Chrome (https://www.google.com/intl/en_us/chrome)
+  "JAMSoftware.TreeSize.Free",          # TreeSize Free (https://www.jam-software.com/treesize_free/)
+  "WinDirStat.WinDirStat",              # WinDirStat (https://windirstat.net)
+  "TeamSpeakSystems.TeamSpeakClient",   # TeamSpeak 3 Client (https://www.teamspeak.com/en/)
+  "DominikReichl.KeePass",              # KeePass (https://keepass.info)
+  "DOSBox.DOSBox",                      # DOSBox (https://www.dosbox.com/)
+  "Overwolf.CurseForge",                # CurseForge (https://curseforge.overwolf.com/)
+  "WinSCP.WinSCP",                      # WinSCP (https://winscp.net)
+  "NickeManarin.ScreenToGif",           # ScreenToGif (https://www.screentogif.com)
+  "Greenshot.Greenshot",                # Greenshot (https://getgreenshot.org)
+  "Skillbrains.Lightshot",              # Lightshot (https://app.prntscr.com/en/)
+  "KDE.Kdenlive",                       # Kdenlive (https://kdenlive.org/en)
+  "7zip.7zip",                          # 7-Zip (https://www.7-zip.org)
+  "RARLab.WinRAR",                      # WinRAR (https://www.win-rar.com/start.html?&L=1)
+  # Error: "Rufus.Rufus",               # Rufus (https://rufus.ie)
+  "LIGHTNINGUK.ImgBurn",                # ImgBurn (https://www.imgburn.com/)
+  "VaclavSlavik.Poedit",                # Poedit (https://poedit.net)
+  # Error Hash: "WhatsApp.WhatsApp",    # WhatsApp (https://www.whatsapp.com)
+  "ItchIo.Itch",                        # itch (https://itch.io/app)
+  "Amazon.Games",                       # Amazon Games (https://gaming.amazon.com/home)
+  # Error Hash: "ElectronicArts.EADesktop", # EA app (https://www.ea.com/ea-desktop-beta)
+  # Error Hash: "Ubisoft.Connect",      # Ubisoft Connect (https://ubisoftconnect.com)
+  "EpicGames.EpicGamesLauncher",        # Epic Games Launcher (https://www.epicgames.com)
+  "PDFsam.PDFsam",                      # PDFsam Basic (http://www.pdfsam.org)
+  "Mp3tag.Mp3tag",                      # Mp3tag (https://www.mp3tag.de/en/index.html)
+  "Microsoft.Teams",                    # Microsoft Teams (https://www.microsoft.com/en-us/microsoft-teams/group-chat-software)
+  "ShareX.ShareX",                      # ShareX (https://getsharex.com)
+  "Microsoft.WindowsTerminal",          # Windows Terminal (https://docs.microsoft.com/windows/terminal)
+  "voidtools.Everything",               # Everything (https://www.voidtools.com)
+  "angryziber.AngryIPScanner",          # Angry IP Scanner (https://angryip.org/)
+  "Lexikos.AutoHotkey",                 # AutoHotkey 1 (https://autohotkey.com)
+  "AutoHotkey.AutoHotkey",              # AutoHotkey 2 (https://www.autohotkey.com/)
+  "Discord.Discord"                     # Discord (https://discord.com)
+)
+foreach ($id in $apps) {
+  Write-Host "-> Install: $($id)"
+  winget install --exact --id=$id
+  Write-Host ""
+}
+```
 
 ## Windows 11 Configuration
 
