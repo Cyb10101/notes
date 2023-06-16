@@ -22,13 +22,11 @@ tmux ls
 tmux detach
 ```
 
-### Rename Tmux window
-
-[STRG + B] dann [,]
-
-### Change Tmux window
-
-[STRG + B] dann [n]
+| Action             | Shortcut           |
+| ------------------ | ------------------ |
+| Detach             | Ctrl + B, then d   |
+| Rename Tmux window | Ctrl + B, then ',' |
+| Change Tmux window | Ctrl + B, then n   |
 
 ### Attach Tmux
 
