@@ -8,8 +8,7 @@ import (
   "path"
   "strconv"
   "strings"
-
-  "./packages"
+  "cyb10101/split-files/packages"
 )
 
 func isFile(fileName string) bool {
