@@ -42,6 +42,10 @@ removeSubscriptionNotice() {
         echo 'Removing Proxmox subscription notice from UI ...'
         sed -Ei "s/(\.data\.status(\.toLowerCase\(\))?) !== '[aA]ctive'/\1 === 'no-more-nagging'/" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
     fi
+    if [ -f /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.min.js ]; then
+        echo 'Overwrite Proxmox library minimized JavaScript ...'
+        cp /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.min.js
+    fi
 }
 
 removeSubscriptionNotice
