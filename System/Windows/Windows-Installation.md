@@ -98,9 +98,9 @@ $apps = @(
   "thunderbird"
 )
 foreach ($id in $apps) {
-  Write-Host "## Website: $($id)"
+  Write-Output "## Website: $($id)"
   winget search $id
-  Write-Host ""
+  Write-Output ""
 }
 ```
 
@@ -112,9 +112,9 @@ $apps = @(
   "Mozilla.Thunderbird"   # Me
 )
 foreach ($id in $apps) {
-  Write-Host "-> Website: $($id)"
-  #Write-Host "$(winget show --exact --id=$id | Select-String -Pattern '^Startseite:.*$')"
-  #Write-Host ""
+  Write-Output "-> Website: $($id)"
+  #Write-Output "$(winget show --exact --id=$id | Select-String -Pattern '^Startseite:.*$')"
+  #Write-Output ""
   echo "# $($(winget show --exact --id=$id | Select-String -Pattern '^Gefunden.*$')) ($(winget show --exact --id=$id | Select-String -Pattern '^Startseite:.*$'))" >> list.txt
   echo "`"$($id)`"," >> list.txt
 }
@@ -212,9 +212,9 @@ $apps = @(
   "Discord.Discord"                     # Discord (https://discord.com)
 )
 foreach ($id in $apps) {
-  Write-Host "-> Install: $($id)"
+  Write-Output "-> Install: $($id)"
   winget install --exact --id=$id
-  Write-Host ""
+  Write-Output ""
 }
 ```
 

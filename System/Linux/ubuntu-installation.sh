@@ -632,7 +632,7 @@ installVokoScreen() {
 }
 
 installObsStudio() {
-    textColor 3 'Install: Obs Studio'
+    textColor 3 'Install: OBS Studio'
 
     # Optional
     sudo add-apt-repository -y ppa:obsproject/obs-studio
@@ -1088,7 +1088,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installCalibre" "Calibre" "EBook Reader (epub)" "Apt" \
         "${TICK:-FALSE}" "installComix" "Comix (mComix)" "Comic Book Reader (cbz, cbr)" "Apt" \
         "${TICK:-FALSE}" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" "Debian Repository" \
-        "${TICK:-FALSE}" "installYacReaderFlatpak" "YACReader" "Comic Book Reader (cbz, cbr)" "Flatpak" \
+        "${TICK:-TRUE}" "installYacReaderFlatpak" "YACReader" "Comic Book Reader (cbz, cbr)" "Flatpak" \
         "${TICK:-TRUE}" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" "Debian Repository" \
         "${TICK:-TRUE}" "installThreema" "Threema" "Instant messaging, Voice conferencing" "Debian Repository" \
         "${TICK:-TRUE}" "installSignal" "Signal" "Instant messaging, Voice conferencing" "Debian Repository" \
@@ -1099,24 +1099,24 @@ installSoftware() {
         "${TICK:-TRUE}" "installZoom" "Zoom" "Zoom meeting client" "Debian Package" \
         "${TICK:-FALSE}" "installLinphone" "Linphone" "Voice conferencing" "AppImage" \
         "${TICK:-TRUE}" "installSpotify" "Spotify" "Audio streaming" "Snap" \
-        "${TICK:-FALSE}" "installAudacity" "Audacity" "Audio editor" "Apt" \
+        "${TICK:-TRUE}" "installAudacity" "Audacity" "Audio editor" "Apt" \
         "${TICK:-FALSE}" "installFreac" "fre:ac" "Audio converter and CD ripper" "Snap" \
-        "${TICK:-FALSE}" "installJDownloader" "JDownloader" "Download manager" "Flatpak" \
+        "${TICK:-TRUE}" "installJDownloader" "JDownloader" "Download manager" "Flatpak" \
         "${TICK:-TRUE}" "installVlc" "VLC (Video Lan Client)" "Video player" "Apt" \
         "${TICK:-TRUE}" "installMpv" "mpv" "Video player" "Apt" \
         "${TICK:-TRUE}" "installClapper" "Clapper" "Video player" "Flatpak" \
         "${TICK:-FALSE}" "installKodi" "Kodi (XBMC)" "Media center" "Apt" \
-        "${TICK:-FALSE}" "installHandbrake" "Handbrake" "Video transcoder" "Apt" \
-        "${TICK:-FALSE}" "installKdenlive" "Kdenlive" "Video editor" "Apt+PPA" \
+        "${TICK:-TRUE}" "installHandbrake" "Handbrake" "Video transcoder" "Apt" \
+        "${TICK:-TRUE}" "installKdenlive" "Kdenlive" "Video editor" "Apt+PPA" \
         "${TICK:-FALSE}" "installFlowblade" "Flowblade" "Video editor" "Apt" \
         "${TICK:-FALSE}" "installOpenShot" "OpenShot" "Video editor" "Github" \
         "${TICK:-FALSE}" "installPitivi" "Pitivi" "Video editor" "Apt" \
-        "${TICK:-FALSE}" "installVideoEffects" "Video effects" "Video effects" "Apt" \
-        "${TICK:-FALSE}" "installMkvToolNix" "MkvToolNix" "Matroska media container tools" "Apt + Repository" \
-        "${TICK:-FALSE}" "installGwenview" "Gwenview" "Image viewer" "Apt" \
+        "${TICK:-TRUE}" "installVideoEffects" "Video effects" "Video effects" "Apt" \
+        "${TICK:-TRUE}" "installMkvToolNix" "MkvToolNix" "Matroska media container tools" "Apt + Repository" \
+        "${TICK:-TRUE}" "installGwenview" "Gwenview" "Image viewer" "Apt" \
         "${TICK:-TRUE}" "installXnview" "Xnview" "Image viewer" "Debian Package + Config" \
         "${TICK:-TRUE}" "installGimp" "Gimp" "Image editor" "Apt" \
-        "${TICK:-FALSE}" "installInkscape" "Inkscape" "Vector image editor" "Apt" \
+        "${TICK:-TRUE}" "installInkscape" "Inkscape" "Vector image editor" "Apt" \
         "${TICK:-TRUE}" "installCzkawka" "Czkawka" "Duplicate image finder" "Github" \
         "${TICK:-TRUE}" "installFlameshot" "Flameshot" "Screenshot tools" "Apt" \
         "${TICK:-FALSE}" "installVokoScreen" "VokoScreen" "Screen recorder" "Apt" \
@@ -1126,11 +1126,11 @@ installSoftware() {
         "${TICK:-TRUE}" "installConky" "Conky" "Desktop tools" "Apt" \
         "${TICK:-TRUE}" "installHopToDesk" "HopToDesk" "Remote maintenance" "Debian Package" \
         "${TICK:-TRUE}" "installRustDesk" "RustDesk" "Remote maintenance" "Git + Debian Package" \
-        "${TICK:-FALSE}" "installTeamViewer" "TeamViewer" "Remote maintenance" "Debian Package" \
-        "${TICK:-FALSE}" "installAnyDesk" "AnyDesk" "Remote maintenance" "Debian Repository" \
-        "${TICK:-FALSE}" "installNoMachine" "NoMachine" "Remote maintenance" "Debian Package" \
-        "${TICK:-FALSE}" "installBalenaEtcher" "Balena Etcher" "USB burning tool" "Debian Package" \
-        "${TICK:-FALSE}" "installK3b" "K3b" "Disc burning tool" "Apt" \
+        "${TICK:-TRUE}" "installTeamViewer" "TeamViewer" "Remote maintenance" "Debian Package" \
+        "${TICK:-TRUE}" "installAnyDesk" "AnyDesk" "Remote maintenance" "Debian Repository" \
+        "${TICK:-TRUE}" "installNoMachine" "NoMachine" "Remote maintenance" "Debian Package" \
+        "${TICK:-TRUE}" "installBalenaEtcher" "Balena Etcher" "USB burning tool" "Debian Package" \
+        "${TICK:-TRUE}" "installK3b" "K3b" "Disc burning tool" "Apt" \
         "${TICK:-FALSE}" "installXfburn" "Xfburn" "Disc burning tool" "Apt" \
         "${TICK:-FALSE}" "installBrasero" "Brasero" "Disc burning tool" "Apt" \
         "${TICK:-FALSE}" "installPlayOnLinux" "PlayOnLinux" "Create multiple Wine prefixes" "Apt" \
@@ -1144,18 +1144,18 @@ installSoftware() {
         "${TICK:-TRUE}" "installAria2" "Aria2" "File download tool" "Apt" \
         "${TICK:-FALSE}" "installDeluge" "Deluge" "BitTorrent client" "Apt" \
         "${TICK:-TRUE}" "installVSCodium" "VSCodium" "Visual Studio Code but without Microsoft" "Snap Classic" \
-        "${TICK:-TRUE}" "installVisualStudioCode" "Visual Studio Code" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
+        "${TICK:-FALSE}" "installVisualStudioCode" "Visual Studio Code" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
         "${TICK:-FALSE}" "installPhpStorm" "PhpStorm" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
         "${TICK:-TRUE}" "installMeld" "Meld" "Visual diff and merge tool" "Apt" \
         "${TICK:-TRUE}" "installJqYqXq" "Jq, Yq, Xq" "Json/Yaml/Xml processor" "Apt + Python" \
         "${TICK:-FALSE}" "installGo" "Go-Lang" "Go language" "Snap Classic" \
-        "${TICK:-FALSE}" "installFileZilla" "FileZilla" "FTP/SFTP Client" "Apt" \
-        "${TICK:-FALSE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" "Wine" \
-        "${TICK:-FALSE}" "installPutty" "PuTTY" "PuTTY utilities" "Wine" \
-        "${TICK:-FALSE}" "installVirtualBox" "VirtualBox" "Virtual machines" "Apt" \
-        "${TICK:-FALSE}" "installBitwarden" "Bitwarden" "Password manager" "Debian Package" \
-        "${TICK:-FALSE}" "installKeePassXC" "KeePassXC" "Password manager" "Apt" \
-        "${TICK:-FALSE}" "installUbuntuRestrictedExtras" "Ubuntu Restricted Extras" "Ubuntu Restricted Extras" "Apt" \
+        "${TICK:-TRUE}" "installFileZilla" "FileZilla" "FTP/SFTP Client" "Apt" \
+        "${TICK:-TRUE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" "Wine" \
+        "${TICK:-TRUE}" "installPutty" "PuTTY" "PuTTY utilities" "Wine" \
+        "${TICK:-TRUE}" "installVirtualBox" "VirtualBox" "Virtual machines" "Apt" \
+        "${TICK:-TRUE}" "installBitwarden" "Bitwarden" "Password manager" "Debian Package" \
+        "${TICK:-TRUE}" "installKeePassXC" "KeePassXC" "Password manager" "Apt" \
+        "${TICK:-TRUE}" "installUbuntuRestrictedExtras" "Ubuntu Restricted Extras" "Ubuntu Restricted Extras" "Apt" \
         "${TICK:-TRUE}" "installVariety" "Variety" "Background changer" "Debian Repository" \
         "${TICK:-TRUE}" "installUefiRebootLauncher" "UEFI Launcher" "UEFI Firmware Setup Launcher: Reboot" "Script" \
     ))
