@@ -1,4 +1,4 @@
-# Nautilus Extension: Visual Studio Code
+# Nautilus Extension: Visual Studio Codium
 # sudo apt -y install python3-nautilus
 # Copy to: nautilus ~/.local/share/nautilus-python/extensions
 # pkill nautilus
@@ -12,10 +12,10 @@ from subprocess import call, run
 import os
 
 # Path to binary
-codeBinary = 'code'
+codiumBinary = 'codium'
 
 # Name in the context menu
-codeName = 'Code'
+codiumName = 'Codium'
 
 # Change to True for always create new window
 newWindow = False
@@ -45,8 +45,8 @@ class App():
     def msgError(self, message):
         self.msg(message, "dialog-error")
 
-class VisualStudioCodeExtension(GObject.GObject, Nautilus.MenuProvider):
-    def launchVisualStudioCode(self, menu, files):
+class VisualStudioCodiumExtension(GObject.GObject, Nautilus.MenuProvider):
+    def launchVisualStudioCodium(self, menu, files):
         safepaths = ''
         args = ''
 
@@ -54,30 +54,30 @@ class VisualStudioCodeExtension(GObject.GObject, Nautilus.MenuProvider):
             filepath = file.get_location().get_path()
             safepaths += '"' + filepath + '" '
 
-            # If one of the files we are trying to open is a folder - create a new instance of vscode
+            # If one of the files we are trying to open is a folder - create a new instance of vscodium
             if os.path.isdir(filepath) and os.path.exists(filepath):
                 args = '--new-window '
 
         if newWindow:
             args = '--new-window '
 
-        # App.msgInformation("Open Code...")
-        call(codeBinary + ' ' + args + safepaths + '&', shell = True)
+        # App.msgInformation("Open Codium...")
+        call(codiumBinary + ' ' + args + safepaths + '&', shell = True)
 
     def get_file_items(self, window, files):
         item = Nautilus.MenuItem(
-            name = 'VisualStudioCodeOpen',
-            label = 'Open in ' + codeName,
-            tip = 'Opens the selected files with Visual Studio Code'
+            name = 'VisualStudioCodiumOpen',
+            label = 'Open in ' + codiumName,
+            tip = 'Opens the selected files with Visual Studio Codium'
         )
-        item.connect('activate', self.launchVisualStudioCode, files)
+        item.connect('activate', self.launchVisualStudioCodium, files)
         return [item]
 
     def get_background_items(self, window, file):
         item = Nautilus.MenuItem(
-            name = 'VisualStudioCodeOpenBackground',
-            label = 'Open in ' + codeName,
-            tip = 'Opens the current directory in Visual Studio Code'
+            name = 'VisualStudioCodiumOpenBackground',
+            label = 'Open in ' + codiumName,
+            tip = 'Opens the current directory in Visual Studio Codium'
         )
-        item.connect('activate', self.launchVisualStudioCode, [file])
+        item.connect('activate', self.launchVisualStudioCodium, [file])
         return [item]
