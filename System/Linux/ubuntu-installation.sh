@@ -672,7 +672,7 @@ installRustDesk() {
     textColor 3 'Install: RustDesk'
     local usernameRepository='rustdesk/rustdesk'
     VERSION=$(getGithubReleaseLatest "${usernameRepository}")
-    curl --progress-bar -o /tmp/rustdesk.deb -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/rustdesk-${VERSION}.deb"
+    curl --progress-bar -o /tmp/rustdesk.deb -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/rustdesk-${VERSION}-x86_64.deb"
     # Fix missing packages
     sudo apt -y install libxdo3
     sudo dpkg -i /tmp/rustdesk.deb

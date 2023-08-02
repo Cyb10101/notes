@@ -142,6 +142,7 @@ Gnome extensions:
 * [Notification Banner Reloaded](https://extensions.gnome.org/extension/4651/notification-banner-reloaded/) (Recommended)
 * [Notification Banner Position](https://extensions.gnome.org/extension/4105/notification-banner-position/)
 * [Blur my Shell](https://extensions.gnome.org/extension/3193/blur-my-shell/)
+* [Bedtime Mode](https://extensions.gnome.org/extension/4012/gnome-bedtime/)
 
 ```bash
 sudo apt install gnome-shell-extension-manager
@@ -268,6 +269,9 @@ gsettings set org.gnome.shell.extensions.dash-to-dock multi-monitor true
 ### Keyboard Binding
 
 ```bash
+# Settings > Keyboard > Tastaturkürzel: Tastenkombinationen anzeigen und anpassen
+gnome-control-center keyboard
+
 # Unset default screenshot tool
 gsettings set org.gnome.shell.keybindings show-screenshot-ui '[]'
 
