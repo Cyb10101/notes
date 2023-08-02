@@ -163,6 +163,12 @@ sudo extundelete --restore-file '/home/user/logo.png' /dev/sda1
 sudo extundelete --restore-directory '/home/user/icons' /dev/sda1
 ```
 
+## Get drive model and serial number
+
+```bash
+sudo hdparm -i /dev/sd* | grep -iE '(/dev/|model)'
+```
+
 ### Create ISO from live disk (CD, DVD, Bluray)
 
 ```bash
