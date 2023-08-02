@@ -62,6 +62,9 @@ Config file:
 # If a merge is required, output to given container format. [mkv, mp4, ogg, webm, flv]
 --merge-output-format mkv
 
+# Keep the video file on disk after the post-processing
+--keep-video
+
 # Write video description to a .description file
 --write-description
 
