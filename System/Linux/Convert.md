@@ -8,6 +8,50 @@ sudo apt -y install ffmpeg faac faad flac lame libmad0 libmpcdec6 mppenc vorbis-
 
 ## Image
 
+Resize images:
+
+```bash
+mkdir converted
+for file in ./*.jpg; do convert "${file}" -resize 2048x -quality 90% "converted/${file}"; done
+```
+
+Resize images on Windows with PowerToys:
+
+* [PowerToys: Releases](https://github.com/microsoft/PowerToys/releases/latest)
+* [PowerToys: Image resizer](https://learn.microsoft.com/de-de/windows/powertoys/image-resizer)
+
+```shell
+winget install Microsoft.PowerToys --source winget
+```
+
+Resize images on Windows with ImageMagick (resize.cmd):
+
+```shell
+@echo off
+rem https://www.imagemagick.org/script/download.php#windows
+rem scoop install imagemagick
+cd /d "%~dp0"
+
+set /p quality="Quality (0-100): "
+set /p size="Size (2048x): "
+
+if not exist converted (
+  mkdir converted
+)
+
+for %%E in (jpeg jpg png) do (
+  if exist "%~dp0.\*.%%E" (
+    for /F "tokens=*" %%A IN ('DIR /B  "%~dp0.\*.%%E"') do (
+      echo * %%E: %%A
+      magick convert "%~dp0.\%%A" -resize %size% -quality %quality%%% "%~dp0.\converted\%%A"
+    )
+    echo.
+  )
+)
+```
+
+Generate sprites:
+
 ```bash
 # Vertical sprite
 convert image1.png image2.png image3.png -append result.png
@@ -82,9 +126,15 @@ ffmpeg -i input.mp4 -ss 00:00:23 -c copy output.mp4
 
 ## 3D to 2D
 
+* [FFmpeg: Stereoscopic](https://trac.ffmpeg.org/wiki/Stereoscopic)
+* [FFmpeg: Stereo3D](https://ffmpeg.org/ffmpeg-filters.html#stereo3d)
+
 ```bash
 # Side by side 3D (left and right) to 2D
 ffmpeg -i input.mkv -vf stereo3d=sbsl:ml -metadata:s:v:0 stereo_mode="mono" -aspect 16:9 output.mkv
+
+# Above & below
+ffmpeg -i input.mkv -vf stereo3d=abl:ml -metadata:s:v:0 stereo_mode="mono" -aspect 16:9 output.mkv
 ```
 
 ## Rotate Video
