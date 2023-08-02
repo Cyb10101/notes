@@ -45,3 +45,7 @@ Security:
 Office:
 
 * [LibreOffice Viewer](https://f-droid.org/packages/org.documentfoundation.libreoffice/)
+
+## Phone over WLAN
+
+* Android 12 > Settings > Mobile Network > SIM 1 > WiFi Calling
