@@ -46,6 +46,11 @@ Office:
 
 * [LibreOffice Viewer](https://f-droid.org/packages/org.documentfoundation.libreoffice/)
 
+Meeting:
+
+* [Jitsi](https://jitsi.org/)
+* [Jitsi (F-Droid)](https://f-droid.org/en/packages/org.jitsi.meet/)
+
 ## Phone over WLAN
 
 * Android 12 > Settings > Mobile Network > SIM 1 > WiFi Calling
