@@ -223,6 +223,11 @@ installFirefoxForceApt() {
     sudo apt -y install firefox
 }
 
+installChromiumSnap() {
+    textColor 3 'Install: Chromium (Snap)'
+    sudo snap install chromium chromium-ffmpeg
+}
+
 # https://www.thunderbird.net/
 installThunderbird() {
     textColor 3 'Install: Thunderbird'
@@ -1081,6 +1086,7 @@ installSoftware() {
         --expand-column=4 \
         "${TICK:-FALSE}" "installFirefoxSnap" "Firefox (Snap)" "Webbrowser" "Snap" \
         "${TICK:-TRUE}" "installFirefoxForceApt" "Firefox (Force Apt)" "Webbrowser directly from mozilla repository" "Apt" \
+        "${TICK:-TRUE}" "installChromiumSnap" "Chromium (Snap)" "Webbrowser" "Snap" \
         "${TICK:-FALSE}" "installThunderbird" "Thunderbird" "Mail client" "Apt" \
         "${TICK:-TRUE}" "installLibreOffice" "LibreOffice" "Office Suite" "Apt" \
         "${TICK:-TRUE}" "installPdfArranger" "PDF Arranger" "PDF Arranger" "Apt" \
