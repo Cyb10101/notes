@@ -41,14 +41,15 @@ Start `powershell` as administrator:
 # Add-Type -AssemblyName System.IO.Compression.FileSystem
 # function Unzip([string]$zipfile, [string]$outpath) {[System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath);}
 
-# Download and extract files https://github.com/syncthing/syncthing/releases/latest
-$version = "1.23.7"
-
 # Create folder
 mkdir C:\opt
 
 # Disable progressbar for faster downloading ( https://github.com/PowerShell/PowerShell/issues/2138 )
 $ProgressPreference = 'SilentlyContinue'
+
+# Download and extract files https://github.com/syncthing/syncthing/releases/latest
+$version = ((Invoke-WebRequest "https://api.github.com/repos/syncthing/syncthing/releases/latest").Content | ConvertFrom-Json).tag_name | %{$_ -replace "v",""}
+echo $version
 
 Invoke-WebRequest "https://github.com/syncthing/syncthing/releases/download/v$($version)/syncthing-windows-amd64-v$($version).zip" -OutFile C:\opt\syncthing.zip
 
