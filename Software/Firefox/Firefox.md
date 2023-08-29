@@ -19,8 +19,7 @@ reader.content_width = 9
 
 ## Switch off full screen message
 
-full-screen-api.warning.delay = 0
-full-screen-api.warning.timeout = 0
+full-screen-api.warning.timeout = 1
 
 ## HTTP: Deactivate security warning for input fields
 
