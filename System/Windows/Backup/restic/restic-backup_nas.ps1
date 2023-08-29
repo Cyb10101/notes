@@ -21,7 +21,8 @@ Set-Variable -Name "RESTIC_REPOSITORY" -Value "$scriptDir\restic-repository"
 Set-Variable -Name "RESTIC_PASSWORD_FILE" -Value "$scriptDir\password.txt"
 
 # Backup ServerNas
-& "$scriptDir\bin\restic" backup -r "$RESTIC_REPOSITORY" -p "$RESTIC_PASSWORD_FILE" -H "my-pc" `
+& "$scriptDir\bin\restic" backup -r "$RESTIC_REPOSITORY" -p "$RESTIC_PASSWORD_FILE" `
+  --host='my-pc' --tag='my-pc' `
   C:\media\picture
 
 Clear-Variable -Name "RESTIC_REPOSITORY"
