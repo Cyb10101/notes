@@ -9,7 +9,7 @@
 Install:
 
 ```bash
-VERSION='1.0.94'
+VERSION='1.0.95'
 curl -o /tmp/ventoy.tar.gz -fsSL "https://github.com/ventoy/Ventoy/releases/download/v${VERSION}/ventoy-${VERSION}-linux.tar.gz"
 if [ -d ~/opt/ventoy ]; then gio trash ~/opt/ventoy; fi
 tar -C ~/opt -xf /tmp/ventoy.tar.gz
