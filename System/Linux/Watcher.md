@@ -5,6 +5,7 @@
 Do a command every '-n' seconds.
 
 ```bash
+watch -n 10 "rsync -av ./ ~/Downloads/public/files/"
 watch -n 2 "cp /media/sf_public/*.py ~/.local/share/nautilus-python/extensions/"
 ```
 
