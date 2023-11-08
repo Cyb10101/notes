@@ -376,7 +376,7 @@ installZoom() {
 # https://download.linphone.org/releases/linux/app/
 installLinphone() {
     textColor 3 'Install: Linphone'
-    VERSION='5.0.15'
+    VERSION='5.1.2'
 
     sudo curl --progress-bar -o /tmp/Linphone.AppImage -fL "https://download.linphone.org/releases/linux/app/Linphone-${VERSION}.AppImage"
     sudo install /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
@@ -591,9 +591,20 @@ installGimp() {
     sudo apt -y install gimp
 }
 
+installKrita() {
+    textColor 3 'Install: Krita'
+    sudo apt -y install krita
+}
+
 installInkscape() {
     textColor 3 'Install: Inkscape'
     sudo apt -y install inkscape
+}
+
+# https://www.drawio.com/
+installDrawio() {
+    textColor 3 'Install: Draw.io'
+    sudo snap install drawio
 }
 
 # https://github.com/qarmin/czkawka
@@ -649,14 +660,6 @@ installObsStudio() {
 installVideoTools() {
     textColor 3 'Install: Video tools'
     sudo apt -y install ffmpeg
-}
-
-# https://www.unifiedremote.com/
-# http://localhost:9510/web/
-installUnifiedRemote() {
-    textColor 3 'Install: Unified Remote'
-    curl --progress-bar -o /tmp/unifiedremote.deb -fL "https://www.unifiedremote.com/download/linux-x64-deb"
-    sudo dpkg -i /tmp/unifiedremote.deb
 }
 
 installConky() {
@@ -1110,7 +1113,7 @@ installSoftware() {
         "${TICK:-TRUE}" "installJDownloader" "JDownloader" "Download manager" "Flatpak" \
         "${TICK:-TRUE}" "installVlc" "VLC (Video Lan Client)" "Video player" "Apt" \
         "${TICK:-TRUE}" "installMpv" "mpv" "Video player" "Apt" \
-        "${TICK:-TRUE}" "installClapper" "Clapper" "Video player" "Flatpak" \
+        "${TICK:-FALSE}" "installClapper" "Clapper" "Video player" "Flatpak" \
         "${TICK:-FALSE}" "installKodi" "Kodi (XBMC)" "Media center" "Apt" \
         "${TICK:-TRUE}" "installHandbrake" "Handbrake" "Video transcoder" "Apt" \
         "${TICK:-TRUE}" "installKdenlive" "Kdenlive" "Video editor" "Apt+PPA" \
@@ -1122,13 +1125,14 @@ installSoftware() {
         "${TICK:-TRUE}" "installGwenview" "Gwenview" "Image viewer" "Apt" \
         "${TICK:-TRUE}" "installXnview" "Xnview" "Image viewer" "Debian Package + Config" \
         "${TICK:-TRUE}" "installGimp" "Gimp" "Image editor" "Apt" \
+        "${TICK:-TRUE}" "installKrita" "Krita" "Image editor" "Apt" \
         "${TICK:-TRUE}" "installInkscape" "Inkscape" "Vector image editor" "Apt" \
+        "${TICK:-TRUE}" "installDrawio" "Draw.io" "Create diagrams" "Snap" \
         "${TICK:-TRUE}" "installCzkawka" "Czkawka" "Duplicate image finder" "Github" \
         "${TICK:-TRUE}" "installFlameshot" "Flameshot" "Screenshot tools" "Apt" \
         "${TICK:-FALSE}" "installVokoScreen" "VokoScreen" "Screen recorder" "Apt" \
         "${TICK:-TRUE}" "installObsStudio" "ObsStudio" "Screen recorder" "Apt + Repository" \
         "${TICK:-TRUE}" "installVideoTools" "Video tools" "ffmpeg" "Apt" \
-        "${TICK:-FALSE}" "installUnifiedRemote" "Unified Remote" "Remote control" "Debian Package" \
         "${TICK:-TRUE}" "installConky" "Conky" "Desktop tools" "Apt" \
         "${TICK:-TRUE}" "installHopToDesk" "HopToDesk" "Remote maintenance" "Debian Package" \
         "${TICK:-TRUE}" "installRustDesk" "RustDesk" "Remote maintenance" "Git + Debian Package" \
@@ -1186,7 +1190,6 @@ updateSoftware() {
         "FALSE" "installPutty" "PuTTY" "PuTTY utilities" \
         "FALSE" "installRustDesk" "RustDesk" "Remote maintenance" \
         "FALSE" "installThreema" "Threema" "Instant messaging, Voice conferencing" \
-        "FALSE" "installUnifiedRemote" "Unified Remote" "Remote control" \
         "FALSE" "installXnview" "Xnview" "Image viewer" \
         "FALSE" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" \
     ))
