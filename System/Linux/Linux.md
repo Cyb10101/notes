@@ -147,13 +147,44 @@ ffmpeg -i infile.ext -pass 2 -sameq outfile.ext
 sudo apt install soundconverter gstreamer0.10-plugins-ugly gstreamer0.10-ffmpeg gstreamer0.10-plugins-bad-multiverse
 ```
 
-## Restore deleted files
+## Restore deleted partition table
+
+First clone your disk as image or on a second drive, you don't wanna miss anything!
+Then try to restore your data.
+
+```bash
+# Create a backup (See Backup-Entire-Disk.md)
+sudo ddrescue -f -n /dev/sda sda.img ddrescue.log
+sudo ddrescue -f -R /dev/sda sda.img ddrescue.log # Optional: -R Reverse direction (Maybe for corrupted disk)
+
+# Note: Recover files is below header "Restore deleted files"
+
+# Detect partition table (or recover it?)
+sudo gdisk -l /dev/sda
+
+# Try to recover disk
+sudo testdisk
+
+# Check NTFS on Windows to recover files
+chkdsk C: /f
+```
+
+### Restore deleted files
+
+RecuperaBit:
+
+```bash
+git clone https://github.com/Lazza/RecuperaBit.git RecuperaBit
+./RecuperaBit/main.py disk.img
+```
 
 Photorec: FAT, NTFS, Ext filesystem:
 
 ```bash
 sudo apt install testdisk
-sudo photorec -d /restored-files/ /dev/sda
+mkdir restored-photorec
+sudo photorec -d restored-photorec/ disk.img
+sudo photorec -d restored-photorec/ /dev/sda
 ```
 
 Ext filesystem:
