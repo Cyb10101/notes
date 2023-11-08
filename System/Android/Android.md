@@ -109,7 +109,11 @@ adb reboot bootloader
 # Image flashen
 fastboot flash recovery twrp.img
 fastboot reboot
+
+adb reboot recovery
 ```
+
+*Note: /storage/emulated/0 is mounted on /data/media/0*
 
 ### Install SuperSU and Root Checker
 

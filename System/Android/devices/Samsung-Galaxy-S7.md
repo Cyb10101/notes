@@ -54,9 +54,13 @@
 ## Flash TWRP as recovery
 
 ```bash
+sudo apt -y install heimdall-flash
+
 adb reboot download
 heimdall flash --RECOVERY twrp.img --no-reboot
 ```
+
+Reset device and go to recovery: Press [Volume Down] + [Home] + [Power] until it goes blank then [Volume Up] + [Home] + [Power] (or Samsung will overwrite recovery)
 
 ## Flash e.OS
 
@@ -70,9 +74,69 @@ heimdall flash --RECOVERY twrp.img --no-reboot
 * `adb sideload filename.zip`
 * Reboot
 
+## Flash with Heimdall
+
+```bash
+# Rename *.tar.md5 to *.tar
+for FILE in *.tar.md5; do mv "${FILE}" "${FILE%.*}"; done
+
+# Extract tar
+mkdir extract
+for FILE in *.tar; do tar -C 'extract' -xvf "${FILE}"; done
+
+# Extract lz4
+sudo apt install lz4
+cd extract
+for FILE in *.lz4; do lz4 -d --rm "${FILE}"; done
+
+adb reboot download
+heimdall download-pit --no-reboot --output save-download-pit.txt
+heimdall print-pit --resume --no-reboot --file save-download-pit.txt
+
+heimdall flash \
+  --BOOT boot.img \
+  --CACHE cache.img \
+  --CM cm.bin \
+  --HIDDEN hidden.img \
+  --RADIO modem.bin \
+  --CP_DEBUG modem_debug.bin \
+  --PARAM param.bin \
+  --RECOVERY recovery.img \
+  --BOOTLOADER sboot.bin \
+  --SYSTEM system.img
+```
+
 ## Install Open GApps
 
 * `adb reboot recovery`
 * TWRP > Advanced > ADB Sideload
 * `adb sideload open_gapps.zip`
 
+## Restore with TWRP
+
+Copy files to device:
+
+```bash
+adb push "TWRP/Backup" /storage/emulated/0/TWRP/
+adb push "TWRP/Backup" /sdcard/TWRP/
+adb push "TWRP/Backup" /data/media/0/TWRP/
+```
+
+* Flash TWRP if missing (See: Flash TWRP as recovery)
+* adb reboot recovery
+* Wipe: Dalvik / Art Cache, System, Data, Cache, Vendor
+* Select backup to restore: System, Boot
+* Wipe: Internal Storage
+* Reboot System
+
+1. Reset device and go to recovery: Press [Volume Down] + [Home] + [Power] until it goes blank then
+2. Boot into recovery: [Volume Up] + [Home] + [Power]
+3. Backup with TWRP Recovery
+   1. Swipe right to allow system modifications
+   2. (Settings > Vibrations > Button Vibration = 0)
+   3. Mount > USB OTG = true
+   4. Backup > Select "Boot, System, Data" > Select Storage "USB OTG" > Swipe to Backup
+   5. Go back to main menu
+4. Wipe Data with TWRP Recovery
+   1. Wipe > Format Data > Type "yes"
+   2. Go back to main menu
