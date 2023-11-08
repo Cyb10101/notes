@@ -8,6 +8,7 @@ Ctrl + , = Settings
 Ctrl + Shift + P = Powerbar / Command Palette
 
 Ctrl + D = Multi selection
+Ctrl + U = Revert Multi selection
 
 Alt + Shift + Arrow-Key = Multi selection
 
