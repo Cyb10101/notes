@@ -34,8 +34,17 @@ createTempGenerated() {
   chmod 750 ${VAR_FOLDER}
 }
 
+# Variant 3 - Generated in user folder
+createTempGeneratedUser() {
+  if [ ! -d ~/tmp ]; then mkdir ~/tmp; fi
+  VAR_DATE=`date +%Y-%m-%d_%H-%M`
+  VAR_FOLDER=`mktemp -d ~/tmp/${VAR_DATE}_XXXXXXXX`
+  chmod 750 ${VAR_FOLDER}
+}
+
 #createTempDateTime "${USER}"
-createTempGenerated "${USER}"
+#createTempGenerated "${USER}"
+createTempGeneratedUser
 
 xdg-open ${VAR_FOLDER} &
 exit 0;
