@@ -257,7 +257,7 @@ ffmpeg -i file1.mp4 -i file2.mp4 -i file3.mp4 \
 ffmpeg -f concat -safe 0 -i <(find -maxdepth 1 -type f -name '*.mp4' -printf "file '$PWD/%p'\n" | sort) -c copy output.mp4
 ```
 
-## Concat *.mov
+## Concat *.vob
 
 ```bash
 # Note: https://www.internalpointers.com/post/convert-vob-files-mkv-ffmpeg
