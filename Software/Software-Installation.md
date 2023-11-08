@@ -26,7 +26,8 @@ sudo apt -y install p7zip-full p7zip-rar rar unrar-free
 sudo apt -y install rsync zsync
 
 # Example: http://cdimage.ubuntu.com/ubuntu/daily-live/current/
-zsync http://cdimage.ubuntu.com/ubuntu/daily-live/current/kinetic-desktop-amd64.iso.zsync
+#!/usr/bin/env bash
+zsync http://cdimage.ubuntu.com/ubuntu/daily-live/current/noble-desktop-amd64.iso.zsync
 ```
 
 Windows:
