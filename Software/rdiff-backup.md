@@ -1,5 +1,7 @@
 # Rdiff Backup
 
+@todo Moveing vom Ext4 to NTFS doesn't work, because snapshot timestamps "rdiff-backup-data/session_statistics.2023-06-01T03:30:12+02:00.data"!
+
 * [rdiff-backup](https://rdiff-backup.net/)
 * [GitHub Release](https://github.com/rdiff-backup/rdiff-backup/releases/latest)
 * [Windows Scripts](../System/Windows/Backup/rdiff-backup/)
@@ -32,7 +34,7 @@ Windows:
 
 *Note: If you don't use --no-acls then the GUID from old user is stored.*
 
-``` shell
+```shell
 # --no-acls = No permissions (Shows: Warning: Windows Access Control List file not found.)
 C:\Users\username\Desktop\rdiff-backup -b -v5 --no-acls ^
   --exclude "**/NTUSER.DAT" ^
