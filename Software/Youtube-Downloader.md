@@ -45,7 +45,10 @@ Config file:
 #--paths ~/Downloads
 
 # Filename template: 01 Title (2023-01-21) [video-id].extension
---output "%(autonumber)02d %(title)s (%(upload_date>%Y-%m-%d)s) [%(id)s].%(ext)s"
+#--output "%(autonumber)02d %(title)s (%(upload_date>%Y-%m-%d)s) [%(id)s].%(ext)s"
+
+# Filename template: 01 Title [video-id]/01 Title (2023-01-21).extension
+--output "%(autonumber)02d %(title)s [%(id)s]/%(autonumber)02d %(title)s (%(upload_date>%Y-%m-%d)s).%(ext)s"
 
 # Restrict filenames to only ASCII characters, and avoid "&" and spaces in filenames
 --restrict-filenames
