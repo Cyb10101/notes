@@ -171,7 +171,7 @@ chkdsk C: /f
 
 ### Restore deleted files
 
-RecuperaBit:
+[RecuperaBit](https://github.com/Lazza/RecuperaBit):
 
 ```bash
 git clone https://github.com/Lazza/RecuperaBit.git RecuperaBit
