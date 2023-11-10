@@ -8,6 +8,13 @@ sudo apt -y install ffmpeg faac faad flac lame libmad0 libmpcdec6 mppenc vorbis-
 
 ## Image
 
+Convert images:
+
+```bash
+for file in ./*.webp; do convert "${file}" "${file/%webp/jpg}"; done
+for file in ./*.webp; do convert "${file}" "${file/%webp/png}"; done
+```
+
 Resize images:
 
 ```bash
