@@ -32,8 +32,12 @@ irm get.scoop.sh | iex
 # Recommended
 scoop install aria2 7zip git sudo
 
+# Disable aria warning
+scoop config aria2-warning-enabled false
+
 # Without buckets
 scoop install croc
+scoop install gpg
 scoop install restic
 scoop install yt-dlp ffmpeg
 
