@@ -121,15 +121,15 @@ Bypass Windows 11 requirements in Ubuntu.
 Windows Registry Editor Version 5.00
 
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\PCHC]
-"UpgradeEligibility"=dword:00000001
+#"UpgradeEligibility"=dword:00000001
 
 [HKEY_LOCAL_MACHINE\SYSTEM\Setup\LabConfig]
 "BypassTPMCheck"=dword:00000001
 "BypassSecureBootCheck"=dword:00000001
-"BypassRAMCheck"=dword:00000001
-"BypassStorageCheck"=dword:00000001
-"BypassCPUCheck"=dword:00000001
-"BypassDiskCheck"=dword:00000001
+#"BypassRAMCheck"=dword:00000001
+#"BypassStorageCheck"=dword:00000001
+#"BypassCPUCheck"=dword:00000001
+#"BypassDiskCheck"=dword:00000001
 ```
 
 Bypass Windows 11 internet requirements:
@@ -139,7 +139,7 @@ Bypass Windows 11 internet requirements:
 * Run: C:\Windows\System\oobe\BypassNRO.cmd
 * Reboot and click on "I don't have internet"
 
-File `C:\Windows\System\oobe\BypassNRO.cmd`:
+File `C:\Windows\System32\oobe\BypassNRO.cmd` or `C:\Windows\System\oobe\BypassNRO.cmd`:
 
 ```shell
 @echo off
