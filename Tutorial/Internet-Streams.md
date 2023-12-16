@@ -30,6 +30,38 @@ Check file extension / mime type:
 mimeType="$(file -b --mime-type radio.mp3)"; echo "Detected: ${mimeType}"; grep "${mimeType}" /etc/mime.types
 ```
 
+File `0-radio.sh`:
+
+```bash
+#!/bin/bash
+# ./0-radio.sh
+# ./0-radio.sh 'https://uk4.internet-radio.com/proxy/danceattackfm?mp=/stream;'
+
+COUNT_ERROR=0
+
+trap exitScript SIGINT
+
+exitScript() {
+    echo ""
+    echo "Finished with error count: ${COUNT_ERROR}."
+    exit 0
+}
+
+streamUrl='https://uk4.internet-radio.com/proxy/danceattackfm?mp=/stream;'
+if [[ ! -z "${1}" ]]; then
+    streamUrl="${1}"
+fi
+
+while :; do
+    curl -o "radio_curl_$(date +%Y-%m-%d_%H-%M-%S).mp3" "${streamUrl}"
+    #yt-dlp -o "radio_yt-dlp_$(date +%Y-%m-%d_%H-%M-%S).mp3" "${streamUrl}"
+
+    (( COUNT_ERROR+=1 ))
+    echo "$(date +%Y-%m-%d_%H-%M-%S) ERROR: Stream is unreachable! Total count is ${COUNT_ERROR}."
+    #sleep 0.5
+done
+```
+
 ## Download on Windows
 
 Run a PowerShell as user:
