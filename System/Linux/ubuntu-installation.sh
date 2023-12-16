@@ -517,6 +517,11 @@ installMkvToolNix() {
     sudo apt -y install mkvtoolnix mkvtoolnix-gui
 }
 
+installSubtitleEditor() {
+    textColor 3 'Install: Subtitle Editor'
+    sudo apt -y install subtitleeditor
+}
+
 installGwenview() {
     textColor 3 'Install: Gwenview'
     sudo apt -y install gwenview
@@ -1122,6 +1127,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installPitivi" "Pitivi" "Video editor" "Apt" \
         "${TICK:-TRUE}" "installVideoEffects" "Video effects" "Video effects" "Apt" \
         "${TICK:-TRUE}" "installMkvToolNix" "MkvToolNix" "Matroska media container tools" "Apt + Repository" \
+        "${TICK:-TRUE}" "installSubtitleEditor" "Subtitle Editor" "" "Apt" \
         "${TICK:-TRUE}" "installGwenview" "Gwenview" "Image viewer" "Apt" \
         "${TICK:-TRUE}" "installXnview" "Xnview" "Image viewer" "Debian Package + Config" \
         "${TICK:-TRUE}" "installGimp" "Gimp" "Image editor" "Apt" \
