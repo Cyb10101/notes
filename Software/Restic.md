@@ -263,3 +263,19 @@ mysqldump [...] | gzip | restic -r /srv/restic-repo backup --stdin --stdin-filen
 
 cat /etc/group | restic backup --tag=database --stdin --stdin-filename=website_www.sql
 ```
+
+## Update repository
+
+```bash
+# Maybe remove some snapshots
+restic snapshots
+restic forget
+restic prune
+
+# Update repository from version 1 to 2
+restic cat config
+restic check
+restic migrate upgrade_repo_v2
+restic prune
+restic prune --repack-uncompressed --max-repack-size=200G
+```
