@@ -84,8 +84,8 @@ sudo apt install gddrescue
 sudo apt install ddrescueview # Optional: You can see the log file
 
 # Backup/Clone: 1. Only safe blocks, then 2. corrupted blocks
-sudo ddrescue -f -n /dev/sda /dev/sdb /tmp/ddrescue.log
-sudo ddrescue -f -R /dev/sda /dev/sdb /tmp/ddrescue.log # Optional: -R Reverse direction (Maybe for corrupted disk)
+sudo ddrescue -f -n /dev/sda sda.img /tmp/ddrescue.log
+sudo ddrescue -f -R /dev/sda sda.img /tmp/ddrescue.log # Optional: -R Reverse direction (Maybe for corrupted disk)
 
 # Restore: Only for images
 sudo ddrescue -f image.img /dev/sda /tmp/restore.log
