@@ -2,6 +2,14 @@
 
 Configure url: [about:config](about:config)
 
+## Remove all service worker
+
+Open developer console on: [about:serviceworkers](about:serviceworkers)
+
+```javascript
+document.querySelectorAll('#serviceworkers div button').forEach(e => e.click())
+```
+
 ## Enable touch
 
 * [firefox-enable-touch.sh](firefox-enable-touch.sh)
