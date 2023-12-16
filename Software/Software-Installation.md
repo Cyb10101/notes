@@ -26,8 +26,11 @@ sudo apt -y install p7zip-full p7zip-rar rar unrar-free
 sudo apt -y install rsync zsync
 
 # Example: http://cdimage.ubuntu.com/ubuntu/daily-live/current/
+# Note: zsync can not download from HTTPS
 #!/usr/bin/env bash
 zsync http://cdimage.ubuntu.com/ubuntu/daily-live/current/noble-desktop-amd64.iso.zsync
+#zsync http://cdimage.ubuntu.com/ubuntu/daily-live/pending/noble-desktop-amd64.iso.zsync
+sleep 3
 ```
 
 Windows:
