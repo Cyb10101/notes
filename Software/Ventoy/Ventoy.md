@@ -9,7 +9,7 @@
 Install:
 
 ```bash
-VERSION='1.0.95'
+VERSION=$(curl -fsSL https://api.github.com/repos/ventoy/Ventoy/releases/latest | jq -r '.tag_name' | sed -r 's/v//g'); echo "${VERSION}"
 curl -o /tmp/ventoy.tar.gz -fsSL "https://github.com/ventoy/Ventoy/releases/download/v${VERSION}/ventoy-${VERSION}-linux.tar.gz"
 if [ -d ~/opt/ventoy ]; then gio trash ~/opt/ventoy; fi
 tar -C ~/opt -xf /tmp/ventoy.tar.gz
@@ -36,7 +36,7 @@ lsblk /dev/sd?
 cd ~/opt/ventoy && sudo ./VentoyPlugson.sh /dev/sdx
 ```
 
-Create a 4 GB persistent image:
+Create a image for persistent storage:
 
 ```bash
 mkdir -p /media/cyb10101/Ventoy/persistence
@@ -52,6 +52,11 @@ cp /tmp/persistence-8gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-22.04-desk
 # Much faster 16 GB
 cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s 16384 -t ext4 -l 'casper-rw' -o /tmp/persistence-16gb.dat
 cp /tmp/persistence-16gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-22.04-desktop-16gb.dat && sync
+
+# Note: If you want more persistent storage space, you may be doing something wrong.
+#       Why not installing Linux on a external drive?
+#       Why not attach a external drive to your live CD?
+#       Why not create you own live CD?
 
 # Direct
 cd ~/opt/ventoy && sudo bash -c "./CreatePersistentImg.sh -s 4096 -t ext4 -l 'casper-rw' -o /media/cyb10101/Ventoy/persistence/ubuntu-22.04-desktop.dat; sync"
