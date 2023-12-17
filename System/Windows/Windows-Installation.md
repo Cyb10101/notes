@@ -26,16 +26,14 @@ sudo Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit choco outda
 Run `powershell` as user.
 
 ```powershell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-irm get.scoop.sh | iex
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
 # Recommended
 scoop install aria2 7zip git sudo
-
-# Disable aria warning
 scoop config aria2-warning-enabled false
 
-# Without buckets
+# Standard bucket (Without other buckets)
 scoop install croc
 scoop install gpg
 scoop install restic
