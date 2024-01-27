@@ -195,7 +195,7 @@ if [ -p /dev/stdin ]; then
   else
     echo "No valid input given!"
   fi
-elif [ -f "${1}" ]; then
+elif [ -f "${1}" ] || [ -h "${1}" ]; then
   #echo "Filename specified: ${1}"
   createTextFile "$(cat "${1}")"
   convertTextByGoogleSpeech "${fileText}"
