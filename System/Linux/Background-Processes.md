@@ -2,6 +2,8 @@
 
 ## Tmux
 
+* [Ubuntuusers Wiki](https://wiki.ubuntuusers.de/tmux/)
+
 Tmux is said to be the better choice.
 
 ### Start Tmux
