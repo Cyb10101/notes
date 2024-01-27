@@ -12,10 +12,10 @@ from subprocess import call, run
 import os
 
 # Path to binary
-codeBinary = 'code'
+binaryPath = 'code'
 
 # Name in the context menu
-codeName = 'Code'
+binaryName = 'Code'
 
 # Change to True for always create new window
 newWindow = False
@@ -62,22 +62,22 @@ class VisualStudioCodeExtension(GObject.GObject, Nautilus.MenuProvider):
             args = '--new-window '
 
         # App.msgInformation("Open Code...")
-        call(codeBinary + ' ' + args + safepaths + '&', shell = True)
+        call(binaryPath + ' ' + args + safepaths + '&', shell = True)
 
     def get_file_items(self, window, files):
         item = Nautilus.MenuItem(
-            name = 'VisualStudioCodeOpen',
-            label = 'Open in ' + codeName,
-            tip = 'Opens the selected files with Visual Studio Code'
+            name = binaryName + 'Open',
+            label = 'Open in ' + binaryName,
+            tip = 'Opens the selected files with ' + binaryName
         )
         item.connect('activate', self.launchVisualStudioCode, files)
         return [item]
 
     def get_background_items(self, window, file):
         item = Nautilus.MenuItem(
-            name = 'VisualStudioCodeOpenBackground',
-            label = 'Open in ' + codeName,
-            tip = 'Opens the current directory in Visual Studio Code'
+            name = binaryName + 'OpenBackground',
+            label = 'Open in ' + binaryName,
+            tip = 'Opens the current directory in ' + binaryName
         )
         item.connect('activate', self.launchVisualStudioCode, [file])
         return [item]

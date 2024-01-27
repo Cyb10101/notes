@@ -12,10 +12,10 @@ from subprocess import call, run
 import os
 
 # Path to binary
-codiumBinary = 'codium'
+binaryPath = 'codium'
 
 # Name in the context menu
-codiumName = 'Codium'
+binaryName = 'Codium'
 
 # Change to True for always create new window
 newWindow = False
@@ -62,22 +62,22 @@ class VisualStudioCodiumExtension(GObject.GObject, Nautilus.MenuProvider):
             args = '--new-window '
 
         # App.msgInformation("Open Codium...")
-        call(codiumBinary + ' ' + args + safepaths + '&', shell = True)
+        call(binaryPath + ' ' + args + safepaths + '&', shell = True)
 
     def get_file_items(self, window, files):
         item = Nautilus.MenuItem(
-            name = 'VisualStudioCodiumOpen',
-            label = 'Open in ' + codiumName,
-            tip = 'Opens the selected files with Visual Studio Codium'
+            name = binaryName + 'Open',
+            label = 'Open in ' + binaryName,
+            tip = 'Opens the selected files with' + binaryName
         )
         item.connect('activate', self.launchVisualStudioCodium, files)
         return [item]
 
     def get_background_items(self, window, file):
         item = Nautilus.MenuItem(
-            name = 'VisualStudioCodiumOpenBackground',
-            label = 'Open in ' + codiumName,
-            tip = 'Opens the current directory in Visual Studio Codium'
+            name = binaryName + 'OpenBackground',
+            label = 'Open in ' + binaryName,
+            tip = 'Opens the current directory in' + binaryName
         )
         item.connect('activate', self.launchVisualStudioCodium, [file])
         return [item]
