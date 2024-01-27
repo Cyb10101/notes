@@ -923,7 +923,7 @@ installFileZilla() {
 # https://www.heidisql.com/
 installHeidiSql() {
     textColor 3 'Install: HeidiSQL'
-    VERSION='12.5.0.6677'
+    VERSION='12.6.0.6765'
 
     if [ ! -d ~/Dokumente/HeidiSQL ]; then
         mkdir -p ~/Dokumente/HeidiSQL
@@ -1198,6 +1198,7 @@ updateSoftware() {
         "FALSE" "installThreema" "Threema" "Instant messaging, Voice conferencing" \
         "FALSE" "installXnview" "Xnview" "Image viewer" \
         "FALSE" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" \
+        "FALSE" "installZoom" "Zoom" "Zoom meeting client" \
     ))
     for selected in "${selectedList[@]}"; do
         ${selected}
