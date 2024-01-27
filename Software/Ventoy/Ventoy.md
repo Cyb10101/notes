@@ -6,7 +6,7 @@
 * [Original Theme](https://github.com/vinceliuice/grub2-themes)
 * [Distribution Icons](https://github.com/AdisonCavani/distro-grub-themes/tree/master/assets/icons)
 
-Install:
+Install or upgrade:
 
 ```bash
 VERSION=$(curl -fsSL https://api.github.com/repos/ventoy/Ventoy/releases/latest | jq -r '.tag_name' | sed -r 's/v//g'); echo "${VERSION}"
@@ -98,3 +98,17 @@ pip install --user grub2-theme-preview
 ```
 
 *Note: Release mouse in QEmu with: Ctrl + Alt + G*
+
+## Test with QEmu
+
+```bash
+sudo apt install qemu-system spice-vdagent
+sudo kvm -m 4G \
+  -enable-kvm -smp $(nproc) -k de \
+  -device intel-hda -device hda-duplex \
+  -device virtio-net,netdev=vmnic -netdev user,id=vmnic \
+  -chardev qemu-vdagent,id=ch1,name=vdagent,clipboard=on \
+    -device virtio-serial-pci \
+    -device virtserialport,chardev=ch1,id=ch1,name=com.redhat.spice.0 \
+  -hda /dev/sdx
+```
