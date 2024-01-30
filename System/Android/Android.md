@@ -1,33 +1,30 @@
 # Android
 
-* [Scrcpy - Screen copy](Scrcpy.md)
-
 ## Applications
 
 * [Android Installation](Android-Installation.md)
+* [Scrcpy (Screen copy)](Scrcpy.md)
 
-## Connect to device / Android debug bridge (ADB)
+## Android debug bridge
+
+If you must connect your device via Android debug bridge (ADB), you should install adb and fastboot. These are the most common methods.
+
+Samsung, on the other hand, requires Odin3 or alternatively Heimdall, see below.
 
 * [Android Debug Bridge (adb)](https://developer.android.com/tools/adb)
 * [SDK Platform Tools](https://developer.android.com/tools/releases/platform-tools)
 
-* [Heimdall](https://www.glassechidna.com.au/heimdall/)
-
-For Android, you should install adb and fastboot. These are the most common methods.
-
-Samsung, on the other hand, requires Odin3 or alternatively Heimdall, which uses the Odin3 protocol.
 
 ```bash
 sudo apt -y install android-tools-adb android-tools-fastboot
-
-sudo apt -y install heimdall-flash
-sudo apt -y install heimdall-flash-frontend
 ```
 
-In order to be able to use the ADB, you must first activate it in your smartphone:
+In order to be able to use the ADB, you must first activate the "developer options" it in your smartphone. Each Smartphone operating system could vary.
 
-* Activate developer options > Settings > About Device > Version > Tap 7x on "Build number"
-* Enable USB-Debugging > Settings > System > Developer options > Debugging: USB-Debugging = true
+* Activate developer options
+  * Settings > About Device > Version > Tap 7x on "Build number"
+* Enable USB-Debugging
+  * Settings > System > Developer options > Debugging: USB-Debugging = true
 
 *Note: Last tested on Android 12.*
 
@@ -84,6 +81,17 @@ fastboot devices
 
 # Temporary boot a image
 fastboot boot twrp.img
+```
+
+### Samsung
+
+Samsung devices use Odin or Heimdall instead of fastboot. They use the Odin3 protocol.
+
+* [Heimdall](https://www.glassechidna.com.au/heimdall/)
+
+```bash
+sudo apt -y install heimdall-flash
+# optional a GUI: heimdall-flash-frontend
 ```
 
 ## Root devices
