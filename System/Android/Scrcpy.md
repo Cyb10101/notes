@@ -2,19 +2,26 @@
 
 You must activate [Android debug bridge](Android.md#android-debug-bridge) to use this.
 
-Install: [scrcpy](https://github.com/Genymobile/scrcpy)
+Install [scrcpy](https://github.com/Genymobile/scrcpy):
 
 ```bash
 sudo apt -y install scrcpy
+```
 
-# Default
-scrcpy --push-target=/storage/emulated/0/Download --shortcut-mod=lalt --show-touches --stay-awake
+Use mostly default settings:
 
-# With serial id
-scrcpy -s 192.168.178.21:42047 --push-target=/storage/emulated/0/Download --shortcut-mod=lalt --show-touches --stay-awake
+```bash
+scrcpy --push-target=/storage/emulated/0/Download \
+  --shortcut-mod=lalt --show-touches --stay-awake
+```
 
-# Turn screen off
-scrcpy --push-target=/storage/emulated/0/Download --shortcut-mod=lalt --show-touches --stay-awake --turn-screen-off
+Wireless with a serial id and turn screen off:
+
+```bash
+scrcpy -s 192.168.178.21:42047 \
+  --push-target=/storage/emulated/0/Download \
+  --shortcut-mod=lalt --show-touches --stay-awake \
+  --turn-screen-off
 ```
 
 The currently modifier `MOD` is the `left alt` key. See more under [Shortcuts](https://github.com/Genymobile/scrcpy#shortcuts).
