@@ -72,8 +72,23 @@ reboot() {
 }
 
 prepareSystem() {
+    # System
+    if [ ! -d /etc/xdg/autostart ]; then
+        sudo mkdir -p /etc/xdg/autostart
+    fi
+    if [ ! -d /usr/local/share/icons ]; then
+        sudo mkdir -p /usr/local/share/icons
+    fi
+
+    # User
     if [ ! -d ~/opt ]; then
         mkdir -p ~/opt
+    fi
+    if [ ! -d ~/.config/autostart ]; then
+        mkdir -p ~/.config/autostart
+    fi
+    if [ ! -d ~/.local/share/applications ]; then
+        mkdir -p ~/.local/share/applications
     fi
 }
 
@@ -255,9 +270,6 @@ installFluentReader() {
     curl --progress-bar -o /tmp/fluent-reader.AppImage -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Fluent.Reader.${VERSION}.AppImage"
     sudo install /tmp/fluent-reader.AppImage /usr/local/bin/fluent-reader.AppImage
 
-    if [ ! -d /usr/local/share/icons ]; then
-        sudo mkdir -p /usr/local/share/icons
-    fi
     sudo curl --progress-bar -o /usr/local/share/icons/fluent-reader.png -fL "https://raw.githubusercontent.com/${usernameRepository}/master/build/icon.png"
 
     cat << EOF | sudo tee /usr/share/applications/fluent-reader.desktop
@@ -329,6 +341,19 @@ installSignal() {
     echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' | sudo tee /etc/apt/sources.list.d/signal-desktop.list
     sudo apt update
     sudo apt -y install signal-desktop
+
+    cat << EOF | sudo tee /etc/xdg/autostart/signal-desktop-start.desktop
+[Desktop Entry]
+Name=Start Signal Desktop
+GenericName=Secure messenger
+Comment=Starts the main signal desktop process in the background.
+Exec=/usr/bin/signal-desktop --use-tray-icon --start-in-tray --no-sandbox %U
+Icon=signal-desktop
+Terminal=false
+Type=Application
+Keywords=messenger;daemon;
+Categories=Network;InstantMessaging;Chat
+EOF
 }
 
 # https://telegram.org/
@@ -381,9 +406,6 @@ installLinphone() {
     sudo curl --progress-bar -o /tmp/Linphone.AppImage -fL "https://download.linphone.org/releases/linux/app/Linphone-${VERSION}.AppImage"
     sudo install /tmp/Linphone.AppImage /usr/local/bin/Linphone.AppImage
 
-    if [ ! -d /usr/local/share/icons ]; then
-        sudo mkdir -p /usr/local/share/icons
-    fi
     sudo curl --progress-bar -o /usr/local/share/icons/linphone.png -fL "https://github.com/BelledonneCommunications/linphone-desktop/raw/master/linphone-app/assets/icons/hicolor/64x64/apps/icon.png"
 
     cat << EOF | sudo tee /usr/share/applications/Linphone.desktop
@@ -471,9 +493,6 @@ installOpenShot() {
     curl --progress-bar -o /tmp/OpenShot.AppImage -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/OpenShot-v${VERSION}-x86_64.AppImage"
     sudo install /tmp/OpenShot.AppImage /usr/local/bin/OpenShot.AppImage
 
-    if [ ! -d /usr/local/share/icons ]; then
-        sudo mkdir -p /usr/local/share/icons
-    fi
     sudo curl --progress-bar -o /usr/local/share/icons/openshot.svg -fL "https://raw.githubusercontent.com/${usernameRepository}/master/images/openshot.svg"
 
     cat << EOF | sudo tee /usr/share/applications/OpenShot.desktop
@@ -620,9 +639,6 @@ installCzkawka() {
     curl --progress-bar -o /tmp/czkawka-gui -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/linux_czkawka_gui"
     sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
 
-    if [ ! -d /usr/local/share/icons ]; then
-        sudo mkdir -p /usr/local/share/icons
-    fi
     sudo curl --progress-bar -o /usr/local/share/icons/czkawka.png -fL "https://raw.githubusercontent.com/${usernameRepository}/master/czkawka_gui/icons/icon_about.png"
 
     cat << EOF | sudo tee /usr/share/applications/Czkawka.desktop
@@ -716,7 +732,7 @@ installAnyDesk() {
 
     # @bug: Key is stored in deprecated trusted.gpg keychain
     wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | sudo apt-key add -
-    echo "deb http://deb.anydesk.com/ all main" | sudo tee -a /etc/apt/sources.list.d/anydesk-stable.list
+    echo "deb http://deb.anydesk.com/ all main" | sudo tee /etc/apt/sources.list.d/anydesk-stable.list
     sudo apt update
     # Fix missing packages
     #sudo apt -y install libminizip1
@@ -788,12 +804,6 @@ installSyncthing() {
     sudo apt update
     sudo apt install syncthing
 
-    if [ ! -d ~/.config/autostart ]; then
-        mkdir -p ~/.config/autostart
-    fi
-    if [ ! -d ~/.local/share/applications ]; then
-        mkdir -p ~/.local/share/applications
-    fi
     curl --progress-bar -o ~/.config/autostart/syncthing-start.desktop -fL "https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-start.desktop"
     curl --progress-bar -o ~/.local/share/applications/syncthing-ui.desktop -fL "https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-ui.desktop"
 }
@@ -807,9 +817,6 @@ installNextcloudDesktop() {
     curl --progress-bar -o /tmp/nextcloud.AppImage -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Nextcloud-${VERSION}-x86_64.AppImage"
     sudo install /tmp/nextcloud.AppImage /usr/local/bin/nextcloud.AppImage
 
-    if [ ! -d /usr/local/share/icons ]; then
-        sudo mkdir -p /usr/local/share/icons
-    fi
     sudo curl --progress-bar -o /usr/local/share/icons/nextcloud.svg -fL "https://raw.githubusercontent.com/${usernameRepository}/master/theme/colored/Nextcloud-icon.svg"
 
     cat << EOF | sudo tee /usr/share/applications/nextcloud.desktop
@@ -1212,7 +1219,7 @@ elif [[ "${1}" == "false" ]]; then
     TICK='FALSE'
 fi
 
-# Besser fragen, was gestartet werden soll
+# Better to ask what should be started
 checkYadInstalled
 prepareSystem
 
