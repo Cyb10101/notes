@@ -15,6 +15,15 @@ scoop status; scoop update; scoop update --all
 sudo Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit choco outdated; sudo choco upgrade all"
 ```
 
+## BitLocker encryption
+
+Disable BitLocker encryption (run as administrator):
+
+```powershell
+$BLV = Get-BitLockerVolume
+Disable-BitLocker -MountPoint $BLV
+```
+
 ## Package Manager: Scoop
 
 *Note: Only english installations, if not handled in Software.*
