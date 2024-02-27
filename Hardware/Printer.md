@@ -52,12 +52,17 @@ lpadmin -p DCP9022CDW-LPD -E -v lpd://BRWACD1B84ED6B9/BINARY_P1 -P /usr/share/cu
 ### Install scanner
 
 ```bash
-sudo dpkg -i brscan4-0.4.8-1.amd64.deb
-sudo dpkg -i brscan-skey-0.2.4-1.amd64.deb
-sudo dpkg -i brother-udev-rule-type1-1.0.2-0.all.deb
+# Scanner driver 64bit (deb package) - This is the Scanner driver
+sudo dpkg -i brscan4-0.4.11-1.amd64.deb
 
-sudo brsaneconfig4 -a name=Brother model=DCP-9022CDW ip=192.168.178.27
+# Find scanners in network
+brsaneconfig4 -q
+
+# Add and remove scanner (Just do it, because something would be configured)
+sudo brsaneconfig4 -a name=Brother-DCP-9022CDW model=DCP-9022CDW ip=192.168.178.27
 ```
+
+A scan over the WSD protocol might not work properly (DPI).
 
 ## Get total count of printed pages
 
