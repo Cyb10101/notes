@@ -41,25 +41,18 @@ Create a image for persistent storage:
 ```bash
 mkdir -p /media/cyb10101/Ventoy/persistence
 
-# Much faster 4 GB
-cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s 4096 -t ext4 -l 'casper-rw' -o /tmp/persistence-4gb.dat
-cp /tmp/persistence-4gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-22.04-desktop-4gb.dat && sync
+# Much faster
+diskSizeGB=16
+cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s $((${diskSizeGB} * 1024)) -t ext4 -l 'casper-rw' -o /tmp/persistence-${diskSizeGB}gb.dat
+cp /tmp/persistence-${diskSizeGB}gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-24.04-desktop-${diskSizeGB}gb.dat && sync
 
-# Much faster 8 GB (Recommended for deploy script)
-cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s 8192 -t ext4 -l 'casper-rw' -o /tmp/persistence-8gb.dat
-cp /tmp/persistence-8gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-22.04-desktop-8gb.dat && sync
-
-# Much faster 16 GB
-cd ~/opt/ventoy && sudo ./CreatePersistentImg.sh -s 16384 -t ext4 -l 'casper-rw' -o /tmp/persistence-16gb.dat
-cp /tmp/persistence-16gb.dat /media/cyb10101/Ventoy/persistence/ubuntu-22.04-desktop-16gb.dat && sync
-
-# Note: If you want more persistent storage space, you may be doing something wrong.
+# Note: If you want more than 16-32 GB persistent storage space, you may be doing something wrong.
 #       Why not installing Linux on a external drive?
 #       Why not attach a external drive to your live CD?
 #       Why not create you own live CD?
 
 # Direct
-cd ~/opt/ventoy && sudo bash -c "./CreatePersistentImg.sh -s 4096 -t ext4 -l 'casper-rw' -o /media/cyb10101/Ventoy/persistence/ubuntu-22.04-desktop.dat; sync"
+cd ~/opt/ventoy && sudo bash -c "./CreatePersistentImg.sh -s 4096 -t ext4 -l 'casper-rw' -o /media/cyb10101/Ventoy/persistence/ubuntu-24.04-desktop.dat; sync"
 ```
 
 ## Grub Theme
