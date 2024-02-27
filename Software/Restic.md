@@ -217,17 +217,25 @@ export RESTIC_REPOSITORY="/mnt/backup/repository"
 export RESTIC_PASSWORD_FILE="/home/username/.config/restic/password.txt"
 
 # Get latest and previous snapshot
-PREVIOUS=$(restic snapshots --json | jq -r '.[-2].short_id')
-LATEST=$(restic snapshots --json | jq -r '.[-1].short_id')
+PREVIOUS=$(restic snapshots --json | jq -r '.[-2].short_id'); echo "Previous: ${PREVIOUS}"
+LATEST=$(restic snapshots --json | jq -r '.[-1].short_id'); echo "Latest: ${LATEST}"
+
+# Add files and change permissions
+touch diff.json added-or-changed.txt snapshot-list.txt added-or-changed_by-size.txt
+chown cyb10101:cyb10101 diff.json added-or-changed.txt snapshot-list.txt added-or-changed_by-size.txt
 
 # Convert changes from snapshot to regular expression
-restic diff --metadata --json $PREVIOUS $LATEST | jq -r 'select(.modifier == "+" or .modifier == "M") | "\(.path)"' > pattern.txt
+restic diff --metadata --json $PREVIOUS $LATEST > diff.json
+jq -r 'select(.modifier == "+" or .modifier == "M") | "\(.path)"' diff.json > added-or-changed.txt
 
 # Get file list from latest snapshot
-restic ls --long --json $LATEST | jq -r 'select(.size != null) | "\(.size) \(.path)"' | sort -rnk 1 | numfmt --field=1 --to=iec-i --suffix=B --padding=7 > list.txt
+restic ls --long --json $LATEST | jq -r 'select(.size != null) | "\(.size) \(.path)"' | sort -rnk 1 | numfmt --field=1 --to=iec-i --suffix=B --padding=7 > snapshot-list.txt
 
 # Grep pattern file with file list
-grep -F -f pattern.txt list.txt > added.txt
+grep -F -f added-or-changed.txt snapshot-list.txt > added-or-changed_by-size.txt
+
+# Other: Find changes in music folder
+cat diff.json | jq 'select(.path | test("^\/home\/cyb10101\/[mM]usi[ck]")?)'
 ```
 
 ## Remote backup (Beta)
