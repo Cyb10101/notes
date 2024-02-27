@@ -342,13 +342,32 @@ installSignal() {
     sudo apt update
     sudo apt -y install signal-desktop
 
-    cat << EOF | sudo tee /etc/xdg/autostart/signal-desktop-start.desktop
+    cat << EOF | sudo tee /etc/xdg/autostart/signal-desktop.desktop
 [Desktop Entry]
-Name=Start Signal Desktop
+Name=Signal Desktop
 GenericName=Secure messenger
 Comment=Starts the main signal desktop process in the background.
 Exec=/usr/bin/signal-desktop --use-tray-icon --start-in-tray --no-sandbox %U
 Icon=signal-desktop
+Terminal=false
+Type=Application
+Keywords=messenger;daemon;
+Categories=Network;InstantMessaging;Chat
+EOF
+}
+
+# https://signal.org/
+installSignalFlatpak() {
+    textColor 3 'Install: Signal (Flatpak)'
+    sudo flatpak install -y flathub org.signal.Signal
+
+    cat << EOF | sudo tee /etc/xdg/autostart/signal-desktop_flatpak.desktop
+[Desktop Entry]
+Name=Signal Desktop (Flatpak)
+GenericName=Secure messenger
+Comment=Starts the main signal desktop process in the background.
+Exec=/usr/bin/flatpak run org.signal.Signal --use-tray-icon --start-in-tray --no-sandbox %U
+Icon=org.signal.Signal
 Terminal=false
 Type=Application
 Keywords=messenger;daemon;
@@ -1112,7 +1131,8 @@ installSoftware() {
         "${TICK:-TRUE}" "installYacReaderFlatpak" "YACReader" "Comic Book Reader (cbz, cbr)" "Flatpak" \
         "${TICK:-TRUE}" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" "Debian Repository" \
         "${TICK:-TRUE}" "installThreema" "Threema" "Instant messaging, Voice conferencing" "Debian Repository" \
-        "${TICK:-TRUE}" "installSignal" "Signal" "Instant messaging, Voice conferencing" "Debian Repository" \
+        "${TICK:-FALSE}" "installSignal" "Signal" "Instant messaging, Voice conferencing" "Debian Repository" \
+        "${TICK:-TRUE}" "installSignalFlatpak" "Signal (Flatpak)" "Instant messaging, Voice conferencing" "Flatpak" \
         "${TICK:-TRUE}" "installTelegram" "Telegram" "Instant messaging, Voice conferencing" "Archive" \
         "${TICK:-FALSE}" "installSlack" "Slack" "Instant messaging, Voice conferencing" "Snap" \
         "${TICK:-FALSE}" "installSkype" "Skype" "Instant messaging, Voice conferencing" "Snap" \
@@ -1193,6 +1213,7 @@ updateSoftware() {
         --column=" " --column="Action" --column="Application" --column="Description" \
         --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
         "FALSE" "installCroc" "Croc" "File transfer tool" \
+        "FALSE" "installRestic" "Restic" "Backup tool" \
         "FALSE" "installCzkawka" "Czkawka" "Duplicate image finder" \
         "FALSE" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" \
         "FALSE" "installFluentReader" "Fluent Reader" "RSS Reader" \
@@ -1256,6 +1277,7 @@ done
 #installSoftware
 
 gnomeControlCenter() {
+    # gnome-control-center -l
     gnome-control-center datetime
     gnome-control-center default-apps
     gnome-control-center keyboard
