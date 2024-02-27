@@ -1,8 +1,13 @@
 <!--
+# Check if virtualisation technology is activated (VT-x/AMD-v)
+wmic cpu get VirtualizationFirmwareEnabled
+
 # Enable Windows Sandbox
-copy %HOMEDRIVE%%HOMEPATH%\Sync\notes\System\Windows\Sandbox\Sandbox.wsb %HOMEDRIVE%%HOMEPATH%\Downloads\
-dism.exe /Online /Enable-Feature /FeatureName:Containers-DisposableClientVM /All /NoRestart
+Enable-WindowsOptionalFeature -Online -FeatureName Containers-DisposableClientVM -NoRestart
 shutdown /r /t 5 /c "Restart to activate Sandbox"
+
+# Copy this customized Windows Sandbox file
+copy %HOMEDRIVE%%HOMEPATH%\Sync\notes\System\Windows\Sandbox\Sandbox.wsb %HOMEDRIVE%%HOMEPATH%\Downloads\
 -->
 <Configuration>
   <VGpu>Default</VGpu>
