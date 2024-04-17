@@ -19,8 +19,8 @@
 ## Linux
 
 ```bash
-alias crocCybSend='croc --relay "example.org" --pass="relay-password" send'
-crocCybSend <files>
+alias crocAppSend='croc --relay "example.org" --pass="relay-password" send'
+crocAppSend <files>
 
 CROC_RELAY='example.org:9009' CROC_PASS='relay-password' croc send --text 'Test'
 
