@@ -50,10 +50,10 @@ sudo systemctl status smartd
 sudo update-smart-drivedb
 
 # Enable smart on disk
-smartctl -s on /dev/sda
+sudo smartctl -s on /dev/sda
 
 # Get information
-smartctl -i /dev/sda
+sudo smartctl -i /dev/sda
 
 smartctl --scan
 
