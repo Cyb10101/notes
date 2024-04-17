@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# https://www.themoviedb.org/tv/112169
+# ~/Sync/notes/System/Linux/Scripts/tmdbTvSeason.sh 112169 1
 
 getTmdbSeason() {
     local tvId=${1}
@@ -33,9 +36,6 @@ getTmdbSeason() {
 }
 
 tmdb_apiKeyV4=`jq -r '.tmdb_apiKeyV4' ~/Sync/private-notes/storage/api-keys.json`
-
-# https://www.themoviedb.org/tv/112169
-# ~/Sync/notes/System/Linux/Scripts/tmdbTvSeason.sh 112169 1
 
 # getTmdbSeason ${tvId} ${season} "${language}"
 getTmdbSeason ${1} ${2} ''
