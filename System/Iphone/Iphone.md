@@ -9,28 +9,28 @@ Run Command as Administrator:
 
 ```shell
 # Create a user (just for security)
-net user "transfer" "password" /add
+net user "ios-transfer" "password" /add
 
 # Get your ip address
 ipconfig | find "IPv4"
 
 # Optional information
-# net user "transfer" "change-password"
-# net user "transfer" /delete
+# net user "ios-transfer" "change-password"
+# net user "ios-transfer" /delete
 ```
 
 Create a folder on your PC:
 
-* Create a folder "Transfer" on Desktop or elsewere
+* Create a folder "IOS-Transfer" on Desktop or elsewere
 * Right click > Properties > Tab "Sharing"
   * Field "Network file and Folder Sharing" > Button "Share"
-    * Select User "Transfer
+    * Select User "ios-transfer"
     * Allow User: Read/Write
     * Click on "Share" and "Done"
   * Field "Advanced Sharing" > Button "Advanced Sharing"
     * Share this folder = yes
     * Permissions
-      * Add User "Transfer" > Check Name
+      * Add User "ios-transfer" > Check Name
       * Permissions = Allow "Full Control"
 
 Get your iPhone:
@@ -38,9 +38,9 @@ Get your iPhone:
 * Open "Files" > Click on three dots > Connect to Server
   * Server: 192.168.178.21 (Alternatively: smb://192.168.178.21)
   * Click on "Connect"
-  * Click on "Registered User", enter your username "transfer" and your password
+  * Click on "Registered User", enter your username "ios-transfer" and your password
   * Click on "Next"
 
 * Open "Album"
   * Share > Save to files
-  * Select Server and folder "Transfer"
+  * Select Server and folder "IOS-Transfer"
