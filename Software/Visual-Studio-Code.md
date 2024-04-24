@@ -98,6 +98,7 @@ code --install-extension ms-vsliveshare.vsliveshare
 {
   "terminal.integrated.fontSize": 15,
   "editor.fontSize": 15,
+  "editor.stickyScroll.enabled": false,
   "debug.console.fontSize": 15,
   "markdown.preview.fontSize": 15,
 
