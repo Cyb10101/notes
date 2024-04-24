@@ -72,7 +72,7 @@ Reset device and go to recovery: Press [Volume Down] + [Home] + [Power] until it
 * TWRP > Wipe > Advanced Wipe > Select: System, Cache > Swipe to Wipe
 * TWRP > Advanced > ADB Sideload
 * `adb sideload filename.zip`
-* Reboot
+* Reboot (Ignore "No OS installed")
 
 ## Flash with Heimdall
 
