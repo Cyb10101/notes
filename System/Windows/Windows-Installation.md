@@ -10,9 +10,9 @@ $PSVersionTable
 Update Windows (run as user):
 
 ```powershell
-start ms-windows-store://updates; control update
 scoop status; scoop update; scoop update --all
 sudo Start-Process -FilePath "powershell.exe" -ArgumentList "-NoExit choco outdated; sudo choco upgrade all"
+start ms-windows-store://updates; control update
 ```
 
 ## BitLocker encryption
@@ -41,6 +41,7 @@ Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 # Recommended
 scoop install aria2 7zip git sudo
 scoop config aria2-warning-enabled false
+scoop bucket add extras
 
 # Standard bucket (Without other buckets)
 scoop install croc
@@ -48,8 +49,7 @@ scoop install gpg
 scoop install restic
 scoop install yt-dlp ffmpeg
 
-# Bucket: Extas
-scoop bucket add extras
+# Bucket: Extras
 scoop install mpv ffmpeg
 
 # Other
@@ -119,8 +119,8 @@ Combine name, website and id for quick installation:
 
 ```shell
 $apps = @(
-  "Mozilla.Firefox",      # Fuck
-  "Mozilla.Thunderbird"   # Me
+  "Mozilla.Firefox",      # Firefox
+  "Mozilla.Thunderbird"   # Thunderbird
 )
 foreach ($id in $apps) {
   Write-Output "-> Website: $($id)"
