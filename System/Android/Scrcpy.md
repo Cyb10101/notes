@@ -5,14 +5,17 @@ You must activate [Android debug bridge](Android.md#android-debug-bridge) to use
 Install [scrcpy](https://github.com/Genymobile/scrcpy):
 
 ```bash
+# Linux
 sudo apt -y install scrcpy
+
+# Windows
+scoop install scrcpy adb
 ```
 
 Use mostly default settings:
 
 ```bash
-scrcpy --push-target=/storage/emulated/0/Download \
-  --shortcut-mod=lalt --show-touches --stay-awake
+scrcpy --push-target=/storage/emulated/0/Download --shortcut-mod=lalt --show-touches --stay-awake
 ```
 
 Wireless with a serial id and turn screen off:
