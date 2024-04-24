@@ -52,7 +52,7 @@ File `$PROFILE.CurrentUserCurrentHost`:
 function crocAppSend {
     $defaultArguments = @('--relay', 'example.org', '--pass', 'relay-password', 'send')
     $arguments = $defaultArguments + $args
-    & C:\Users\User\scoop\apps\croc\current\croc $arguments
+    & C:\Users\$env:username\scoop\apps\croc\current\croc $arguments
 }
 ```
 
