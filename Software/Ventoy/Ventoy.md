@@ -95,6 +95,7 @@ pip install --user grub2-theme-preview
 ## Test with QEmu
 
 ```bash
+lsblk
 sudo apt install qemu-system spice-vdagent
 sudo kvm -m 4G \
   -enable-kvm -smp $(nproc) -k de \
