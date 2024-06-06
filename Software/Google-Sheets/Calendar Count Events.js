@@ -30,81 +30,98 @@ function devTestYesNo() {
 
 function searchCalendarEvents() {
   const sheet = SpreadsheetApp.getActiveSheet();
-  addDefaultFields(sheet);
+  const ui = SpreadsheetApp.getUi();
 
-  const calendarName = sheet.getRange('B1').getValue();
-  const myCalendarId = getCalendarKey(calendarName);
-  if (!myCalendarId) {
-    SpreadsheetApp.getUi().alert('Error: Calendar name not found!');
+  let rowHeader = searchColumn(1, 'Calendar name');
+  if (!rowHeader) {
+      const response = ui.alert('Column marker not found! Create a new example?', ui.ButtonSet.YES_NO);
+      if (response == ui.Button.YES) {
+        addDefaultFields(sheet);
+        rowHeader = searchColumn(1, 'Calendar name');
+      } else {
+        return;
+      }
+  }
+
+  const columnValues = sheet.getRange(rowHeader + 1, 1, sheet.getLastRow()).getValues();
+  if (!columnValues) {
+    SpreadsheetApp.getUi().alert('No data columns found!');
     return;
   }
 
-  const searchEvents = searchColumn(1, 'Event');
-  if (searchEvents) {
-    const columnValues = sheet.getRange(searchEvents + 1, 1, sheet.getLastRow()).getValues();
-    if (columnValues) {
-      for (let i = 0; i < columnValues.length; i++) {
-        const eventName = columnValues[i][0];
-        if (eventName !== '') {
-          const fromDate = sheet.getRange(searchEvents + 1 + i, 2).setHorizontalAlignment('center').getValue();
-          if (!isValidDate(fromDate)) {
-            fromDate = new Date();
-            sheet.getRange(searchEvents + 1 + i, 2).setValue(fromDate);
-          }
+  for (let i = 0; i < columnValues.length; i++) {
+    const calendarName = columnValues[i][0];
+    const eventName = sheet.getRange(rowHeader + 1 + i, 2).getValue();
 
-          const eventsInTime = getCalendarEventsInTime(myCalendarId, eventName, fromDate, new Date());
-          sheet.getRange(searchEvents + 1 + i, 3).setValue(countEvents(eventsInTime)).setHorizontalAlignment('center');
-
-          sheet.getRange(searchEvents + 1 + i, 4).setHorizontalAlignment('center');
-
-          const updated = Utilities.formatDate(new Date(), "GMT+1", "dd.MM.yyyy");
-          sheet.getRange(searchEvents + 1 + i, 5).setValue(updated).setHorizontalAlignment('center');
-        }
-      }
-    } else {
-      SpreadsheetApp.getUi().alert('No columns found!');
+    if (calendarName === '' && eventName === '') {
+      continue;
+    } else if ((calendarName === '' && eventName !== '') || (calendarName !== '' && eventName === '')) {
+      SpreadsheetApp.getUi().alert(`Error: Calendar '${calendarName}' with event '${eventName}' on row ${rowHeader + 1 + i} not filled properly!`);
+      continue;
     }
-  } else {
-    SpreadsheetApp.getUi().alert('Event marker not found!');
+
+    const myCalendarId = getCalendarKey(calendarName);
+    if (!myCalendarId) {
+      SpreadsheetApp.getUi().alert(`Error: Calendar '${calendarName}' with event '${eventName}' on row ${rowHeader + 1 + i} not found!`);
+      continue;
+    }
+
+    let fromDate = sheet.getRange(rowHeader + 1 + i, 3).setHorizontalAlignment('center').getValue();
+    if (!isValidDate(fromDate)) {
+      fromDate = new Date();
+      sheet.getRange(rowHeader + 1 + i, 3).setNumberFormat('dd.mm.yyyy').setValue(fromDate);
+    }
+
+    const eventsInTime = getCalendarEventsInTime(myCalendarId, eventName, fromDate, new Date());
+    sheet.getRange(rowHeader + 1 + i, 4).setNumberFormat('0').setValue(countEvents(eventsInTime)).setHorizontalAlignment('center');
+
+    sheet.getRange(rowHeader + 1 + i, 5).setNumberFormat('0').setHorizontalAlignment('center');
+
+    const updated = Utilities.formatDate(new Date(), 'GMT+1', 'dd.MM.yyyy');
+    sheet.getRange(rowHeader + 1 + i, 6).setNumberFormat('dd.mm.yyyy').setValue(updated).setHorizontalAlignment('center');
   }
 }
 
 function addDefaultFields(sheet) {
-  if (sheet.getRange('A1').getValue() === '') {
-    sheet.getRange('A1').setValue('Calendar name:').setFontWeight('bold').setHorizontalAlignment('left');
-  }
-  if (sheet.getRange('B1').getValue() === '') {
-    const ui = SpreadsheetApp.getUi();
-    const response = ui.prompt('Calendar name', 'What is the name of the calendar?', ui.ButtonSet.OK);
-    const calendarName = (response.getResponseText() !== '' ? response.getResponseText() : 'General');
-    sheet.getRange('B1').setValue(calendarName).setHorizontalAlignment('left');
-  }
+  const ui = SpreadsheetApp.getUi();
 
   // Table header
-  if (sheet.getRange('A3').getValue() === '') {
-    sheet.getRange('A3').setValue('Event').setFontWeight('bold').setHorizontalAlignment('center');
+  let rowNumber = 1;
+  if (sheet.getRange('A' + rowNumber).getValue() === '') {
+    sheet.getRange('A' + rowNumber).setValue('Calendar name').setFontWeight('bold').setHorizontalAlignment('left');
   }
-  if (sheet.getRange('B3').getValue() === '') {
-    sheet.getRange('B3').setValue('Start date').setFontWeight('bold').setHorizontalAlignment('center');
+  if (sheet.getRange('B' + rowNumber).getValue() === '') {
+    sheet.getRange('B' + rowNumber).setValue('Event name').setFontWeight('bold').setHorizontalAlignment('left');
   }
-  if (sheet.getRange('C3').getValue() === '') {
-    sheet.getRange('C3').setValue('Current count').setFontWeight('bold').setHorizontalAlignment('center');
+  if (sheet.getRange('C' + rowNumber).getValue() === '') {
+    sheet.getRange('C' + rowNumber).setValue('Start date').setFontWeight('bold').setHorizontalAlignment('center');
   }
-  if (sheet.getRange('D3').getValue() === '') {
-    sheet.getRange('D3').setValue('Maximum count').setFontWeight('bold').setHorizontalAlignment('center');
+  if (sheet.getRange('D' + rowNumber).getValue() === '') {
+    sheet.getRange('D' + rowNumber).setValue('Current count').setFontWeight('bold').setHorizontalAlignment('center');
   }
-  if (sheet.getRange('E3').getValue() === '') {
-    sheet.getRange('E3').setValue('Updated').setFontWeight('bold').setHorizontalAlignment('center');
+  if (sheet.getRange('E' + rowNumber).getValue() === '') {
+    sheet.getRange('E' + rowNumber).setValue('Maximum count').setFontWeight('bold').setHorizontalAlignment('center');
+  }
+  if (sheet.getRange('F' + rowNumber).getValue() === '') {
+    sheet.getRange('F' + rowNumber).setValue('Updated').setFontWeight('bold').setHorizontalAlignment('center');
   }
 
-  // Table example data
-  if (sheet.getRange('A4').getValue() === '') {
-    sheet.getRange('A4').setValue('Event name').setHorizontalAlignment('left');
-    sheet.getRange('B4').setValue('01.01.2020').setHorizontalAlignment('center');
-    sheet.getRange('C4').setValue(0).setHorizontalAlignment('center');
-    sheet.getRange('D4').setValue(10).setHorizontalAlignment('center');
-    sheet.getRange('E4').setValue(Utilities.formatDate(new Date(), "GMT+1", "dd.MM.yyyy")).setHorizontalAlignment('center');
+  // Table data
+  rowNumber = 2;
+  if (sheet.getRange('A' + rowNumber).getValue() === '') {
+    const response = ui.prompt('Calendar name', 'What is the name of the calendar?', ui.ButtonSet.OK);
+    const calendarName = (response.getResponseText() !== '' ? response.getResponseText() : 'General');
+    sheet.getRange('A' + rowNumber).setValue(calendarName).setHorizontalAlignment('left');
   }
+  if (sheet.getRange('B' + rowNumber).getValue() === '') {
+    const response = ui.prompt('Event name', 'What is the name of the event?', ui.ButtonSet.OK);
+    const calendarName = (response.getResponseText() !== '' ? response.getResponseText() : 'Meeting');
+    sheet.getRange('B' + rowNumber).setValue(calendarName).setHorizontalAlignment('left');
+  }
+  sheet.getRange('C' + rowNumber).setNumberFormat('dd.mm.yyyy').setValue('01.01.2020').setHorizontalAlignment('center');
+  sheet.getRange('D' + rowNumber).setNumberFormat('0').setValue(0).setHorizontalAlignment('center');
+  sheet.getRange('E' + rowNumber).setNumberFormat('0').setValue(10).setHorizontalAlignment('center');
+  sheet.getRange('F' + rowNumber).setNumberFormat('dd.mm.yyyy').setValue(Utilities.formatDate(new Date(), "GMT+1", "dd.MM.yyyy")).setHorizontalAlignment('center');
 }
 
 function countEvents(events) {
@@ -131,7 +148,7 @@ function getCalendarEventsInTime(calendarId, eventName, fromDate, toDate) {
   return events;
 }
 
-function getCalendarKey(calendarKey) {
+function getCalendarKey(calendarName) {
   let calendars, pageToken;
   do {
     calendars = Calendar.CalendarList.list({
@@ -142,7 +159,7 @@ function getCalendarKey(calendarKey) {
     if (calendars.items && calendars.items.length > 0) {
       for (let i = 0; i < calendars.items.length; i++) {
         const itemCalendar = calendars.items[i];
-        if (itemCalendar.summary === calendarKey){
+        if (itemCalendar.summary === calendarName){
           return itemCalendar.id;
         }
       }
