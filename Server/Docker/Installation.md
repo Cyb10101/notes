@@ -1,16 +1,15 @@
 # Docker: Installation
 
-[Docker on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+* [Docker on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+* [Docker Compose releases](https://github.com/docker/compose/releases)
 
-## Docker installation
-
-From Ubuntu repository:
+Install Docker from Ubuntu repository:
 
 ```bash
 sudo apt -y install docker.io
 ```
 
-From Docker repository:
+Install Docker from Docker repository:
 
 ```bash
 # Uninstall old versions
@@ -26,20 +25,18 @@ sudo apt update
 sudo apt -y install docker-ce docker-ce-cli containerd.io
 ```
 
-Only if your want run it for another user than root:
+If you want run Docker from another user than root:
 
 ```bash
 sudo usermod -aG docker ${USER}
 ```
 
-## Docker Compose installation
-
-[Docker Compose Releases](https://github.com/docker/compose/releases)
+Install Docker Compose:
 
 ```bash
 sudo apt -y install jq
 VERSION=$(curl -fsSL https://api.github.com/repos/docker/compose/releases/latest | jq -r '.name')
-curl -o /tmp/docker-compose -fsSL "https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m)"
+curl --progress-bar -o /tmp/docker-compose -fL "https://github.com/docker/compose/releases/download/${VERSION}/docker-compose-$(uname -s)-$(uname -m)"
 sudo install /tmp/docker-compose /usr/local/bin/docker-compose
 ```
 
