@@ -1,62 +1,63 @@
-// Tools > Script editor > File: Code.gs
-// Resources > Advanced Google Services > Calendar
+// Extensions > Apps Script > File: Code.gs
+// Resources/Services > Advanced Google Services > Calendar
 
 function onOpen() {
-  var ui = SpreadsheetApp.getUi();
+  const ui = SpreadsheetApp.getUi();
   // Or DocumentApp or FormApp.
   ui.createMenu('Own scripts')
     .addItem('Search Calendar Events', 'searchCalendarEvents')
     .addSeparator()
     .addSubMenu(ui.createMenu('Development')
-      .addItem('First item', 'devMenuItem1')
-      .addItem('Second item', 'devMenuItem2')
+      .addItem('Yes/No Test', 'devTestYesNo')
     )
     .addToUi();
 }
 
-function devMenuItem1() {
-  var ui = SpreadsheetApp.getUi();
-  var response = ui.prompt('Getting to know you', 'May I know your name?', ui.ButtonSet.YES_NO);
-
+function devTestYesNo() {
+  const ui = SpreadsheetApp.getUi();
+  const response = ui.prompt('Getting to know you', 'May I know your name?', ui.ButtonSet.YES_NO);
   if (response.getSelectedButton() == ui.Button.YES) {
-    Logger.log('The user\'s name is %s.', response.getResponseText());
+    Logger.log('The user\'s name is "%s."', response.getResponseText());
+    ui.alert(`The user's name is "${response.getResponseText()}".`);
   } else if (response.getSelectedButton() == ui.Button.NO) {
     Logger.log('The user didn\'t want to provide a name.');
+    ui.alert('The user didn\'t want to provide a name.');
   } else {
     Logger.log('The user clicked the close button in the dialog\'s title bar.');
+    ui.alert('The user clicked the close button in the dialog\'s title bar.');
   }
 }
 
-function devMenuItem2() {
-  SpreadsheetApp.getUi().alert('You clicked the second menu item!');
-}
-
 function searchCalendarEvents() {
-  var sheet = SpreadsheetApp.getActiveSheet();
+  const sheet = SpreadsheetApp.getActiveSheet();
   addDefaultFields(sheet);
 
-  var calendarName = sheet.getRange('B1').getValue();
-  var myCalendarId = getCalendarKey(calendarName);
+  const calendarName = sheet.getRange('B1').getValue();
+  const myCalendarId = getCalendarKey(calendarName);
+  if (!myCalendarId) {
+    SpreadsheetApp.getUi().alert('Error: Calendar name not found!');
+    return;
+  }
 
-  var searchEvents = searchColumn(1, 'Event');
+  const searchEvents = searchColumn(1, 'Event');
   if (searchEvents) {
-    var columnValues = sheet.getRange(searchEvents + 1, 1, sheet.getLastRow()).getValues();
+    const columnValues = sheet.getRange(searchEvents + 1, 1, sheet.getLastRow()).getValues();
     if (columnValues) {
-      for (var i = 0; i < columnValues.length; i++) {
-        var eventName = columnValues[i][0];
+      for (let i = 0; i < columnValues.length; i++) {
+        const eventName = columnValues[i][0];
         if (eventName !== '') {
-          var fromDate = sheet.getRange(searchEvents + 1 + i, 2).setHorizontalAlignment('center').getValue();
+          const fromDate = sheet.getRange(searchEvents + 1 + i, 2).setHorizontalAlignment('center').getValue();
           if (!isValidDate(fromDate)) {
             fromDate = new Date();
             sheet.getRange(searchEvents + 1 + i, 2).setValue(fromDate);
           }
 
-          var eventsInTime = getCalendarEventsInTime(myCalendarId, eventName, fromDate, new Date());
+          const eventsInTime = getCalendarEventsInTime(myCalendarId, eventName, fromDate, new Date());
           sheet.getRange(searchEvents + 1 + i, 3).setValue(countEvents(eventsInTime)).setHorizontalAlignment('center');
 
           sheet.getRange(searchEvents + 1 + i, 4).setHorizontalAlignment('center');
 
-          var updated = Utilities.formatDate(new Date(), "GMT+1", "dd.MM.yyyy");
+          const updated = Utilities.formatDate(new Date(), "GMT+1", "dd.MM.yyyy");
           sheet.getRange(searchEvents + 1 + i, 5).setValue(updated).setHorizontalAlignment('center');
         }
       }
@@ -73,9 +74,9 @@ function addDefaultFields(sheet) {
     sheet.getRange('A1').setValue('Calendar name:').setFontWeight('bold').setHorizontalAlignment('left');
   }
   if (sheet.getRange('B1').getValue() === '') {
-    var ui = SpreadsheetApp.getUi();
-    var response = ui.prompt('Calendar name', 'What is the name of the calendar?', ui.ButtonSet.OK);
-    var calendarName = (response.getResponseText() !== '' ? response.getResponseText() : 'General');
+    const ui = SpreadsheetApp.getUi();
+    const response = ui.prompt('Calendar name', 'What is the name of the calendar?', ui.ButtonSet.OK);
+    const calendarName = (response.getResponseText() !== '' ? response.getResponseText() : 'General');
     sheet.getRange('B1').setValue(calendarName).setHorizontalAlignment('left');
   }
 
@@ -114,7 +115,7 @@ function countEvents(events) {
 }
 
 function getCalendarEventsInTime(calendarId, eventName, fromDate, toDate) {
-  var events = Calendar.Events.list(calendarId, {
+  const events = Calendar.Events.list(calendarId, {
     timeMin: fromDate.toISOString(),
     timeMax: toDate.toISOString(),
     q: eventName,
@@ -131,8 +132,7 @@ function getCalendarEventsInTime(calendarId, eventName, fromDate, toDate) {
 }
 
 function getCalendarKey(calendarKey) {
-  var calendars, pageToken;
-  var calendarId = '';
+  let calendars, pageToken;
   do {
     calendars = Calendar.CalendarList.list({
       maxResults: 100,
@@ -140,11 +140,10 @@ function getCalendarKey(calendarKey) {
     });
 
     if (calendars.items && calendars.items.length > 0) {
-      for (var i = 0; i < calendars.items.length; i++) {
-        var calendar = calendars.items[i];
-        if (calendar.summary === calendarKey){
-          calendarId = calendar.id;
-          return calendarId;
+      for (let i = 0; i < calendars.items.length; i++) {
+        const itemCalendar = calendars.items[i];
+        if (itemCalendar.summary === calendarKey){
+          return itemCalendar.id;
         }
       }
     } else {
@@ -152,13 +151,13 @@ function getCalendarKey(calendarKey) {
     }
     pageToken = calendars.nextPageToken;
   } while (pageToken);
-  return calendarId;
+  return '';
 }
 
 function searchColumn(column, searchString) {
-  var sheet = SpreadsheetApp.getActiveSheet();
-  var columnValues = sheet.getRange(1, column, sheet.getLastRow()).getValues();
-  var searchResult = columnValues.findIndex(searchString);
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const columnValues = sheet.getRange(1, column, sheet.getLastRow()).getValues();
+  let searchResult = columnValues.findIndex(searchString);
 
   if (searchResult !== -1) {
     searchResult += 1; // Because findIndex() array start with zero
