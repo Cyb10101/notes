@@ -9,12 +9,19 @@ Definition:
 * [VirtualBox installation](Installation.md)
 * Maybe required: [Secure Boot](../../System/Linux/Secure-Boot/Secure-Boot.md)
 
+## Install missing bzip2
+
+```bash
+sudo apt -y install bzip2
+```
+
 ## Configuration
 
 Linux host USB pass through to Windows guest, reboot host:
 
 ```bash
-sudo usermod -aG vboxusers ${USER}
+#sudo usermod -aG vboxusers ${USER}
+sudo usermod -aG vboxsf ${USER}
 ```
 
 ## Convert Raw Disk to VDI
