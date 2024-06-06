@@ -19,14 +19,8 @@
 ## Linux
 
 ```bash
-alias crocAppSend='croc --relay "example.org" --pass="relay-password" send'
-crocAppSend <files>
-
-CROC_RELAY='example.org:9009' CROC_PASS='relay-password' croc send --text 'Test'
-
-export CROC_RELAY='example.org:9009' CROC_PASS='relay-password'
-croc send <files>
-unset CROC_RELAY CROC_PASS
+alias croc-app='croc --relay "example.org" --pass="relay-password"'
+croc-app send <files>
 ```
 
 ## Windows
@@ -49,11 +43,11 @@ notepad $PROFILE.CurrentUserCurrentHost
 File `$PROFILE.CurrentUserCurrentHost`:
 
 ```shell
-function crocAppSend {
-    $defaultArguments = @('--relay', 'example.org', '--pass', 'relay-password', 'send')
+function croc-app {
+    $defaultArguments = @('--relay', 'example.org', '--pass', 'relay-password')
     $arguments = $defaultArguments + $args
     & C:\Users\$env:username\scoop\apps\croc\current\croc $arguments
 }
 ```
 
-Run `crocAppSend <files>`.
+Run `croc-app send <files>`.
