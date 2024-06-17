@@ -41,6 +41,7 @@ Security:
 
 * [Aegis Authenticator)](https://getaegis.app/)
 * [Bitwarden](https://bitwarden.com/download/)
+* [WireGuard](https://play.google.com/store/apps/details?id=com.wireguard.android)
 
 Office:
 
