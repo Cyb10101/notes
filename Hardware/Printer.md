@@ -60,6 +60,8 @@ brsaneconfig4 -q
 
 # Add and remove scanner (Just do it, because something would be configured)
 sudo brsaneconfig4 -a name=Brother-DCP-9022CDW model=DCP-9022CDW ip=192.168.178.27
+
+sudo apt-get install simple-scan
 ```
 
 A scan over the WSD protocol might not work properly (DPI).
