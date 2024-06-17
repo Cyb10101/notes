@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-flatpak install flathub com.mojang.Minecraft
+sudo flatpak install -y flathub com.mojang.Minecraft
 
 # Do not show pause menu on window change
 sed -i -r "s/^(pauseOnLostFocus:)true$/\1false/g" ~/.var/app/com.mojang.Minecraft/.minecraft/options.txt
