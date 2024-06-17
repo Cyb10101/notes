@@ -2,30 +2,52 @@
 
 Sometimes you just want to send a file quickly and securely.
 
-Useful tools are:
+The most popular tools so far:
 
 * [Wormhole](https://wormhole.app/)
 * [Croc](https://github.com/schollz/croc)
 * [Magic Wormhole](https://magic-wormhole.readthedocs.io/en/latest/)
-* [LocalSend](https://localsend.org/)
+* [PairDrop](https://pairdrop.net/)
 
-Others are either questionable or have a more specific use case.
+## With shareable link
 
-## Wormhole (Firefox Send)
-
-These are Firefox Send forked projects.
+These are Firefox Send forked projects or similar projects.
 
 * [Wormhole](https://wormhole.app/)
 
-* [timvisee: Send files via send.vis.ee](https://send.vis.ee/)
+Firefox send forks:
+
 * [timvisee: Send instances](https://github.com/timvisee/send-instances/#instances)
-* [Git: timvisee/send](https://gitlab.com/timvisee/send)
-* [Git: timvisee/send-docker-compose](https://github.com/timvisee/send-docker-compose)
-* [Git: mozilla/send](https://github.com/mozilla/send)
+* Send files via...
+  * [vis.ee](https://send.vis.ee/)
+  * [zcyph](https://send.zcyph.cc/)
+  * [mni.li](https://send.mni.li/)
+  * [ggc-project.de](https://fileupload.ggc-project.de/)
+  * [adminforge.de](https://send.adminforge.de/)
+  * [turingpoint.de](https://send.turingpoint.de/)
+
+Similar projects:
+
+* [Internxt Send](https://send.internxt.com/)
+* [0up](https://0up.io/)
+* [Sharrr](https://www.sharrr.com/)
+
+Website worth mentioning but not necessarily recommended.
+
+* [WeTransfer](https://wetransfer.com/)
+* [Dropbox Transfer](https://www.dropbox.com/transfer/)
+* [Send Anywhere](https://send-anywhere.com/)
+
+## Like Apple Airdrop (WebRTC)
+
+* [PairDrop](https://pairdrop.net/)
+* [Blaze](https://blaze.vercel.app/app)
+* [ShareDrop](https://www.sharedrop.io/)
 
 ## Croc
 
 * [Croc](https://github.com/schollz/croc)
+* [Croc: Own notes](../Software/Croc.md)
 
 ```bash
 # Install Linux
@@ -36,13 +58,15 @@ scoop install croc
 #choco install croc
 
 # Send
-croc send [FILE/DIRECTORY]
+croc send <file/directory>
 
 # Receive
-croc [CODE]
+croc <code>
 ```
 
-## Magic Wormhole
+## Only same network
+
+Magic Wormhole:
 
 * [Magic Wormhole](https://magic-wormhole.readthedocs.io/en/latest/)
 
@@ -70,25 +94,16 @@ choco install magic-wormhole
 scoop install wormhole-william
 
 # Usage
-wormhole send [FILE/DIRECTORY]
-wormhole receive [CODE]
+wormhole send <file/directory>
+wormhole receive <code>
 
-wormhole-william send [FILE/DIRECTORY]
-wormhole-william receive [CODE]
+wormhole-william send <file/directory>
+wormhole-william receive <code>
 ```
 
-## LocalSend
+LocalSend:
 
 * [LocalSend](https://localsend.org/)
-
-## Websites
-
-Website worth mentioning but not necessarily recommended.
-
-* [WeTransfer](https://wetransfer.com/)
-* [Dropbox Transfer](https://www.dropbox.com/transfer/)
-* [Send Anywhere](https://send-anywhere.com/)
-* [ShareDrop](https://www.sharedrop.io/)
 
 ## Services
 
@@ -112,3 +127,10 @@ Most chats can also send files, but this is not strictly recommended.
 * [Telegram](https://telegram.org/)
 * [Threema](https://threema.ch/)
 * [Signal](https://signal.org/)
+
+## Own server
+
+* [timvisee/send](https://gitlab.com/timvisee/send)
+  * [timvisee/send-docker-compose](https://github.com/timvisee/send-docker-compose)
+  * [mozilla/send](https://github.com/mozilla/send)
+* [Gokapi](https://github.com/Forceu/Gokapi)
