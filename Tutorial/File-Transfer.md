@@ -118,6 +118,7 @@ Closed source:
 * [Google Drive](https://drive.google.com/)
 * [Dropbox](https://www.dropbox.com/)
 * [Microsoft OneDrive](https://onedrive.live.com/)
+* [Mega.io/Mega.nz](https://mega.io/)
 
 ## Messegner
 
