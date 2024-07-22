@@ -594,6 +594,7 @@ Linux:
 ```bash
 sudo snap install code --classic
 sudo snap install phpstorm --classic
+sudo snap install poedit
 
 sudo apt -y install meld
 ```
