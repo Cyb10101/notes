@@ -270,7 +270,19 @@ gsettings set org.gnome.shell.extensions.dash-to-dock multi-monitor true
 
 ```bash
 # Settings > Keyboard > Tastaturkürzel: Tastenkombinationen anzeigen und anpassen
-gnome-control-center keyboard
+gnome-control-center keyboard &
+
+* name: Screenshot: Flameshot
+* command: /usr/bin/flameshot gui
+* binding: Print
+
+* name: Reboot
+* command: gnome-session-quit --reboot
+* binding: <Super>F12
+
+* name: Shutdown
+* command: gnome-session-quit --power-off
+* binding: <Super>F11
 
 # Unset default screenshot tool
 gsettings set org.gnome.shell.keybindings show-screenshot-ui '[]'
