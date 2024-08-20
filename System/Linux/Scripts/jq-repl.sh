@@ -9,4 +9,4 @@ if [[ -z ${1} ]] || [[ ${1} == '-' ]]; then
 else
     input=${1}
 fi
-echo '' | fzf --disabled --preview-window='up:90%' --print-query --preview "jq --color-output -r {q} ${input}"
+echo '' | fzf --disabled --preview-window='up:90%' --query='.' --print-query --preview "jq --color-output -r {q} ${input}"
