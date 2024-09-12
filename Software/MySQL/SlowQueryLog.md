@@ -1,25 +1,35 @@
 # MySQL
 
-## Activate slow query log
+Log into mysql client:
 
-vim /etc/mysql/conf.d/mysql.cnf
+```bash
+# Plesk
+MYSQL_PWD=`cat /etc/psa/.psa.shadow` mysql -u admin
+```
+
+## Slow query log
+
+* [MariaDB: Slow query log](https://mariadb.com/kb/en/slow-query-log-overview/)
+
+Add file `/etc/mysql/conf.d/slow-query-log.cnf`:
 
 ```ini
 [mysqld]
-# Slow log
 slow_query_log=1
 slow_query_log_file=/var/log/mysql/slow-query.log
-long_query_time=1
+long_query_time=3
 log_queries_not_using_indexes=1
 ```
+
+`long_query_time` is time taken by an SQL query to be executed in seconds. If a query takes longer than the value specified, this query will be recorded in the slow query log file.
 
 Create log file and restart server.
 
 ```bash
 touch /var/log/mysql/slow-query.log
-chown mysql:adm /var/log/mysql/slow-query.log
-chmod 640 slow-query.log
+chown mysql:mysql /var/log/mysql/slow-query.log
 service mysql restart
+tail -f /var/log/mysql/slow-query.log
 ```
 
 Test slow query log:
