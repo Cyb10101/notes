@@ -1,4 +1,6 @@
-# MySQL
+# Slow query log
+
+* [MariaDB: Slow query log](https://mariadb.com/kb/en/slow-query-log-overview/)
 
 Log into mysql client:
 
@@ -6,10 +8,6 @@ Log into mysql client:
 # Plesk
 MYSQL_PWD=`cat /etc/psa/.psa.shadow` mysql -u admin
 ```
-
-## Slow query log
-
-* [MariaDB: Slow query log](https://mariadb.com/kb/en/slow-query-log-overview/)
 
 Add file `/etc/mysql/conf.d/slow-query-log.cnf`:
 
