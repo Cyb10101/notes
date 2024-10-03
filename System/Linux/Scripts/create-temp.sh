@@ -5,7 +5,8 @@
 # ln -s /usr/local/bin/create-temp ${XDG_DESKTOP_DIR:-${HOME}/Desktop}/create-temp
 
 createLauncher() {
-cat <<EOF | sudo tee /usr/share/applications/create-temp.desktop
+  if [ ! -f /usr/share/applications/create-temp.desktop ]; then
+    cat <<EOF | sudo tee /usr/share/applications/create-temp.desktop > /dev/null
 [Desktop Entry]
 Name=Temporary Directory
 Comment=Create a temporary Directory
@@ -17,6 +18,7 @@ Icon=/usr/share/icons/Yaru-blue/256x256/actions/folder-new.png
 #Icon=/usr/share/icons/elementary-xfce/actions/128/folder-new.png
 Categories=Utility;
 EOF
+  fi
 }
 
 # Variant 1 - Date and time
