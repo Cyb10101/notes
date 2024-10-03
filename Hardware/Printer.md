@@ -3,6 +3,41 @@
 * [OpenPrinting CUPS (http)](http://localhost:631)
 * [OpenPrinting CUPS (https)](https://localhost:631)
 
+## Brother DCP-L3550CDW
+
+*Last installed: 2024*
+
+* [Download Driver](https://www.brother.de/support/dcpl3550cdw/downloads)
+
+Printer:
+
+```bash
+# Find printer
+LANG=C lpinfo -E -l -v | grep -E 'uri|info|make-and-model'
+
+# Add printer
+lpadmin -p Brother_DCP-L3550CDW_IPP -E -v ipp://BRW4CD577252854:631/ipp -m everywhere
+
+# Set default printer
+lpadmin -d Brother_DCP-L3550CDW_IPP
+```
+
+Scanner:
+
+```bash
+# Scanner driver 64bit (deb package) - This is the Scanner driver
+sudo dpkg -i brscan4-0.4.11-1.amd64.deb
+
+# Find scanners in network
+brsaneconfig4 -q
+
+# Add and remove scanner (Just do it, because something would be configured)
+sudo brsaneconfig4 -a name=Brother-DCP-L3550CDW model=DCP-L3550CDW ip=192.168.178.30
+
+# If missing in Ubuntu
+sudo apt -y install simple-scan
+```
+
 ## Brother DCP-9022CDW
 
 * [Download Driver](https://www.brother.de/support/dcp-9022cdw/downloads)
@@ -13,6 +48,13 @@ Without installing drivers (Recommend):
 * Get node name: [Printer Web Interface > Network](http://192.168.178.27/net/net/net.html)
 
 ```bash
+# Find printer
+LANG=C lpinfo -E -l -v | grep -E 'uri|info|make-and-model'
+
+lpadmin -p Brother_DCP-L3550CDW_IPP -E -v ipp://BRW4CD577252854:631/ipp -m everywhere
+lpadmin -d Brother_DCP-L3550CDW_IPP
+
+
 # Add printer
 lpadmin -p Brother_DCP-9022CDW_IPP -E -v ipp://BRWACD1B84ED6B9:631/ipp -m everywhere
 
@@ -61,7 +103,8 @@ brsaneconfig4 -q
 # Add and remove scanner (Just do it, because something would be configured)
 sudo brsaneconfig4 -a name=Brother-DCP-9022CDW model=DCP-9022CDW ip=192.168.178.27
 
-sudo apt-get install simple-scan
+# If missing in Ubuntu
+sudo apt -y install simple-scan
 ```
 
 A scan over the WSD protocol might not work properly (DPI).
