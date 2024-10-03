@@ -5,6 +5,7 @@
 ## YT-DL
 
 * [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+* [Simple Youtube Downloader GUI](../System/Linux/Scripts/youtube-downloader.sh)
 
 Install Linux:
 
