@@ -1,4 +1,4 @@
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 class App {
   [bool] isAdmin() {
@@ -17,11 +17,11 @@ class App {
 $app = [App]::new()
 # $app.checkAdmin()
 
-Set-Variable -Name "RESTIC_REPOSITORY" -Value "$scriptDir\restic-repository"
-Set-Variable -Name "RESTIC_PASSWORD_FILE" -Value "$scriptDir\password.txt"
+Set-Variable -Name "RESTIC_REPOSITORY" -Value "$scriptPath\restic-repository"
+Set-Variable -Name "RESTIC_PASSWORD_FILE" -Value "$scriptPath\password.txt"
 
 # Backup ServerNas
-& "$scriptDir\bin\restic" backup -r "$RESTIC_REPOSITORY" -p "$RESTIC_PASSWORD_FILE" `
+& "$scriptPath\bin\restic" backup -r "$RESTIC_REPOSITORY" -p "$RESTIC_PASSWORD_FILE" `
   --host='my-pc' --tag='my-pc' `
   C:\media\picture
 
