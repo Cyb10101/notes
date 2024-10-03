@@ -1,6 +1,7 @@
 # Ventoy
 
-* [Ventoy](https://github.com/ventoy/Ventoy/releases/latest)
+* [Ventoy](https://www.ventoy.net/)
+* [Ventoy: Github](https://github.com/ventoy/Ventoy/releases/latest)
 * [Ventoy: Persistence images](https://github.com/ventoy/backend/releases)
 
 * [Original Theme](https://github.com/vinceliuice/grub2-themes)
