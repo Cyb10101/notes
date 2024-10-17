@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# bash youtube-downloader.sh install
+
+# Install script
+# wget -O /tmp/youtube-downloader.sh https://raw.githubusercontent.com/Cyb10101/notes/master/System/Linux/Scripts/youtube-downloader.sh && bash /tmp/youtube-downloader.sh install
 
 # Useful for script
 scriptPath="$(cd "$(dirname "${0}")" >/dev/null 2>&1; pwd -P)"
