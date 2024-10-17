@@ -6,6 +6,11 @@
 # Useful for script
 scriptPath="$(cd "$(dirname "${0}")" >/dev/null 2>&1; pwd -P)"
 
+# Default values
+website='' # https://example.org
+folderDestination="/home/${USER}/Downloads"
+openFolder="TRUE" # TRUE or FALSE
+
 installSelf() {
   textColor 2 "$(translate 'Install YT-Dlp: Youtube Downloader')..."
   install "${0}" /usr/local/bin/youtube-downloader
@@ -67,6 +72,7 @@ translate() {
       translations["Missing software is not installed"]="Fehlende Software ist nicht installiert"
       translations["All"]="Alles"
       translations["Audio MP3"]="Audio MP3"
+      translations["Open folder"]="Öffne Ordner"
     ;;
     *)
     ;;
@@ -178,21 +184,21 @@ if [ ! -z "$packages" ]; then
 fi
 checkConfig
 
-folderDestination="/home/${USER}/Downloads"
 if [ ! -d "${folderDestination}" ]; then folderDestination="/home/${USER}"; fi
 
 modeAll="$(translate 'All')"
 modeAudioOnlyMp3="$(translate 'Audio MP3')"
 result=$(yad --center --window-icon="gtk-ok" --on-top --width=500 --title="YT-Dlp: Youtube Downloader" \
   --form \
-  --field="$(translate 'Website'):ENTRY" "" \
+  --field="$(translate 'Website'):ENTRY" "${website}" \
   --field="$(translate 'Save as'):DIR" "${folderDestination}" \
   --field="$(translate 'Mode')":CB "${modeAll}!${modeAudioOnlyMp3}" \
+  --field="$(translate 'Open folder'):CHK" "${openFolder}" \
   --separator='|' --button=gtk-cancel:1 --button=gtk-ok:0 \
 )
 
 if [ $? -eq 0 ]; then
-  IFS='|' read -r url folderDestination mode <<< "$result"
+  IFS='|' read -r url folderDestination mode openFolder <<< "$result"
   url="$(echo $url | awk '{$1=$1;print}')"
 
   if [ ! -d "${folderDestination}" ]; then
@@ -265,6 +271,10 @@ if [ $? -eq 0 ]; then
 
     # Embed subtitles in the video [mp4, webm, mkv]
     argsList+=('--embed-subs')
+  fi
+
+  if [[ "$openFolder" == "TRUE" ]]; then
+    argsList+=('--exec "nautilus \"\$(dirname %(filepath|)q)\""')
   fi
 
   textDone="$(translate 'Script done')";
