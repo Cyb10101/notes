@@ -119,7 +119,7 @@ checkConfig() {
 # -f bestvideo[ext=mkv]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best
 # -f bestvideo[ext=mkv]+bestaudio/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best
 # -f bestvideo[ext=mkv][height<=2160]+bestaudio[ext=m4a]/bestvideo[ext=mp4][height<=2160]+bestaudio[ext=m4a]/best[ext=mp4][height<=2160]/best[height<=2160]
--f bestvideo[height<=2160]+bestaudio/best[height<=2160]
+-f bestvideo[height<=2160]+bestaudio/best[height<=2160]/best
 
 # Encode the video to another format if necessary
 --recode-video mkv
@@ -227,7 +227,7 @@ if [ $? -eq 0 ]; then
     # -f bestvideo[ext=mkv]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best
     # -f bestvideo[ext=mkv]+bestaudio/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best
     # -f bestvideo[ext=mkv][height<=2160]+bestaudio[ext=m4a]/bestvideo[ext=mp4][height<=2160]+bestaudio[ext=m4a]/best[ext=mp4][height<=2160]/best[height<=2160]
-    args+=' -f "bestvideo[height<=2160]+bestaudio/best[height<=2160]"'
+    args+=' -f "bestvideo[height<=2160]+bestaudio/best[height<=2160]/best"'
 
     # Encode the video to another format if necessary
     args+=' --recode-video mkv'
