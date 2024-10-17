@@ -41,7 +41,7 @@ browser.urlbar.autoFill = false
 
 ## Set default volume (Works only for default player)
 
-media.default_volume = 0.5
+media.default_volume = 0.3
 
 ## Dark mode
 
