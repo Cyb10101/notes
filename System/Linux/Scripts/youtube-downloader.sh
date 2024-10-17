@@ -277,9 +277,8 @@ if [ $? -eq 0 ]; then
     argsList+=('--exec "nautilus \"\$(dirname %(filepath|)q)\""')
   fi
 
+  args="${argsList[@]}"
   textDone="$(translate 'Script done')";
   textDoneColor=$(textColor 2 "${textDone}")
-
-  args="${argsList[@]}"
   exec gnome-terminal --working-directory="${folderDestination}" -- bash -c "yt-dlp ${args} \"${url}\"; echo -e \"${textDoneColor}\"; sleep 10"
 fi
