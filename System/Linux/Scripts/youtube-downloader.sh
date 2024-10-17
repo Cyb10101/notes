@@ -207,66 +207,69 @@ if [ $? -eq 0 ]; then
     exit 1
   fi
 
-  args='--ignore-config'
+  argsList=()
   if [[ "${mode}" == "${modeAudioOnlyMp3}" ]]; then
     # Filename template: 01 Title (2023-01-21).extension
-    args+=' --output "%(autonumber)02d %(title)s.%(ext)s"'
+    argsList+=('--output "%(autonumber)02d %(title)s.%(ext)s"')
 
-    args+=' --extract-audio -f bestaudio --audio-format mp3'
+    argsList+=('--extract-audio -f bestaudio --audio-format mp3')
   elif [[ "${mode}" == "${modeAll}" ]]; then
     # Filename template: 01 Title [video-id]/01 Title (2023-01-21).extension
-    args+=' --output "%(autonumber)02d %(title)s [%(id)s]/%(autonumber)02d %(title)s (%(upload_date>%Y-%m-%d)s).%(ext)s"'
+    argsList+=('--output "%(autonumber)02d %(title)s [%(id)s]/%(autonumber)02d %(title)s (%(upload_date>%Y-%m-%d)s).%(ext)s"')
 
     # Restrict filenames to only ASCII characters, and avoid "&" and spaces in filenames
-    args+=' --restrict-filenames'
+    argsList+=('--restrict-filenames')
 
     # Do not overwrite any files
-    args+=' --no-overwrites'
+    argsList+=('--no-overwrites')
 
     # Select best format
     # -f bestvideo[ext=mkv]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best
     # -f bestvideo[ext=mkv]+bestaudio/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best
     # -f bestvideo[ext=mkv][height<=2160]+bestaudio[ext=m4a]/bestvideo[ext=mp4][height<=2160]+bestaudio[ext=m4a]/best[ext=mp4][height<=2160]/best[height<=2160]
     args+=' -f "bestvideo[height<=2160]+bestaudio/best[height<=2160]/best"'
+    argsList+=('-f "bestvideo[height<=2160]+bestaudio/best[height<=2160]/best"')
 
     # Encode the video to another format if necessary
-    args+=' --recode-video mkv'
+    argsList+=('--recode-video mkv')
 
     # If a merge is required, output to given container format. [mkv, mp4, ogg, webm, flv]
-    args+=' --merge-output-format mkv'
+    argsList+=('--merge-output-format mkv')
 
     # Keep the video file on disk after the post-processing
-    args+=' --keep-video'
+    argsList+=('--keep-video')
 
     # Write video description to a .description file
-    args+=' --write-description'
+    argsList+=('--write-description')
 
     # Embed metadata and chapters
-    args+=' --embed-metadata'
+    argsList+=('--embed-metadata')
 
     ################################################################################
     # Subtitles
 
     # Download all the available subtitles
-    #args+=' --all-subs'
+    #argsList+=('--all-subs')
 
     # Languages of the subtitles
-    args+=' --sub-lang en,de'
+    argsList+=('--sub-lang en,de')
 
     # Convert the subtitles to other format [srt, ass, vtt, lrc]
-    args+=' --convert-subs srt'
+    argsList+=('--convert-subs srt')
 
     # Write subtitle file
-    args+=' --write-sub'
+    argsList+=('--write-sub')
 
     # Write automatically generated subtitle file
-    args+=' --write-auto-sub'
+    argsList+=('--write-auto-sub')
 
     # Embed subtitles in the video [mp4, webm, mkv]
-    args+=' --embed-subs'
+    argsList+=('--embed-subs')
   fi
 
   textDone="$(translate 'Script done')";
   textDoneColor=$(textColor 2 "${textDone}")
-  gnome-terminal --working-directory="${folderDestination}" -- bash -c "yt-dlp ${args} \"${url}\"; echo -e \"${textDoneColor}\"; sleep 10"
+
+  args="${argsList[@]}"
+  exec gnome-terminal --working-directory="${folderDestination}" -- bash -c "yt-dlp ${args} \"${url}\"; echo -e \"${textDoneColor}\"; sleep 10"
 fi
