@@ -7,13 +7,19 @@ Download: [Cygwin](https://cygwin.com/install.html)
 * Minimal Packages: git,openssh,rsync,vim
 * C & C++: make,gcc-g++,mingw64-x86_64-gcc-core,mingw64-x86_64-gcc-g++
 
+Open PowerShell as User:
+
 ```bash
 mkdir C:\opt
-powershell -command "Invoke-WebRequest https://cygwin.com/setup-x86_64.exe -OutFile \"$env:HOMEDRIVE\opt\cygwin-setup.exe\""
 
-%HOMEDRIVE%\opt\cygwin-setup.exe --root="%HOMEDRIVE%\opt\cygwin64" ^
-  --local-package-dir="%HOMEDRIVE%\opt\Cygwin-Setup" ^
-  --site="http://ftp-stud.hs-esslingen.de/pub/Mirrors/sources.redhat.com/cygwin/" ^
+# Disable progressbar for faster downloading ( https://github.com/PowerShell/PowerShell/issues/2138 )
+$ProgressPreference = 'SilentlyContinue'
+
+Invoke-WebRequest https://cygwin.com/setup-x86_64.exe -OutFile "$env:HOMEDRIVE\opt\cygwin-setup.exe"
+
+& $env:HOMEDRIVE\opt\cygwin-setup.exe --root="$env:HOMEDRIVE\opt\cygwin64" `
+  --local-package-dir="$env:HOMEDRIVE\opt\Cygwin-Setup" `
+  --site="http://ftp-stud.hs-esslingen.de/pub/Mirrors/sources.redhat.com/cygwin/" `
   --packages="git,openssh,rsync,vim"
 ```
 
@@ -46,9 +52,8 @@ chmod +x /usr/local/bin/edit
 Script: /usr/local/bin/edit
 
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 '/cygdrive/c/Program Files/Notepad++/notepad++.exe' $(cygpath --windows "${1}")
-#'/cygdrive/c/Program Files (x86)/Notepad++/notepad++.exe' $(cygpath --windows "${1}")
 ```
 
 ## SSH-Key für Cygwin generieren
@@ -56,6 +61,8 @@ Script: /usr/local/bin/edit
 ```bash
 ssh-keygen -t rsa -b 4096 -C 'user@example.org'
 ssh-copy-id -i ~/.ssh/id_rsa.pub user@localhost
+mkdir ~/.ssh
+chmod 700 ~/.ssh
 chmod 600 ~/.ssh/id_rsa
 chmod 640 ~/.ssh/id_rsa.pub
 ```
