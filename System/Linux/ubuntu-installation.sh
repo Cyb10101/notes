@@ -667,9 +667,13 @@ installInkscape() {
 }
 
 # https://www.drawio.com/
-installDrawio() {
+installDrawioSnap() {
     textColor 3 'Install: Draw.io'
     sudo snap install drawio
+}
+installDrawioFlatpak() {
+    textColor 3 'Install: Draw.io'
+    sudo flatpak install -y flathub com.jgraph.drawio.desktop
 }
 
 # https://github.com/qarmin/czkawka
@@ -1096,6 +1100,7 @@ installEssential() {
         "TRUE" "rar unrar-free" "Rar" "Compression tools" \
         "TRUE" "diffutils" "Diff Utils" "Compare files" \
         "TRUE" "gparted" "GParted" "Partition Editor" \
+        "TRUE" "exfatprogs" "exFAT" "Dateisystem" \
         "TRUE" "iputils-ping" "IPutils Ping" "Send ICMP ECHO_REQUEST to network hosts" \
         "FALSE" "openssh-server" "OpenSSH Server" "Server for Secure Shell" \
     ))
@@ -1188,7 +1193,8 @@ installSoftware() {
         "${TICK:-TRUE}" "installGimp" "Gimp" "Image editor" "Apt" \
         "${TICK:-TRUE}" "installKrita" "Krita" "Image editor" "Apt" \
         "${TICK:-TRUE}" "installInkscape" "Inkscape" "Vector image editor" "Apt" \
-        "${TICK:-TRUE}" "installDrawio" "Draw.io" "Create diagrams" "Snap" \
+        "${TICK:-FALSE}" "installDrawioSnap" "Draw.io" "Create diagrams" "Snap" \
+        "${TICK:-TRUE}" "installDrawioFlatpak" "Draw.io" "Create diagrams" "Flatpak" \
         "${TICK:-TRUE}" "installCzkawka" "Czkawka" "Duplicate image finder" "Github" \
         "${TICK:-TRUE}" "installFlameshot" "Flameshot" "Screenshot tools" "Apt" \
         "${TICK:-FALSE}" "installVokoScreen" "VokoScreen" "Screen recorder" "Apt" \
