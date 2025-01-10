@@ -115,13 +115,13 @@ For Windows hosts:
 
 ## Windows 11 in Virtualbox
 
-Bypass Windows 11 requirements in Ubuntu.
+Bypass Windows 11 requirements:
 
 * Boot Windows Setup ISO
 * Select language
 * Launch Command: Shift + F10
 * Run: regedit
-* Add Keys: BypassTPMCheck, BypassSecureBootCheck, BypassRAMCheck
+* Add registry keys: BypassTPMCheck, BypassSecureBootCheck, ...
 * Click on "Install now"
 
 ```powershell
@@ -146,7 +146,7 @@ Bypass Windows 11 internet requirements:
 * Run: C:\Windows\System\oobe\BypassNRO.cmd
 * Reboot and click on "I don't have internet"
 
-File `C:\Windows\System32\oobe\BypassNRO.cmd` or `C:\Windows\System\oobe\BypassNRO.cmd`:
+Contents of file `C:\Windows\System32\oobe\BypassNRO.cmd` or `C:\Windows\System\oobe\BypassNRO.cmd`:
 
 ```shell
 @echo off
