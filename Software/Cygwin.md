@@ -20,7 +20,7 @@ Invoke-WebRequest https://cygwin.com/setup-x86_64.exe -OutFile "$env:HOMEDRIVE\o
 & $env:HOMEDRIVE\opt\cygwin-setup.exe --root="$env:HOMEDRIVE\opt\cygwin64" `
   --local-package-dir="$env:HOMEDRIVE\opt\Cygwin-Setup" `
   --site="http://ftp-stud.hs-esslingen.de/pub/Mirrors/sources.redhat.com/cygwin/" `
-  --packages="git,openssh,rsync,vim"
+  --packages="git,openssh,rsync,vim,ncdu,unzip"
 ```
 
 Configure Cygwin Terminal:
