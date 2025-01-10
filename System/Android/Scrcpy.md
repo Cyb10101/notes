@@ -42,3 +42,8 @@ The currently modifier `MOD` is the `left alt` key. See more under [Shortcuts](h
 | Click on APP_SWITCH     | MOD + S or 4th mouse click  |
 | Notification Bar        |         or 5th mouse click  |
 | Pinch-to-zoom           | Ctrl + click and move mouse |
+
+## Bugfix
+
+* System > Developer > Input > Visualize finger taps = false
+  * German: System > Entwickler > Eingabe > Fingertippen visualisieren = false
