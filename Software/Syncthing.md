@@ -3,7 +3,11 @@
 * [Syncthing](https://syncthing.net/)
 * [Github latest release](https://github.com/syncthing/syncthing/releases/latest)
 * [Configure Autostart](https://docs.syncthing.net/users/autostart.html)
-* [Android FAQ](https://github.com/syncthing/syncthing-android/wiki/Frequently-Asked-Questions)
+
+* [Syncthing Fork: Github](https://github.com/Catfriend1/syncthing-android)
+  * [Syncthing Fork: Google Play](https://play.google.com/store/apps/details?id=com.github.catfriend1.syncthingandroid)
+  * [Syncthing Fork: F-Droid](https://f-droid.org/en/packages/com.github.catfriend1.syncthingandroid/)
+* [Android FAQ (Deprecated)](https://github.com/syncthing/syncthing-android/wiki/Frequently-Asked-Questions)
 
 ## Antivirus
 
