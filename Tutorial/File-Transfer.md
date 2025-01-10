@@ -69,6 +69,9 @@ croc <code>
 Magic Wormhole:
 
 * [Magic Wormhole](https://magic-wormhole.readthedocs.io/en/latest/)
+* [Warpinator](https://github.com/linuxmint/warpinator)
+  * [Warpinator: Android](https://github.com/slowscript/warpinator-android)
+  * [Warpinator: Windows](https://github.com/slowscript/warpinator-windows)
 
 * [Rymdport](https://flathub.org/apps/details/io.github.jacalz.rymdport)
 * [RiftShare](https://flathub.org/apps/details/app.riftshare.RiftShare)
