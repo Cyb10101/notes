@@ -1,7 +1,5 @@
 # Rdiff Backup
 
-@todo Moveing vom Ext4 to NTFS doesn't work, because snapshot timestamps "rdiff-backup-data/session_statistics.2023-06-01T03:30:12+02:00.data"!
-
 * [rdiff-backup](https://rdiff-backup.net/)
 * [GitHub Release](https://github.com/rdiff-backup/rdiff-backup/releases/latest)
 * [Windows Scripts](../System/Windows/Backup/rdiff-backup/)
@@ -19,15 +17,18 @@ sudo apt install rdiff-backup
 Linux:
 
 ```bash
-rdiff-backup -b /tmp/data/ /tmp/backup/
-rdiff-backup -b user@localhost::/tmp/data/ /tmp/backup/
+rdiff-backup --use-compatible-timestamps --api-version 201 backup /tmp/source/ /tmp/backup/
+rdiff-backup --use-compatible-timestamps --api-version 201 backup user@localhost::/tmp/source/ /tmp/backup/
 
-# rdiff-backup -bv5 \
-rdiff-backup -b -v5 \
+# rdiff-backup --verbosity 5 backup \
+rdiff-backup --use-compatible-timestamps --api-version 201 --verbosity 5 backup \
   --exclude /var/www/vhosts/website_www/.git \
   --exclude /var/www/vhosts/website_www/var \
   --exclude /var/www/vhosts/website_www/public/tmp \
   server::/var/www/vhosts/website_www/ /backup/website_www/
+
+# Old api version
+rdiff-backup --use-compatible-timestamps --api-version 200 /tmp/data/ /tmp/backup/
 ```
 
 Windows:
@@ -36,7 +37,7 @@ Windows:
 
 ```shell
 # --no-acls = No permissions (Shows: Warning: Windows Access Control List file not found.)
-C:\Users\username\Desktop\rdiff-backup -b -v5 --no-acls ^
+C:\Users\username\Desktop\rdiff-backup --use-compatible-timestamps --api-version 201 --verbosity 5 backup --no-acls ^
   --exclude "**/NTUSER.DAT" ^
   --exclude "**/ntuser.dat.*" ^
   --exclude "**/AppData/Local/Comms" ^
@@ -62,11 +63,10 @@ C:\Users\username\Desktop\rdiff-backup -b -v5 --no-acls ^
 Linux:
 
 ```bash
-# Complete folder
-rdiff-backup -l /tmp/backup/
+rdiff-backup --api-version 201 list increments /tmp/backup
 
-# One file
-rdiff-backup -l public/index.php
+# Old api version
+rdiff-backup --api-version 200 list increments /tmp/backup
 ```
 
 ## Restore backup
@@ -75,24 +75,21 @@ Linux:
 
 ```bash
 # Last backup
-rdiff-backup -r now /tmp/backup/ /tmp/data/
-rdiff-backup -r now /tmp/backup/ user@localhost::/tmp/data/
+rdiff-backup --api-version 201 restore --at now /tmp/backup/ /tmp/restored/
+rdiff-backup --api-version 201 restore --at now /tmp/backup/ user@localhost::/tmp/restored/
 
-# 10 days ago
-rdiff-backup -r 10D /tmp/backup/ /tmp/data/
+# Specified time
+rdiff-backup --api-version 201 restore --at 2025-01-14T00-23-53 /tmp/backup/ /tmp/restored/
 
-# Incremental backup
-rdiff-backup -r 2017-07-12T21:00:58+02:00 /tmp/backup/ /tmp/data/
-
-# One file
-rdiff-backup -r 2017-07-12T21:00:58+02:00 /tmp/backup/ /tmp/data/index.php
+# Old api version
+rdiff-backup --api-version 200 restore --at now /tmp/backup/ /tmp/restored/
 ```
 
 Windows:
 
 ```shell
 # --no-acls = No permissions (Shows: Warning: Windows Access Control List file not found.)
-C:\Users\username\Desktop\rdiff-backup --no-acls -r now ^
+C:\Users\username\Desktop\rdiff-backup --api-version 201 restore --no-acls --at now ^
   "D:/backup/" "C:/Users/username/Desktop/restore/"
 ```
 
@@ -102,13 +99,16 @@ Linux:
 
 ```bash
 # Delete older than 30 backups
-rdiff-backup --force --remove-older-than 30B /tmp/backup/
+rdiff-backup --api-version 201 --force remove increments --older-than 30B /tmp/backup
 
 # Delete older than 3 months
-rdiff-backup --force --remove-older-than 3M /tmp/backup/
+rdiff-backup --api-version 201 --force remove increments --older-than 3M /tmp/backup
 
 # Delete older than 12 weeks
-rdiff-backup --force --remove-older-than 12W /tmp/backup/
+rdiff-backup --api-version 201 --force remove increments --older-than 12W /tmp/backup
+
+# Old api version
+rdiff-backup --api-version 200 --force remove increments --older-than 1B /tmp/backup
 ```
 
 ## Mount
