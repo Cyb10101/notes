@@ -2,36 +2,7 @@
 
 ## Transfer files via Samba
 
-Simply you create a windows share (Samba).
-*Based on [youtube.com/watch?v=4QkmEVkMHKc](https://youtube.com/watch?v=4QkmEVkMHKc).*
-
-Run Command as Administrator:
-
-```shell
-# Create a user (just for security)
-net user "ios-transfer" "password" /add
-
-# Get your ip address
-ipconfig | find "IPv4"
-
-# Optional information
-# net user "ios-transfer" "change-password"
-# net user "ios-transfer" /delete
-```
-
-Create a folder on your PC:
-
-* Create a folder "IOS-Transfer" on Desktop or elsewere
-* Right click > Properties > Tab "Sharing"
-  * Field "Network file and Folder Sharing" > Button "Share"
-    * Select User "ios-transfer"
-    * Allow User: Read/Write
-    * Click on "Share" and "Done"
-  * Field "Advanced Sharing" > Button "Advanced Sharing"
-    * Share this folder = yes
-    * Permissions
-      * Add User "ios-transfer" > Check Name
-      * Permissions = Allow "Full Control"
+To create a share, look here: [Samba](../../Software/Samba.md)
 
 Get your iPhone:
 
