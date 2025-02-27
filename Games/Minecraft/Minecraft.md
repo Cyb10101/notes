@@ -31,20 +31,33 @@ Teleport:
 
 * [Bedrock Server](https://www.minecraft.net/de-de/download/server/bedrock)
 
+Install:
+
 ```bash
-# Create a start script
-cat <<EOF | tee ~/opt/bedrock-server/run.sh > /dev/null
-#!/usr/bin/env bash
+# Download script
+wget -O start.sh https://raw.githubusercontent.com/Cyb10101/notes/master/Games/Minecraft/bedrock-start.sh
 
-scriptPath="\$(cd "\$(dirname "\${0}")" >/dev/null 2>&1; pwd -P)"
-cd "\${scriptPath}"
-
-LD_LIBRARY_PATH=. ./bedrock_server
-EOF
+# Adjust environment variables `VERSION` and maybe `USER_AGENT` in start.sh
 
 # Make it executable
-chmod +x ~/opt/bedrock-server/run.sh
+chmod +x start.sh
 
+# Install server
+./start.sh install
+
+# Run server
+./start.sh run
+```
+
+Adjust server configuration or add a world from downloaded copy.
+
+Downloaded world could be here:
+
+* C:\Users\Username\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\minecraftWorlds
+
+Create a service:
+
+```bash
 # Create a service
 cat << EOF | sudo tee /etc/systemd/system/minecraft.service > /dev/null
 [Unit]
@@ -53,8 +66,8 @@ After=network.target
 
 [Service]
 User=${USER}
-WorkingDirectory=/home/${USER}/opt/bedrock-server
-ExecStart=/home/${USER}/opt/bedrock-server/run.sh
+WorkingDirectory=/home/${USER}/opt/minecraft-server
+ExecStart=/home/${USER}/opt/minecraft-server/start.sh run
 Restart=always
 RestartSec=30
 StandardOutput=journal
