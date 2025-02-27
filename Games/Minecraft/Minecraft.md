@@ -53,7 +53,7 @@ Adjust server configuration or add a world from downloaded copy.
 
 Downloaded world could be here:
 
-* C:\Users\Username\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\minecraftWorlds
+* `C:\Users\Username\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\LocalState\games\com.mojang\minecraftWorlds`
 
 Create a service:
 
