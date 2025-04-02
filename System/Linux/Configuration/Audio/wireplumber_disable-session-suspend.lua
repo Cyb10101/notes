@@ -1,5 +1,5 @@
 -- Configure audio suspend
--- If your sound don't hear notifications and your videos start delayed, your audio card is suspended
+-- If you didn't hear a notification or a video delayed playing the sound, it's because the audio device is going into power saving mode.
 -- Filename: ~/.config/wireplumber/main.lua.d/disable-session-suspend.lua
 -- ln -sr ~/Sync/notes/System/Linux/Configuration/Audio/wireplumber_disable-session-suspend.lua ~/.config/wireplumber/main.lua.d/disable-session-suspend.lua
 
@@ -26,6 +26,6 @@ table.insert (alsa_monitor.rules, {
       --["session.suspend-timeout-seconds"] = 0, -- Disables suspend, on some systems this won't work and you need to set a high value instead
       --["session.suspend-timeout-seconds"] = 86400, -- 1 Day
       --["session.suspend-timeout-seconds"] = 3600, -- 1 Hour
-      ["session.suspend-timeout-seconds"] = 300, -- 5 Minutes
+      ["session.suspend-timeout-seconds"] = 600, -- 10 Minutes
     },
 })
