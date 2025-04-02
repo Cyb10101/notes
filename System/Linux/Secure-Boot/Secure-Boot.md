@@ -1,6 +1,6 @@
 # Linux: Secure Boot
 
-## Import machine key
+## Import machine owner key
 
 ```bash
 # Test if key is enrolled

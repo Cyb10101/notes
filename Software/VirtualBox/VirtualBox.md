@@ -156,6 +156,8 @@ shutdown /r /t 0
 
 ## Bugfix: Failed to start VirtualBox Linux kernel module
 
+***Maybe that's enough: [Secure-Boot: Import machine owner key](../../System/Linux/Secure-Boot/Secure-Boot.md)***
+
 ```bash
 #sudo systemctl status vboxdrv.service
 #sudo journalctl -xeu vboxdrv.service
