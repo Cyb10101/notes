@@ -73,6 +73,23 @@ adb shell pm install /storage/emulated/0/Download/F-Droid.apk
 adb shell pm uninstall org.fdroid.fdroid
 ```
 
+### Copy files
+
+```bash
+# List storages
+adb shell ls /storage
+
+# New internal storage path
+adb shell ls -a /storage/self/primary
+adb pull -a /storage/self/primary/ ./storage/
+
+# Old internal storage path
+adb pull -a /storage/emulated/0/ ./storage/
+
+# SD Card example
+adb pull -a /storage/2A90-4222/ ./sdcard/
+```
+
 ### Fastboot Commands
 
 ```bash
