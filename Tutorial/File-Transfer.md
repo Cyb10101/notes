@@ -59,6 +59,7 @@ scoop install croc
 
 # Send
 croc send <file/directory>
+croc --local send <file/directory>
 
 # Receive
 croc <code>
