@@ -87,6 +87,9 @@ code --install-extension Perkovec.emoji
 
 # Live Share
 code --install-extension ms-vsliveshare.vsliveshare
+
+# Show trailing space
+code --install-extension shardulm94.trailing-spaces
 ```
 
 ## Configuration
@@ -108,6 +111,7 @@ code --install-extension ms-vsliveshare.vsliveshare
   "editor.scrollBeyondLastLine": false,
   "extensions.ignoreRecommendations": true,
   "files.autoSave": "onFocusChange",
+  "files.defaultLanguage": "markdown",
   "window.newWindowDimensions": "inherit",
   "window.openFilesInNewWindow": "on",
   "window.openFoldersInNewWindow": "on",
