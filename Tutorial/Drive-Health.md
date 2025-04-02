@@ -25,7 +25,7 @@ Toolbar in taskbar (German: Symbolleiste in Taskleiste):
 
 * CrystalDiskInfo
   * Collective Setting (German: Gemeinsame Einstellungen)
-    * Show All Temperature Icon (German: Alle Temperatursymbole ausblenden)
+    * Hide all temperature icons (German: Alle Temperatursymbole ausblenden)
 
 ## GSmartControl (GUI)
 
