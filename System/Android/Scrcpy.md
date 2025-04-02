@@ -15,7 +15,7 @@ scoop install scrcpy adb
 Use mostly default settings:
 
 ```bash
-scrcpy --push-target=/storage/emulated/0/Download --shortcut-mod=lalt --show-touches --stay-awake
+scrcpy --shortcut-mod=lalt --push-target=/storage/emulated/0/Download --show-touches --stay-awake
 ```
 
 Wireless with a serial id and turn screen off:
