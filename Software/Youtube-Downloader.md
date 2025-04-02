@@ -16,7 +16,12 @@ sudo install /tmp/yt-dlp /usr/local/bin/yt-dlp
 # Config file
 gedit ~/.config/yt-dlp/config
 
+# Download
 yt-dlp 'https://www.youtube.com/watch?v=_I_m2_6TBbQ'
+
+# Lazy slow down downloading a playlist
+yt-dlp-playlist 'https://www.youtube.com/@SproutsDeutschland/shorts'
+yt-dlp-playlist() { yt-dlp --flat-playlist -j "$1" | jq -r '.webpage_url' | sed -r 's/(.*)/yt-dlp "\1"/'| awk 'NR % 3 == 0 {print; print "echo \"Sleep for 10 seconds ...\"; sleep 10"; next} 1' > 0-download.txt && bash 0-download.txt; }
 ```
 
 Install Windows, run `powershell` as user.
