@@ -14,11 +14,11 @@
 table.insert (alsa_monitor.rules, {
     matches = {
       {
-        -- Matches all sources.
+        -- Matches all sources
         { "node.name", "matches", "alsa_input.*" },
       },
       {
-        -- Matches all sinks.
+        -- Matches all sinks
         { "node.name", "matches", "alsa_output.*" },
       },
     },
