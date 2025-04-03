@@ -173,3 +173,27 @@ fs.inotify.max_user_watches=524288
 ```
 
 Reload: `sudo sysctl -p`
+
+## Find open files
+
+```bash
+sudo apt install sqlite3 jq fzf
+# sudo apt install sqlitebrowser
+
+# Set workspace folder
+workspaceFolder=~/.config/VSCodium/User/workspaceStorage
+
+# Find workspace
+while IFS='' read -r file || [ -n "$file" ]; do \
+  workspaceId=$(basename $(dirname "$file")); \
+  jq -r --arg workspaceId "$workspaceId" '"\($workspaceId), Workspace: \(.workspace), Folder: \(.folder)"' "$file"; \
+done < <(find $workspaceFolder -type f -iname 'workspace.json') | fzf -m
+
+# Set workspace id
+workspaceId=1477316b0a355abac838497d011db1b7
+
+# Get open files
+sqlite3 $workspaceFolder/$workspaceId/state.vscdb "SELECT value FROM ItemTable WHERE key = 'memento/workbench.parts.editor';" \
+  | jq -r '."editorpart.state".serializedGrid.root.data[].data.editors[].value' \
+  | jq -r -s '.[].resourceJSON.path' | sed 's|^|* |'
+```
