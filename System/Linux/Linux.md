@@ -60,6 +60,9 @@ find -regextype posix-extended -regex '.*[^/]{128,}$'
 
 # Find file extensions
 find -type f -iname '*.*' | sed -n 's/..*\.//p' | sort -u
+
+# Find file an move to trash
+find -type f -iname '*.ext' -exec gio trash "{}" \;
 ```
 
 ## Rename
