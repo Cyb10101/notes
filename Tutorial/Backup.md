@@ -44,7 +44,7 @@ rsync -rtPhv --no-p --no-g --chmod=ugo=rwX --delete \
 
 Backup:
 
-* [Restic](../Software/Restic.md)
+* [Restic](../Software/Restic/Restic.md)
 * [rdiff-backup](../Software/rdiff-backup.md)
 
 Syncronisation:

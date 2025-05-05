@@ -486,7 +486,7 @@ sudo apt install -f
 
 ## Backup
 
-* [Restic notes](../Software/Restic.md)
+* [Restic notes](../Software/Restic/Restic.md)
 * [rdiff-backup notes](../Software/rdiff-backup.md)
 * [ascomp - BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
 
