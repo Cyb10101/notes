@@ -126,3 +126,11 @@ rdiff-backup-fs /tmp/data/ /tmp/backup/
 # Unmount backup
 sudo umount /tmp/data/
 ```
+
+## Other
+
+Backup server to Windows:
+
+```powershell
+rdiff-backup --remote-schema "ssh.exe -i $env:USERPROFILE\.ssh\id_rsa.pub -C {h} rdiff-backup --server" user@server-ip::/remote/folder .\backup\
+```
