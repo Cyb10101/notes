@@ -262,6 +262,7 @@ removeFirefoxSnap() {
     sudo snap remove firefox
 }
 
+# Recommended
 # https://support.mozilla.org/en-US/kb/install-firefox-linux#w_install-firefox-deb-package-for-debian-based-distributions
 installFirefoxForceAptMozilla() {
     textColor 3 'Install: Firefox (Force Apt Mozilla)'
@@ -1165,7 +1166,7 @@ installSoftware() {
         --expand-column=4 \
         "${TICK:-FALSE}" "installFirefoxFlatpak" "Firefox (Flatpak)" "Webbrowser" "Flatpak" \
         "${TICK:-FALSE}" "installFirefoxSnap" "Firefox (Snap)" "Webbrowser" "Snap" \
-        "${TICK:-TRUE}" "installFirefoxForceAptMozilla" "Firefox (Force Apt Mozilla)" "Webbrowser directly from mozilla repository" "Apt" \
+        "${TICK:-TRUE}" "installFirefoxForceAptMozilla" "Firefox (Force Apt Mozilla) (Recommended)" "Webbrowser directly from mozilla repository" "Apt" \
         "${TICK:-FALSE}" "installFirefoxForceAptPPA" "Firefox (Force Apt PPA)" "Webbrowser directly from mozilla repository" "Apt" \
         "${TICK:-TRUE}" "installChromiumSnap" "Chromium (Snap)" "Webbrowser" "Snap" \
         "${TICK:-FALSE}" "installThunderbird" "Thunderbird" "Mail client" "Apt" \
