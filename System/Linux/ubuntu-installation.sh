@@ -947,6 +947,13 @@ installDeluge() {
     sudo apt -y install deluge
 }
 
+# https://flathub.org/apps/com.vixalien.sticky
+# https://www.vixalien.com/
+installVixalienStickyNotes() {
+    textColor 3 'Install: VSCodium'
+    sudo flatpak install -y flathub com.vixalien.sticky
+}
+
 # https://vscodium.com/
 installVSCodium() {
     textColor 3 'Install: VSCodium'
@@ -1233,6 +1240,7 @@ installSoftware() {
         "${TICK:-TRUE}" "installCroc" "Croc" "File transfer tool" "External" \
         "${TICK:-TRUE}" "installAria2" "Aria2" "File download tool" "Apt" \
         "${TICK:-FALSE}" "installDeluge" "Deluge" "BitTorrent client" "Apt" \
+        "${TICK:-FALSE}" "installVixalienStickyNotes" "Sticky Votes" "Sticky Notes (vixalien)" "Flatpak" \
         "${TICK:-TRUE}" "installVSCodium" "VSCodium" "Visual Studio Code but without Microsoft" "Snap Classic" \
         "${TICK:-FALSE}" "installVisualStudioCode" "Visual Studio Code" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
         "${TICK:-FALSE}" "installPhpStorm" "PhpStorm" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
