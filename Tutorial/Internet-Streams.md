@@ -88,7 +88,7 @@ done
 Run a PowerShell as user:
 
 ```shell
-## Disable Windows PowerShell progressbar for faster downloading ( https://github.com/PowerShell/PowerShell/issues/2138 )
+# Disable progressbar for faster downloading (PS < 7.2) ( https://github.com/PowerShell/PowerShell/issues/2138 )
 $ProgressPreference = 'SilentlyContinue'
 curl -o "radio_$((Get-Date).ToString('yyyy-MM-dd_HH-mm-ss')).mp3" 'https://example.com/stream.mp3'
 

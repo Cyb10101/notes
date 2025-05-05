@@ -12,7 +12,7 @@ Open PowerShell as User:
 ```bash
 mkdir C:\opt
 
-# Disable progressbar for faster downloading ( https://github.com/PowerShell/PowerShell/issues/2138 )
+# Disable progressbar for faster downloading (PS < 7.2) ( https://github.com/PowerShell/PowerShell/issues/2138 )
 $ProgressPreference = 'SilentlyContinue'
 
 Invoke-WebRequest https://cygwin.com/setup-x86_64.exe -OutFile "$env:HOMEDRIVE\opt\cygwin-setup.exe"
