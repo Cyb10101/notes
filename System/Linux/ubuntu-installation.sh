@@ -213,13 +213,8 @@ installWine() {
     textColor 3 'Install: Wine'
     sudo dpkg --add-architecture i386
     sudo apt update
-    sudo apt -y install wine winbind wine32:i386
-
+    sudo apt -y install wine-stable winbind wine32:i386 winetricks
     winecfg -v win11
-#    winecfg &
-#    yad --center --on-top --width=400 --title "Configure Wine" --button="gtk-ok:0" --text "\
-#Application > Windows-Version = Windows 11\
-#"
 }
 
 # https://docker.com
