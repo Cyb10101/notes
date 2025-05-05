@@ -791,7 +791,7 @@ installAnyDesk() {
     # Note: Own fix
     wget -q https://keys.anydesk.com/repos/DEB-GPG-KEY -O- | sudo tee /etc/apt/keyrings/packages.anydesk.asc 1>/dev/null
     fingerprint=$(gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.anydesk.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0}')
-    if [ "${fingerprint}" != "D56311E5FF3B6F39D5A16ABE18DF3741CDFFDE29" ]; then
+    if [ "${fingerprint}" != "06B5EA2FAE208E7CDA9761DCA2FB21D5A8772835" ]; then
         echo "Verification failed: The fingerprint (${fingerprint}) does not match!"; exit 1;
     fi
     echo "deb [signed-by=/etc/apt/keyrings/packages.anydesk.asc] http://deb.anydesk.com/ all main" | sudo tee -a /etc/apt/sources.list.d/anydesk.list 1>/dev/null
