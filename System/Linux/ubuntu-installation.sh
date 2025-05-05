@@ -29,6 +29,18 @@ textColor() {
     echo -e "\033[0;3${1}m${2}\033[0m"
 }
 
+checkCurlInstalled() {
+  if ! command -v yad &>/dev/null; then
+    textColor 3 "# Install: Curl"
+    sudo apt update
+    sudo apt -y install curl
+  fi
+  if ! command -v curl &>/dev/null; then
+    textColor 1 "Curl is not installed. Aborting!"
+    exit 1;
+  fi
+}
+
 checkYadInstalled() {
   if ! command -v yad &>/dev/null; then
     textColor 3 "# Install: Yad"
@@ -1275,6 +1287,7 @@ elif [[ "${1}" == "false" ]]; then
 fi
 
 # Better to ask what should be started
+checkCurlInstalled
 checkYadInstalled
 prepareSystem
 
