@@ -31,4 +31,5 @@ else
     input="${args[@]}"
 fi
 
-echo '' | fzf --disabled --preview-window='up:90%' --query="$query" --print-query --preview "jq --color-output -r {q} ${input}"
+getQuery=$(echo '' | fzf --disabled --preview-window='up:90%' --query="$query" --print-query --preview "jq --color-output -r {q} ${input}")
+jq "$getQuery" "${input}"
