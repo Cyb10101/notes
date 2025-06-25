@@ -31,5 +31,10 @@ else
     input="${args[@]}"
 fi
 
-getQuery=$(echo '' | fzf --disabled --preview-window='up:90%' --query="$query" --print-query --preview "jq --color-output -r {q} ${input}")
-jq "$getQuery" "${input}"
+getQuery=$(echo '' | fzf --disabled --preview-window='up:90%' --query="$query" --print-query \
+    --header 'Scroll preview: (Page) Arrow Up/Down' \
+    --bind 'up:preview-up,down:preview-down,pgup:preview-page-up,pgdn:preview-page-down' \
+    --preview "jq --color-output -r {q} ${input}" \
+)
+echo "Query: $getQuery"
+jq -r "$getQuery" "${input}"
