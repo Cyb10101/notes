@@ -8,9 +8,9 @@ Linux:
 
 ```bash
 # Create archive with password (-p) and split to 1 GB / 500 MB parts
-7z a -p -v1g archive.7z ~/Documents
-7z a -p -v500m archive.7z ~/Documents
-7z a -p123456 -v500m archive.7z ~/Documents
+# -mhe = enables or disables archive header encryption (default is off).
+# -v2g  = Split 2 GB (-v100m = 100 MB)
+7z a -mhe=on -p -v2g archive.7z ~/Documents
 
 # Extract archive
 7z x archive.7z.001
@@ -25,8 +25,8 @@ Linux:
 # -ep1  = Exclude base dir from names
 # -r    = Recurse subdirectories.
 # -rr5p = Data recovery record 5% (-rr = 1%)
-# -v1g  = Split 1 GB (-v100m = 100 MB)
-rar a -hp -ep1 -r -rr5p -v1g archive.rar ~/Documents
+# -v2g  = Split 2 GB (-v100m = 100 MB)
+rar a -hp -ep1 -r -rr5p -v2g archive.rar ~/Documents
 
 # Extract archive
 rar x archive.part1.rar
