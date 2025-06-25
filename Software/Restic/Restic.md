@@ -265,7 +265,7 @@ SSH:
 cat %USERPROFILE%\.ssh\config
 ```
 
-## Diff added and changed files
+## Differences added and changed files
 
 ```bash
 sudo apt -y install jq
