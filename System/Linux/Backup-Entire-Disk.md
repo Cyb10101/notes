@@ -84,11 +84,14 @@ sudo apt install gddrescue
 sudo apt install ddrescueview # Optional: You can see the log file
 
 # Backup/Clone: 1. Only safe blocks, then 2. corrupted blocks
-sudo ddrescue -f -n /dev/sda sda.img /tmp/ddrescue.log
-sudo ddrescue -f -R /dev/sda sda.img /tmp/ddrescue.log # Optional: -R Reverse direction (Maybe for corrupted disk)
+sudo ddrescue -f -n /dev/sda disk.img ddrescue.log
+sudo ddrescue -f -R /dev/sda disk.img ddrescue.log # Optional: -R Reverse direction (Maybe for corrupted disk)
 
 # Restore: Only for images
-sudo ddrescue -f image.img /dev/sda /tmp/restore.log
+sudo ddrescue -f disk.img /dev/sda restore.log
+
+# Optional: Create a backup of the image
+sudo gzip -k sda.img
 ```
 
 Open GParted and fix "Not all of space available" with "Repair".
@@ -134,6 +137,7 @@ sudo dd if=/dev/sda of=disk.img bs=64k status=progress
 
 # Restore: Copy image to device
 sudo dd if=disk.img of=/dev/sda bs=64k status=progress
+sudo dd if=disk.img of=/dev/sdc bs=64k status=progress
 # If failed: sudo dd if=disk.img of=/dev/sda bs=64k conv=noerror,sync iflag=fullblock status=progress
 ```
 
