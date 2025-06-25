@@ -137,3 +137,30 @@ Config file:
 # Select best format
 -f bestvideo[ext=mkv]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best
 ```
+
+## Deactivate default video subtitles
+
+```bash
+sudo install -m 755 -o root -g root /dev/null /usr/local/bin/mkv-disable-subtitles
+sudo vim /usr/local/bin/mkv-disable-subtitles
+```
+
+File `mkv-disable-subtitles`:
+
+```bash
+#!/usr/bin/env bash
+file="$1"
+args=()
+echo "# $file"
+for track in $(mkvmerge -i "$file" | grep subtitles | cut -d: -f1 | cut -d' ' -f3); do
+  args+=(--edit track:$track --set flag-default=0)
+done
+mkvpropedit "$file" "${args[@]}"
+echo ''
+```
+
+Find videos and configure subtitles:
+
+```bash
+find -type f -iname '*.mkv' -exec mkv-disable-subtitles "{}" \;
+```
