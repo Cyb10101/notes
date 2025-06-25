@@ -366,9 +366,7 @@ WantedBy=default.target
 Add start script:
 
 ```bash
-sudo touch /usr/local/bin/kiosk-browser-start
-sudo chmod 755 /usr/local/bin/kiosk-browser-start
-sudo chown root:root /usr/local/bin/kiosk-browser-start
+sudo install -m 755 -o root -g root /dev/null /usr/local/bin/kiosk-browser-start
 sudo vim /usr/local/bin/kiosk-browser-start
 ```
 
