@@ -500,8 +500,26 @@ installVlc() {
 }
 
 installMpv() {
-    textColor 3 'Install: mpv'
+    textColor 3 'Install: MPV'
     sudo apt -y install mpv
+}
+
+# https://github.com/tomasklaen/uosc
+installMpvOverlay() {
+    textColor 3 'Install: MPV Overlay'
+
+    if [ -d ~/.config/mpv/fonts ]; then
+        gio trash ~/.config/mpv/fonts
+    fi
+    if [ -d ~/.config/mpv/scripts/uosc ]; then
+        gio trash ~/.config/mpv/scripts/uosc
+    fi
+    if [ ! -d ~/.config/mpv ]; then
+        mkdir -p ~/.config/mpv
+    fi
+
+    curl --progress-bar -o /tmp/uosc.zip -fL "https://github.com/tomasklaen/uosc/releases/latest/download/uosc.zip"
+    unzip /tmp/uosc.zip -d ~/.config/mpv
 }
 
 # https://flathub.org/apps/details/com.github.rafostar.Clapper
@@ -1192,7 +1210,8 @@ installSoftware() {
         "${TICK:-FALSE}" "installFreac" "fre:ac" "Audio converter and CD ripper" "Snap" \
         "${TICK:-TRUE}" "installJDownloader" "JDownloader" "Download manager" "Flatpak" \
         "${TICK:-TRUE}" "installVlc" "VLC (Video Lan Client)" "Video player" "Apt" \
-        "${TICK:-TRUE}" "installMpv" "mpv" "Video player" "Apt" \
+        "${TICK:-TRUE}" "installMpv" "MPV" "Video player" "Apt" \
+        "${TICK:-TRUE}" "installMpvOverlay" "MPV Overlay" "MPV Overlay" "Archive" \
         "${TICK:-FALSE}" "installClapper" "Clapper" "Video player" "Flatpak" \
         "${TICK:-FALSE}" "installKodi" "Kodi (XBMC)" "Media center" "Apt" \
         "${TICK:-TRUE}" "installHandbrake" "Handbrake" "Video transcoder" "Apt" \
@@ -1269,6 +1288,7 @@ updateSoftware() {
         "FALSE" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" \
         "FALSE" "installFluentReader" "Fluent Reader" "RSS Reader" \
         "FALSE" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" \
+        "FALSE" "installMpvOverlay" "MPV Overlay" "MPV Overlay" \
         "FALSE" "installNextcloudDesktop" "Nextcloud Desktop" "Sycronisation tool" \
         "FALSE" "installOpenShot" "OpenShot" "Video editor" \
         "FALSE" "installPutty" "PuTTY" "PuTTY utilities" \
