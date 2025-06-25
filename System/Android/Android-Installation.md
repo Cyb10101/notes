@@ -20,7 +20,9 @@ Hardware/Software Info:
 Media:
 
 * [F-Stop - Picture Gallery](https://play.google.com/store/apps/details?id=com.fstop.photo)
+* [Fossify Gallery](https://play.google.com/store/apps/details?id=org.fossify.gallery)
 * [Google - Gallery](https://play.google.com/store/apps/details?id=com.google.android.apps.photosgo)
+* [Schlichte Galerie](https://play.google.com/store/apps/details?id=com.simplemobiletools.gallery.pro)
 * [Pulsar - Music Player](https://play.google.com/store/apps/details?id=com.rhmsoft.pulsar)
 
 Files & Transfer:
