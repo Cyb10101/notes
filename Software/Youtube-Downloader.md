@@ -47,6 +47,9 @@ Config file:
 # Windows: notepad "$($env:appdata)\yt-dlp\config.conf"
 # Windows Scoop: notepad "$($env:userprofile)\scoop\apps\yt-dlp\current\yt-dlp.conf"
 
+# Cookies
+#--cookies-from-browser firefox:~/.mozilla/firefox/your-profile
+
 # Output folder
 #--paths ~/Downloads
 
