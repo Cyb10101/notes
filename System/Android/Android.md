@@ -178,8 +178,9 @@ adb shell pm list packages -3 -f
 If you want to fetch all apk of your installed apps:
 
 ```bash
-for APP in $(adb shell pm list packages -3 -f | sed "s/^package://g; s/base.apk=/base.apk /g"); do \
-  adb pull echo ${APP}.apk; \
+for APP in $(adb shell pm list packages -3 -f | sed "s|^package:||; s|base.apk=|base.apk\||"); do \
+  IFS='|' read -r source target <<< "$APP"; \
+  adb pull "${source}" "${target}.apk"; \
 done
 ```
 
