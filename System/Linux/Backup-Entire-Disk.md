@@ -46,7 +46,6 @@ In my test GParted crashed. Use a Windows tool:
 * [RedoRescue](http://redorescue.com/)
 * [MiniTool: Partition Wizard](https://www.minitool.com/partition-manager/partition-wizard-home.html)
 * Terminal on a [Windows ISO](https://www.microsoft.com/de-de/software-download)
-* Untested: [Macrium: Reflect](https://www.macrium.com/reflectfree)
 * Untested: [Samsung: Magician](https://www.samsung.com/semiconductor/minisite/ssd/product/consumer/magician/)
 
 ## First steps
