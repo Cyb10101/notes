@@ -3,6 +3,7 @@
 *Note: Needs Wayland display server.*
 
 * [Waydroid](https://waydro.id/)
+* [Documentation](https://docs.waydro.id/)
 
 Install:
 
@@ -20,7 +21,7 @@ sudo waydroid init \
 
 * Run Waydroid
 * Disable On-Screen Keyboard:
-  * Settings > System > Languages & input > Physical keyboard > Use on-screen keyboard
+  * Settings > System > Languages & input > Physical keyboard > Use on-screen keyboard = false
 
 ```bash
 waydroid prop set persist.waydroid.multi_windows true
@@ -78,12 +79,12 @@ sudo waydroid container stop
 sudo apt remove waydroid
 
 sudo rm -rf \
-    /var/lib/waydroid \
-    /home/.waydroid \
-    ~/waydroid \
-    ~/.share/waydroid \
-    ~/.local/share/applications/waydroid* \
-    ~/.local/share/waydroid
+  /var/lib/waydroid \
+  /home/.waydroid \
+  ~/waydroid \
+  ~/.share/waydroid \
+  ~/.local/share/applications/waydroid* \
+  ~/.local/share/waydroid
 #~/.local/share/applications/*aydroid* \
 
 sudo rm /etc/apt/sources.list.d/waydroid.list
