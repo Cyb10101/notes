@@ -881,7 +881,7 @@ installSteam() {
 installSyncthing() {
     textColor 3 'Install: Syncthing'
     sudo curl --progress-bar -o /usr/share/keyrings/syncthing-archive-keyring.gpg -fL "https://syncthing.net/release-key.gpg"
-    echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+    echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable-v2" | sudo tee /etc/apt/sources.list.d/syncthing.list
     sudo apt update
     sudo apt install syncthing
 
