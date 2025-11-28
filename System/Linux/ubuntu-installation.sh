@@ -707,7 +707,13 @@ installCzkawka() {
     textColor 3 'Install: Czkawka'
     local usernameRepository='qarmin/czkawka'
     local VERSION=$(getGithubReleaseLatest "${usernameRepository}")
-    curl --progress-bar -o /tmp/czkawka-gui -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/linux_czkawka_gui"
+
+    # Cli
+    curl --progress-bar -o /tmp/czkawka-cli -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/linux_czkawka_cli_x86_64"
+    sudo install /tmp/czkawka-cli /usr/local/bin/czkawka-cli
+
+    # Gui
+    curl --progress-bar -o /tmp/czkawka-gui -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/linux_czkawka_gui_x86_64"
     sudo install /tmp/czkawka-gui /usr/local/bin/czkawka-gui
 
     sudo curl --progress-bar -o /usr/local/share/icons/czkawka.png -fL "https://raw.githubusercontent.com/${usernameRepository}/master/czkawka_gui/icons/icon_about.png"
