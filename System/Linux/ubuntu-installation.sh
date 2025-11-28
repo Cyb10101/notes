@@ -375,8 +375,9 @@ installDiscord() {
 # https://threema.ch/
 installThreema() {
     textColor 3 'Install: Threema'
-    curl --progress-bar -o /tmp/threema.deb -fL "https://releases.threema.ch/web-electron/v1/release/Threema-Latest.deb"
-    sudo dpkg -i /tmp/threema.deb
+    #curl --progress-bar -o /tmp/threema.deb -fL "https://releases.threema.ch/web-electron/v1/release/Threema-Latest.deb"
+    #sudo dpkg -i /tmp/threema.deb
+    sudo flatpak install -y --from https://releases.threema.ch/flatpak/threema-desktop/ch.threema.threema-desktop.flatpakref
 }
 
 # https://signal.org/
