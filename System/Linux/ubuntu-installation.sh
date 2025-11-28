@@ -1264,7 +1264,7 @@ installSoftware() {
         "${TICK:-TRUE}" "installCroc" "Croc" "File transfer tool" "External" \
         "${TICK:-TRUE}" "installAria2" "Aria2" "File download tool" "Apt" \
         "${TICK:-FALSE}" "installDeluge" "Deluge" "BitTorrent client" "Apt" \
-        "${TICK:-FALSE}" "installVixalienStickyNotes" "Sticky Votes" "Sticky Notes (vixalien)" "Flatpak" \
+        "${TICK:-FALSE}" "installVixalienStickyNotes" "Sticky Notes" "Sticky Notes (vixalien)" "Flatpak" \
         "${TICK:-TRUE}" "installVSCodium" "VSCodium" "Visual Studio Code but without Microsoft" "Snap Classic" \
         "${TICK:-FALSE}" "installVisualStudioCode" "Visual Studio Code" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
         "${TICK:-FALSE}" "installPhpStorm" "PhpStorm" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
