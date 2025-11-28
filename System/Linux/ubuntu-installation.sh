@@ -821,9 +821,9 @@ installAnyDesk() {
 
 installNoMachine() {
     textColor 3 'Install: NoMachine'
-    # NoMachine Linux 64bit - https://downloads.nomachine.com/linux/?id=1
-    local NOMACHINE_VERSION="8.11.3_4"
-    local NOMACHINE_MD5="1a128694ee00853e59149dc8b2af1baf"
+    # NoMachine Linux 64bit - https://download.nomachine.com/download/?id=1&platform=linux
+    local NOMACHINE_VERSION="9.0.188_11"
+    local NOMACHINE_MD5="3be0ab4243c1000a8cca5f653f8ea7fc"
     local NOMACHINE_OS="Linux" && NOMACHINE_ARCHITECTURE="amd64"
     local NOMACHINE_VERSION_SHORT=`echo ${NOMACHINE_VERSION} | cut -d. -f1-2`
     curl --progress-bar -o /tmp/nomachine.deb -fL "https://download.nomachine.com/download/${NOMACHINE_VERSION_SHORT}/${NOMACHINE_OS}/nomachine_${NOMACHINE_VERSION}_${NOMACHINE_ARCHITECTURE}.deb"
