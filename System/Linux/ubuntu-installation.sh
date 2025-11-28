@@ -1140,7 +1140,9 @@ installEssential() {
         "TRUE" "rar unrar-free" "Rar" "Compression tools" \
         "TRUE" "diffutils" "Diff Utils" "Compare files" \
         "TRUE" "gparted" "GParted" "Partition Editor" \
-        "TRUE" "exfatprogs" "exFAT" "Dateisystem" \
+        "TRUE" "btrfs-progs" "exFAT" "Filesystem" \
+        "TRUE" "exfatprogs" "exFAT" "Filesystem" \
+        "TRUE" "hfsprogs" "exFAT" "Filesystem" \
         "TRUE" "iputils-ping" "IPutils Ping" "Send ICMP ECHO_REQUEST to network hosts" \
         "FALSE" "openssh-server" "OpenSSH Server" "Server for Secure Shell" \
     ))
