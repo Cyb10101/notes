@@ -26,7 +26,7 @@ test -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs && source ${XDG_CONFIG_HOME
 DIR_DESKTOP="${XDG_DESKTOP_DIR:-$HOME/Desktop}"
 
 textColor() {
-    echo -e "\033[0;3${1}m${2}\033[0m"
+  echo -e "\033[0;3${1}m${2}\033[0m"
 }
 
 checkCurlInstalled() {
