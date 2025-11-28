@@ -1205,7 +1205,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installComix" "Comix (mComix)" "Comic Book Reader (cbz, cbr)" "Apt" \
         "${TICK:-TRUE}" "installYacReaderFlatpak" "YACReader" "Comic Book Reader (cbz, cbr)" "Flatpak" \
         "${TICK:-TRUE}" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" "Debian Repository" \
-        "${TICK:-TRUE}" "installThreema" "Threema" "Instant messaging, Voice conferencing" "Debian Repository" \
+        "${TICK:-TRUE}" "installThreema" "Threema" "Instant messaging, Voice conferencing" "Flatpak" \
         "${TICK:-FALSE}" "installSignal" "Signal" "Instant messaging, Voice conferencing" "Debian Repository" \
         "${TICK:-TRUE}" "installSignalFlatpak" "Signal (Flatpak)" "Instant messaging, Voice conferencing" "Flatpak" \
         "${TICK:-TRUE}" "installTelegram" "Telegram" "Instant messaging, Voice conferencing" "Archive" \
@@ -1302,7 +1302,6 @@ updateSoftware() {
         "FALSE" "installOpenShot" "OpenShot" "Video editor" \
         "FALSE" "installPutty" "PuTTY" "PuTTY utilities" \
         "FALSE" "installRustDesk" "RustDesk" "Remote maintenance" \
-        "FALSE" "installThreema" "Threema" "Instant messaging, Voice conferencing" \
         "FALSE" "installXnview" "Xnview" "Image viewer" \
         "FALSE" "installYacReader" "YACReader" "Comic Book Reader (cbz, cbr)" \
         "FALSE" "installZoom" "Zoom" "Zoom meeting client" \
