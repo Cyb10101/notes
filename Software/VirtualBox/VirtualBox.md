@@ -131,3 +131,20 @@ sudo dpkg-reconfigure virtualbox-dkms
 sudo modprobe vboxdrv
 # No restart needed
 ```
+
+## Bugfix: Virtualbox conflict with kvm modules loaded in kernel
+
+*Message:* VirtualBox can't enable the AMD-V extension. Please disable the KVM kernel extension, recompile your kernel and reboot (VERR_SVM_IN_USE).
+
+```bash
+# List used modules
+lsmod | grep kvm
+
+# Disable temporary
+sudo rmmod kvm_amd
+#sudo rmmod kvm
+
+# Blacklist modules permanently
+echo "blacklist kvm_amd" | sudo tee /etc/modprobe.d/disable-kvm.conf
+#echo -e "blacklist kvm_amd\nblacklist kvm" | sudo tee /etc/modprobe.d/disable-kvm.conf
+```
