@@ -115,7 +115,7 @@ For Windows hosts:
 
 ## Windows 11 in Virtualbox
 
-* [Bypass setup requirements](../../System/Windows/bypass-setup-requirements/)
+See below [Bypass requirements during setup](../../System/Windows/bypass-setup-requirements/).
 
 ## Bugfix: Failed to start VirtualBox Linux kernel module
 
