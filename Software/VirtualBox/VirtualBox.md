@@ -115,44 +115,7 @@ For Windows hosts:
 
 ## Windows 11 in Virtualbox
 
-Bypass Windows 11 requirements:
-
-* Boot Windows Setup ISO
-* Select language
-* Launch Command: Shift + F10
-* Run: regedit
-* Add registry keys: BypassTPMCheck, BypassSecureBootCheck, ...
-* Click on "Install now"
-
-```powershell
-Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\SOFTWARE\Microsoft\PCHC]
-#"UpgradeEligibility"=dword:00000001
-
-[HKEY_LOCAL_MACHINE\SYSTEM\Setup\LabConfig]
-"BypassTPMCheck"=dword:00000001
-"BypassSecureBootCheck"=dword:00000001
-#"BypassRAMCheck"=dword:00000001
-#"BypassStorageCheck"=dword:00000001
-#"BypassCPUCheck"=dword:00000001
-#"BypassDiskCheck"=dword:00000001
-```
-
-Bypass Windows 11 internet requirements:
-
-* Go though setup until you reach page: "Let's connect you to a network"
-* Open Command promt with: Shift + F10
-* Run: C:\Windows\System\oobe\BypassNRO.cmd
-* Reboot and click on "I don't have internet"
-
-Contents of file `C:\Windows\System32\oobe\BypassNRO.cmd` or `C:\Windows\System\oobe\BypassNRO.cmd`:
-
-```shell
-@echo off
-reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f
-shutdown /r /t 0
-```
+* [Bypass setup requirements](../../System/Windows/bypass-setup-requirements/)
 
 ## Bugfix: Failed to start VirtualBox Linux kernel module
 
