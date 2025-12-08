@@ -6,6 +6,11 @@ Store:
 * [F-Droid: Aurora Store](https://f-droid.org/de/packages/com.aurora.store/)
 * [Aurora Store](https://auroraoss.com/)
 
+Apps:
+
+* [Fossify](https://www.fossify.org/apps/)
+  * [Fossify Calendar](https://f-droid.org/de/packages/org.fossify.calendar/)
+
 Launcher:
 
 * [Nova Launcher](https://play.google.com/store/apps/details?id=com.teslacoilsw.launcher)
@@ -20,16 +25,24 @@ Hardware/Software Info:
 Media:
 
 * [F-Stop - Picture Gallery](https://play.google.com/store/apps/details?id=com.fstop.photo)
-* [Fossify Gallery](https://play.google.com/store/apps/details?id=org.fossify.gallery)
+* Fossify Gallery
+  * [Fossify Gallery (F-Droid)](https://f-droid.org/packages/org.fossify.gallery/)
+  * [Fossify Gallery (Play Store)](https://play.google.com/store/apps/details?id=org.fossify.gallery)
 * [Google - Gallery](https://play.google.com/store/apps/details?id=com.google.android.apps.photosgo)
 * [Schlichte Galerie](https://play.google.com/store/apps/details?id=com.simplemobiletools.gallery.pro)
 * [Pulsar - Music Player](https://play.google.com/store/apps/details?id=com.rhmsoft.pulsar)
 
-Files & Transfer:
+File Manager:
 
 * [FX File Explorer](https://play.google.com/store/apps/details?id=nextapp.fx)
-* [Nearby Share](https://support.google.com/files/answer/10514188)
+* Fossify File Manager
+  * [Fossify File Manager (F-Droid)](https://f-droid.org/packages/org.fossify.filemanager/)
+  * [Fossify File Manager (Play Store)](https://play.google.com/store/apps/details?id=org.fossify.filemanager)
 * [Google Files](https://play.google.com/store/apps/details?id=com.google.android.apps.nbu.files)
+
+Files & Transfer:
+
+* [Nearby Share](https://support.google.com/files/answer/10514188)
 * [LocalSend](https://localsend.org/#/download)
 * [Wormhole William](https://play.google.com/store/apps/details?id=io.sanford.wormhole_william)
 * [Warpinator (Github)](https://github.com/linuxmint/warpinator)
@@ -38,6 +51,9 @@ Syncronisation:
 
 * [Syncthing](https://play.google.com/store/apps/details?id=com.nutomic.syncthingandroid)
 * [FolderSync](https://play.google.com/store/apps/details?id=dk.tacit.android.foldersync.lite)
+* [DAVx5](https://www.davx5.com/download)
+  * [DAVx5 (F-Droid)](https://f-droid.org/packages/at.bitfire.davdroid/)
+  * [DAVx5 (Google Play)](https://play.google.com/store/apps/details?id=at.bitfire.davdroid)
 
 Security:
 
