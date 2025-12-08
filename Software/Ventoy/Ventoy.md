@@ -11,7 +11,7 @@ Install or upgrade:
 
 ```bash
 VERSION=$(curl -fsSL https://api.github.com/repos/ventoy/Ventoy/releases/latest | jq -r '.tag_name' | sed -r 's/v//g'); echo "${VERSION}"
-curl -o /tmp/ventoy.tar.gz -fsSL "https://github.com/ventoy/Ventoy/releases/download/v${VERSION}/ventoy-${VERSION}-linux.tar.gz"
+curl --progress-bar -o /tmp/ventoy.tar.gz -fL "https://github.com/ventoy/Ventoy/releases/download/v${VERSION}/ventoy-${VERSION}-linux.tar.gz"
 if [ -d ~/opt/ventoy ]; then gio trash ~/opt/ventoy; fi
 tar -C ~/opt -xf /tmp/ventoy.tar.gz
 mv ~/opt/ventoy-${VERSION} ~/opt/ventoy
