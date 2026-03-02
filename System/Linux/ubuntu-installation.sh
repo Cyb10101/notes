@@ -733,6 +733,18 @@ Categories=Utility;
 EOF
 }
 
+# https://exifcleaner.com/
+# https://github.com/szTheory/exifcleaner
+installExifCleaner() {
+    textColor 3 'Install: ExifCleaner'
+    local usernameRepository='szTheory/exifcleaner'
+    local VERSION=$(getGithubReleaseLatest "${usernameRepository}")
+
+    # Cli
+    curl --progress-bar -o /tmp/exifcleaner.deb -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/exifcleaner_3.6.0_amd64.deb"
+    sudo dpkg -i /tmp/exifcleaner.deb
+}
+
 # https://flameshot.org/
 installFlameshot() {
     textColor 3 'Install: Flameshot'
@@ -1294,6 +1306,7 @@ updateSoftware() {
         "FALSE" "installCroc" "Croc" "File transfer tool" \
         "FALSE" "installRestic" "Restic" "Backup tool" \
         "FALSE" "installCzkawka" "Czkawka" "Duplicate image finder" \
+        "FALSE" "installExifCleaner" "ExifCleaner" "Remove exif data from files" \
         "FALSE" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" \
         "FALSE" "installFluentReader" "Fluent Reader" "RSS Reader" \
         "FALSE" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" \
