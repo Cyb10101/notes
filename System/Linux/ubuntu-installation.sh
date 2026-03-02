@@ -546,6 +546,13 @@ installClapper() {
     sudo flatpak install -y flathub com.github.rafostar.Clapper
 }
 
+# https://jellyfin.org/
+# https://github.com/jellyfin/jellyfin-desktop
+installJellyfinDesktop() {
+    textColor 3 'Install: Jellyfin Desktop'
+    sudo flatpak install -y flathub org.jellyfin.JellyfinDesktop
+}
+
 installKodi() {
     textColor 3 'Install: Kodi (XBMC)'
     sudo apt -y install kodi
@@ -1248,6 +1255,7 @@ installSoftware() {
         "${TICK:-TRUE}" "installMpv" "MPV" "Video player" "Apt" \
         "${TICK:-TRUE}" "installMpvOverlay" "MPV Overlay" "MPV Overlay" "Archive" \
         "${TICK:-FALSE}" "installClapper" "Clapper" "Video player" "Flatpak" \
+        "${TICK:-FALSE}" "installJellyfinDesktop" "Jellyfin Desktop" "Media center" "Flatpak" \
         "${TICK:-FALSE}" "installKodi" "Kodi (XBMC)" "Media center" "Apt" \
         "${TICK:-TRUE}" "installHandbrake" "Handbrake" "Video transcoder" "Apt" \
         "${TICK:-TRUE}" "installKdenlive" "Kdenlive" "Video editor" "Apt+PPA" \
@@ -1265,6 +1273,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installDrawioSnap" "Draw.io" "Create diagrams" "Snap" \
         "${TICK:-TRUE}" "installDrawioFlatpak" "Draw.io" "Create diagrams" "Flatpak" \
         "${TICK:-TRUE}" "installCzkawka" "Czkawka" "Duplicate image finder" "Github" \
+        "${TICK:-TRUE}" "installExifCleaner" "ExifCleaner" "Remove exif data from files" "Github" \
         "${TICK:-TRUE}" "installFlameshot" "Flameshot" "Screenshot tools" "Apt" \
         "${TICK:-FALSE}" "installVokoScreen" "VokoScreen" "Screen recorder" "Apt" \
         "${TICK:-FALSE}" "installObsStudio" "ObsStudio" "Screen recorder" "Apt + Repository" \
