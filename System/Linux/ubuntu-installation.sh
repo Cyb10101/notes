@@ -385,22 +385,9 @@ installSignal() {
     textColor 3 'Install: Signal'
     # sudo snap install signal-desktop
     curl -fsSL https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor | sudo tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
-    echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' | sudo tee /etc/apt/sources.list.d/signal-desktop.list
+    sudo curl --progress-bar -o /etc/apt/sources.list.d/signal-desktop.sources -fL "https://updates.signal.org/static/desktop/apt/signal-desktop.sources"
     sudo apt update
     sudo apt -y install signal-desktop
-
-    cat << EOF | sudo tee /etc/xdg/autostart/signal-desktop.desktop
-[Desktop Entry]
-Name=Signal Desktop
-GenericName=Secure messenger
-Comment=Starts the main signal desktop process in the background.
-Exec=/usr/bin/signal-desktop --use-tray-icon --start-in-tray --no-sandbox %U
-Icon=signal-desktop
-Terminal=false
-Type=Application
-Keywords=messenger;daemon;
-Categories=Network;InstantMessaging;Chat
-EOF
 }
 
 # https://signal.org/
