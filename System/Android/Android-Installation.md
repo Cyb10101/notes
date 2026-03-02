@@ -10,6 +10,7 @@ Apps:
 
 * [Fossify](https://www.fossify.org/apps/)
   * [Fossify Calendar](https://f-droid.org/de/packages/org.fossify.calendar/)
+* [Loop Habit Tracker](https://loophabits.org/)
 
 Launcher:
 
@@ -71,6 +72,11 @@ Chat/Meeting:
   * [Briar: F-Droid Repository](https://briarproject.org/installing-briar-via-f-droid/)
 * [Jitsi](https://jitsi.org/)
   * [Jitsi: F-Droid](https://f-droid.org/en/packages/org.jitsi.meet/)
+
+Medikation:
+
+* [TOM - Medikamenten Manager](https://www.tommedications.com/)
+* [Mediteo - Tabletten-Erinnerung](https://www.mediteo.com/de/)
 
 ## Phone over WLAN
 
