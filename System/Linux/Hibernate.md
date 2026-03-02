@@ -1,6 +1,7 @@
 # Hibernate
 
 * [UbuntuHandbook: Enable Hibernate Function](https://ubuntuhandbook.org/index.php/2021/08/enable-hibernate-ubuntu-21-10/)
+* [UbuntuUsers: Ruhezustand](https://wiki.ubuntuusers.de/Ruhezustand/)
 
 To ensure that hibernation works properly with secure boot, the whole thing should run via TPM.
 For a hardcore version, you can also edit the kernel yourself. In my opinion, my life is too short for that.
