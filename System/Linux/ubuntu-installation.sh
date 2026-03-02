@@ -1063,8 +1063,14 @@ installFileZilla() {
 
 # https://www.heidisql.com/download.php
 installHeidiSql() {
-    textColor 3 'Install: HeidiSQL'
-    local VERSION='12.7.0.6850'
+    local VERSION='12.11.1.167'
+    curl --progress-bar -o /tmp/HeidiSQL.deb -fL "https://www.heidisql.com/downloads/releases/HeidiSQL_${VERSION}.deb"
+    sudo apt -y install libmysqlclient21 mysql-common
+    sudo dpkg -i /tmp/HeidiSQL.deb
+}
+installHeidiSqlWine() {
+    textColor 3 'Install: HeidiSQL (Wine)'
+    local VERSION='12.11.1.167'
 
     if [ ! -d ~/Dokumente/HeidiSQL ]; then mkdir -p ~/Dokumente/HeidiSQL; fi
     if [ -d ~/Dokumente/HeidiSQL/../../Sync/notes/Programming/SQL ] && [ ! -d ~/Dokumente/HeidiSQL/Snippets ]; then
@@ -1317,7 +1323,8 @@ installSoftware() {
         "${TICK:-TRUE}" "installJqYqXq" "Jq, Yq, Xq" "Json/Yaml/Xml processor" "Apt + Python" \
         "${TICK:-FALSE}" "installGo" "Go-Lang" "Go language" "Snap Classic" \
         "${TICK:-TRUE}" "installFileZilla" "FileZilla" "FTP/SFTP Client" "Apt" \
-        "${TICK:-TRUE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" "Wine" \
+        "${TICK:-TRUE}" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" "Apt" \
+        "${TICK:-FALSE}" "installHeidiSqlWine" "HeidiSQL (Wine)" "FTP/SFTP Client" "Wine" \
         "${TICK:-TRUE}" "installPutty" "PuTTY" "PuTTY utilities" "Wine" \
         "${TICK:-TRUE}" "installVirtualBox" "VirtualBox" "Virtual machines" "Apt" \
         "${TICK:-TRUE}" "installBitwarden" "Bitwarden" "Password manager" "Snap" \
