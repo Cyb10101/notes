@@ -1026,6 +1026,15 @@ installPhpStorm() {
     sudo snap install phpstorm --classic
 }
 
+# https://github.com/sourcegit-scm/sourcegit
+installSourceGit() {
+    textColor 3 'Install: SourceGit'
+    wget -q https://codeberg.org/api/packages/yataro/debian/repository.key -O- | sudo tee /etc/apt/keyrings/sourcegit.asc 1>/dev/null
+    echo "deb [signed-by=/etc/apt/keyrings/sourcegit.asc, arch=amd64,arm64] https://codeberg.org/api/packages/yataro/debian generic main" | sudo tee /etc/apt/sources.list.d/sourcegit.list 1>/dev/null
+    sudo apt-get update
+    sudo apt-get -y install sourcegit
+}
+
 # https://meldmerge.org/
 installMeld() {
     textColor 3 'Install: Meld'
@@ -1303,6 +1312,7 @@ installSoftware() {
         "${TICK:-TRUE}" "installVSCodium" "VSCodium" "Visual Studio Code but without Microsoft" "Snap Classic" \
         "${TICK:-FALSE}" "installVisualStudioCode" "Visual Studio Code" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
         "${TICK:-FALSE}" "installPhpStorm" "PhpStorm" "Editor, IDE (Integrated Development Environment)" "Snap Classic" \
+        "${TICK:-FALSE}" "installSourceGit" "SourceGit" "Git GUI client" "Apt" \
         "${TICK:-TRUE}" "installMeld" "Meld" "Visual diff and merge tool" "Apt" \
         "${TICK:-TRUE}" "installJqYqXq" "Jq, Yq, Xq" "Json/Yaml/Xml processor" "Apt + Python" \
         "${TICK:-FALSE}" "installGo" "Go-Lang" "Go language" "Snap Classic" \
