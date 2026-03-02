@@ -240,36 +240,81 @@ urlencode() {
   echo "$data"
 }
 
-STATUS="up"
+# Get system temperature
+systemTemperature() {
+  local tempMax=${1:-70}
+  local sysTemp=''
+
+  for file in /sys/class/thermal/thermal_zone*/temp; do
+    [[ -f "$file" ]] || continue
+    local raw
+    raw=$(cat "$file")
+    sysTemp=$(( raw / 1000 ))
+    break
+  done
+
+  if [[ -z "$sysTemp" || "$sysTemp" -gt "$tempMax" ]]; then
+    [[ -n "$MSG" ]] && MSG+=" | "
+    MSG+="System Temp: ${sysTemp:-unknown}/${tempMax}°C"
+  fi
+}
+
+# checkSata /dev/sda
+checkSata() {
+  local drive="$1"
+  local tempMax=${2:-50}
+  local driveName="$(basename "$drive")"
+
+  local temp=$(sudo smartctl -A "$drive" | awk '/Temperature_Celsius/ {print $10; exit}')
+  local health=$(sudo smartctl -H "$drive" | awk '/test result/ {print $NF}')
+
+  if [[ "$health" != "PASSED" ]]; then
+    STATUS="down"
+    [[ -n "$MSG" ]] && MSG+=" | "
+    MSG+="$driveName SMART: $health"
+  fi
+
+  if [[ -z "$temp" || "$temp" -gt "$tempMax" ]]; then
+    STATUS="down"
+    [[ -n "$MSG" ]] && MSG+=" | "
+    MSG+="$driveName Temp: ${temp:-unknown}/${tempMax}°C"
+  fi
+}
+
+# checkNvme /dev/nvme0n1
+checkNvme() {
+  local drive="$1"
+  local tempMax=${2:-60}
+  local driveName="$(basename "$drive")"
+
+  local temp=$(sudo smartctl -A "$drive" | awk '/Temperature/ {print $2; exit}')
+  local health=$(sudo smartctl -H "$drive" | awk '/overall-health/ {print $NF}')
+
+  if [[ "$health" != "PASSED" ]]; then
+    STATUS="down"
+    [[ -n "$MSG" ]] && MSG+=" | "
+    MSG+="$driveName SMART: $health"
+  fi
+
+  if [[ -z "$temp" || "$temp" -gt "$tempMax" ]]; then
+    STATUS="down"
+    [[ -n "$MSG" ]] && MSG+=" | "
+    MSG+="$driveName Temp: ${temp:-unknown}/${tempMax}°C"
+  fi
+}
+
+STATUS="down"
 MSG=""
 
-# Get system temperature (for Raspberry Pi)
-sysTempMax=70
-sysTemp=$(cat /sys/class/thermal/thermal_zone0/temp)
-sysTemp=$(echo "$sysTemp / 1000" | bc)
-if [[ -z "$sysTemp" ]] || (( $sysTemp > $sysTempMax )); then
-  STATUS="down"
-  if [ ! -z "${MSG}" ]; then MSG+=" | "; fi
-  MSG+="System Temp: ${sysTemp}/${sysTempMax}°C"
-fi
+systemTemperature
+checkNvme /dev/nvme0n1
 
-# Check status /dev/sda
-devSdaTempMax=50
-devSdaTemp=$(sudo smartctl -A /dev/sda | grep -i "Temperature_Celsius" | awk '{print $10}')
-devSdaSmartStatus=$(sudo smartctl -H /dev/sda | grep -i "test result" | awk '{print $NF}')
-if [[ $devSdaSmartStatus != "PASSED" ]]; then
-  STATUS="down"
-  if [ ! -z "${MSG}" ]; then MSG+=" | "; fi
-  MSG+="SDA Smart: ${devSdaSmartStatus}"
-fi
-if [[ -z "$devSdaTemp" ]] || (( $devSdaTemp > $devSdaTempMax )); then
-  STATUS="down"
-  if [ ! -z "${MSG}" ]; then MSG+=" | "; fi
-  MSG+="SDA Temp: ${devSdaTemp}/${devSdaTempMax}°C"
+if [[ -z "$MSG" ]]; then
+  STATUS="up"
+  MSG="OK"
 fi
 
 # Send to Uptime Kuma
-uptimeKumaToken
 curl --get "https://example.com/api/push/${uptimeKumaToken}" --data "status=$STATUS&msg=$(urlencode "${MSG}")&ping=0"
 ```
 
@@ -332,8 +377,11 @@ vim ~/.profile
 
 File `~/.profile`:
 
-```text
-[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx -- -nocursor
+```bash
+argsStart=(
+  -nocursor
+)
+[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx -- "${argsStart[@]}"
 ```
 
 Autostart browser:
@@ -374,14 +422,19 @@ File `/usr/local/bin/kiosk-browser-start`:
 
 ```bash
 #!/bin/bash
+
+URLS=(
+  http://192.168.178.21:8096/
+)
+
 # Wait until Openbox running
 for i in {1..10}; do
-    xprop -root _NET_DESKTOP_NAMES >/dev/null 2>&1 && break
-    sleep 1
+  xprop -root _NET_DESKTOP_NAMES >/dev/null 2>&1 && break
+  sleep 1
 done
 
 # Start Firefox in kiosk mode
-exec firefox --kiosk 'https://example.com/'
+exec firefox --kiosk "${URLS[@]}"
 
 # Reset Chromium exited uncleanly
 #sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/'Local State'
@@ -391,8 +444,7 @@ exec firefox --kiosk 'https://example.com/'
 # Disable kiosk and type url directly: 'chrome://gpu/'
 # --incognito
 exec chromium-browser --disable-infobars --noerrdialogs --check-for-update-interval=1 \
-  --simulate-critical-update --autoplay-policy=no-user-gesture-required --kiosk \
-  'https://example.com/'
+  --simulate-critical-update --autoplay-policy=no-user-gesture-required --kiosk "${URLS[@]}"
 ```
 
 Add Firefox user configuration to profile:
