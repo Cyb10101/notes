@@ -1,12 +1,13 @@
 # sudo apt -y install python3-nautilus
-# Copy to: nautilus ~/.local/share/nautilus-python/extensions
+# cp ~/Sync/notes/System/Linux/Nautilus/python-extensions/OpenDirectoryTools.py ~/.local/share/nautilus-python/extensions/
 # nautilus -q
 
 import os
-from urllib.parse import unquote
 from gi.repository import Nautilus, GObject
 from typing import List
 from subprocess import call, run, getstatusoutput
+from urllib.parse import unquote
+from pathlib import Path
 
 debug = False
 #debug = True
@@ -16,34 +17,37 @@ codiumNewWindow = False
 
 class App():
     @classmethod
-    def msg(self, message, icon):
-        run(["/usr/bin/notify-send", "--icon=" + icon, message])
+    def msg(self, title, message, icon):
+        run(["/usr/bin/notify-send", "--icon=" + icon, title, message])
 
     @classmethod
-    def msgError0(self, message):
-        self.msg(message, "error")
+    def msgError0(self, title, message):
+        self.msg(title, message, "error")
 
     @classmethod
-    def msgInformation(self, message):
-        self.msg(message, "dialog-information")
+    def msgInfo(self, title, message):
+        self.msg(title, message, "dialog-information")
 
     @classmethod
-    def msgApply(self, message):
-        self.msg(message, "dialog-apply")
+    def msgApply(self, title, message):
+        self.msg(title, message, "dialog-apply")
 
     @classmethod
-    def msgWarning(self, message):
-        self.msg(message, "dialog-warning")
+    def msgWarning(self, title, message):
+        self.msg(title, message, "dialog-warning")
 
     @classmethod
-    def msgError(self, message):
-        self.msg(message, "dialog-error")
+    def msgError(self, title, message):
+        self.msg(title, message, "dialog-error")
 
 statusCodium, _ = getstatusoutput("hash codium")
 existsCodium = statusCodium == 0
 
-statusGitFiend, _ = getstatusoutput("flatpak info com.gitfiend.GitFiend")
-existsGitFiend = statusGitFiend == 0
+statusSourceGit, _ = getstatusoutput("hash sourcegit")
+existsSourceGit = statusSourceGit == 0
+
+#statusGitFiend, _ = getstatusoutput("flatpak info com.gitfiend.GitFiend")
+#existsGitFiend = statusGitFiend == 0
 
 class OpenDirectoryTools(GObject.GObject, Nautilus.MenuProvider):
     #def __init__(self):
@@ -51,7 +55,7 @@ class OpenDirectoryTools(GObject.GObject, Nautilus.MenuProvider):
     #    print("Initialized OpenDirectoryTools extension")
 
     def _openTest(self, menu: Nautilus.MenuItem, files: List[Nautilus.FileInfo]) -> None:
-        # App.msgInformation("Run Test...")
+        # App.msgInfo("Test", "Run Test...")
         for file in files:
             filename = unquote(file.get_uri()[7:])
             print("File object:", file)
@@ -64,9 +68,12 @@ class OpenDirectoryTools(GObject.GObject, Nautilus.MenuProvider):
             os.chdir(filename)
             os.system("gnome-terminal")
 
-    def _openGitFiend(self, menu: Nautilus.MenuItem, files: List[Nautilus.FileInfo]) -> None:
-        safepath = '"' + files[0].get_location().get_path() + '"'
-        call('nohup flatpak run com.gitfiend.GitFiend ' + safepath + ' 2>&1 >/dev/null  &', shell = True)
+    def _openSourceGit(self, menu: Nautilus.MenuItem, files: List[Nautilus.FileInfo]) -> None:
+        path = Path(files[0].get_location().get_path())
+        if not os.path.exists(path / ".git"):
+            App.msgError("SourcGit", "❌ Git in directory not found: " + str(path))
+            return
+        call('sourcegit ' + str(path) + ' 2>&1 >/dev/null  &', shell = True)
 
     def _openCodium(self, menu: Nautilus.MenuItem, files: List[Nautilus.FileInfo]) -> None:
         safepaths = ''
@@ -129,12 +136,13 @@ class OpenDirectoryTools(GObject.GObject, Nautilus.MenuProvider):
             itemCodium.connect("activate", self._openCodium, files)
 
         if len(files) == 1:
-            itemGitFiend = Nautilus.MenuItem(
-                name = __class__.__name__ + "Items::OpenGitFiend",
-                label = "Open in GitFiend",
-                tip = "Open selected files '%s' in GitFiend" % files[0].get_name(),
-            )
-            itemGitFiend.connect("activate", self._openGitFiend, files)
+            if existsSourceGit:
+                itemSourceGit = Nautilus.MenuItem(
+                    name = __class__.__name__ + "Items::OpenSourceGit",
+                    label = "Open in SourceGit",
+                    tip = "Open selected files '%s' in SourceGit" % files[0].get_name(),
+                )
+                itemSourceGit.connect("activate", self._openSourceGit, files)
 
         returnList = []
         if debug:
@@ -142,7 +150,8 @@ class OpenDirectoryTools(GObject.GObject, Nautilus.MenuProvider):
         if existsCodium:
             returnList.append(itemCodium)
         if len(files) == 1:
-            returnList.append(itemGitFiend)
+            if existsSourceGit:
+                returnList.append(itemSourceGit)
         return returnList
 
     def get_background_items(self, file: Nautilus.FileInfo) -> List[Nautilus.MenuItem]:
@@ -180,17 +189,19 @@ class OpenDirectoryTools(GObject.GObject, Nautilus.MenuProvider):
             )
             itemCodium.connect("activate", self._openCodium, [file])
 
-        itemGitFiend = Nautilus.MenuItem(
-            name = __class__.__name__ + "Background::OpenGitFiend",
-            label = "Open in GitFiend",
-            tip = "Open '%s' in GitFiend" % file.get_name(),
-        )
-        itemGitFiend.connect("activate", self._openGitFiend, [file])
+        if existsSourceGit:
+            itemSourceGit = Nautilus.MenuItem(
+                name = __class__.__name__ + "Background::OpenSourceGit",
+                label = "Open in SourceGit",
+                tip = "Open '%s' in SourceGit" % file.get_name(),
+            )
+            itemSourceGit.connect("activate", self._openSourceGit, [file])
 
         returnList = []
         if debug:
             returnList.append(itemDebug)
         if existsCodium:
             returnList.append(itemCodium)
-        returnList.append(itemGitFiend)
+        if existsSourceGit:
+            returnList.append(itemSourceGit)
         return returnList
