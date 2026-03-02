@@ -1,4 +1,11 @@
 @echo off
-"%SystemRoot%\Microsoft.NET\Framework64\v3.5\csc" swap-mouse-buttons.cs
+"%SystemRoot%\Microsoft.NET\Framework64\v4.0.30319\csc" swap-mouse-buttons.cs
+
+if errorlevel 1 (
+    echo Compilation failed!
+    timeout /t 10 >nul
+    exit /b 1
+)
+
 echo Executable generated.
-timeout 3
+timeout /t 3 >nul
