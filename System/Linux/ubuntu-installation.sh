@@ -475,10 +475,12 @@ installElement() {
 # https://zoom.us/download
 installZoom() {
     textColor 3 'Install: Zoom'
-    curl --progress-bar -o /tmp/zoom.deb -fL "https://zoom.us/client/latest/zoom_amd64.deb"
+    updateDebFromUrl "zoom" "https://zoom.us/client/latest/zoom_amd64.deb"
+
+    #curl --progress-bar -o /tmp/zoom.deb -fL "https://zoom.us/client/latest/zoom_amd64.deb"
     #sudo apt -y install libgl1-mesa-glx libegl1-mesa libxcb-xtest0 libxcb-cursor0
     sudo apt -y install libxcb-xinerama0 libxcb-xtest0 libxcb-cursor0
-    sudo dpkg -i /tmp/zoom.deb
+    #sudo dpkg -i /tmp/zoom.deb
 }
 
 # https://download.linphone.org/releases/linux/app/
