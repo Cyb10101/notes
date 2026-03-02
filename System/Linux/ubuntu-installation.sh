@@ -272,7 +272,7 @@ installFirefoxForceAptMozilla() {
     if [ "${fingerprint}" != "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3" ]; then
         echo "Verification failed: The fingerprint (${fingerprint}) does not match\!"; exit 1
     fi
-    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list 1>/dev/null
+    echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list 1>/dev/null
     printf "Package: *\nPin: origin packages.mozilla.org\nPin-Priority: 1001" | sudo tee /etc/apt/preferences.d/mozilla 1>/dev/null
 
     sudo apt-get update
