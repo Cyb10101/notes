@@ -1097,6 +1097,34 @@ installVirtualBox() {
     #sudo systemctl disable vboxweb.service
 }
 
+installVirtualBoxApt7-2() {
+    textColor 3 'Install: VirtualBox 7.2'
+    wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo gpg --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg --dearmor
+    fingerprint=$(gpg -n -q --import --import-options import-show /usr/share/keyrings/oracle-virtualbox-2016.gpg | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0}')
+    if [ "$fingerprint" != "B9F8D658297AF3EFC18D5CDFA2F683C52980AECF" ]; then
+        echo "Verification failed: The fingerprint (${fingerprint}) does not match\!"
+        [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
+    fi
+    . /etc/lsb-release
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian $DISTRIB_CODENAME contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list 1>/dev/null
+
+    sudo apt-get update
+    sudo apt-get -y remove virtualbox virtualbox-ext-pack # Remove old VirtualBox version (7.0.16)
+    sudo apt-get -y purge virtualbox virtualbox-ext-pack # Purge configuration files
+    sudo apt-get -y install virtualbox-7.2
+}
+
+installVirtualBoxExtensionPack() {
+    textColor 3 'Install: VirtualBox Extension Pack'
+    # Download extension pack matching installed VirtualBox version
+    VBOX_VERSION=$(VBoxManage -v | cut -d'r' -f1 | tail -1); echo "$VBOX_VERSION"
+    URL="https://download.virtualbox.org/virtualbox/${VBOX_VERSION}/Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack"
+    wget -q "$URL" -O /tmp/Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack
+    sudo VBoxManage extpack install --replace /tmp/Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack
+    rm /tmp/Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack
+}
+
+
 installUbuntuRestrictedExtras() {
     textColor 3 'Install: Ubuntu Restricted Extras'
 
@@ -1327,6 +1355,8 @@ installSoftware() {
         "${TICK:-FALSE}" "installHeidiSqlWine" "HeidiSQL (Wine)" "FTP/SFTP Client" "Wine" \
         "${TICK:-TRUE}" "installPutty" "PuTTY" "PuTTY utilities" "Wine" \
         "${TICK:-TRUE}" "installVirtualBox" "VirtualBox" "Virtual machines" "Apt" \
+        "${TICK:-FALSE}" "installVirtualBoxApt7-2" "VirtualBox 7.2" "Virtual machines" "Apt" \
+        "${TICK:-FALSE}" "installVirtualBoxExtensionPack" "VirtualBox Extension Pack" "Virtual machines" "Apt" \
         "${TICK:-TRUE}" "installBitwarden" "Bitwarden" "Password manager" "Snap" \
         "${TICK:-TRUE}" "installKeePassXC" "KeePassXC" "Password manager" "Apt" \
         "${TICK:-TRUE}" "installUbuntuRestrictedExtras" "Ubuntu Restricted Extras" "Ubuntu Restricted Extras" "Apt" \
