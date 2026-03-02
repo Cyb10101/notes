@@ -35,6 +35,7 @@ Disable-BitLocker -MountPoint $BLV
 Run `powershell` as user.
 
 ```powershell
+# Installation
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
@@ -43,18 +44,22 @@ scoop install aria2 7zip git sudo
 scoop config aria2-warning-enabled false
 scoop bucket add extras
 
-# Standard bucket (Without other buckets)
+# Bucket: Standard (Without other buckets)
 scoop install croc
-scoop install gpg
+#scoop install gpg
+scoop install gnupg
 scoop install restic
+scoop install rdiff-backup
 scoop install yt-dlp ffmpeg
 
 # Bucket: Extras
 scoop install mpv ffmpeg
 
-# Other
-scoop list
-scoop status; scoop update; scoop update --all
+# Update & cleanup commands
+scoop status
+scoop update
+scoop update -a
+scoop cleanup -a
 ```
 
 * Run 7-zip as administrator > Tools > Options
