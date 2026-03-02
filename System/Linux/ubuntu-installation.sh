@@ -941,14 +941,11 @@ Name[de]=Nextcloud Beenden
 EOF
 }
 
-# https://www.dropbox.com/install
-installDropbox() {
-    textColor 3 'Install: Dropbox'
-    # @bug: Key is stored in deprecated trusted.gpg keychain
-    curl --progress-bar -o /tmp/dropbox.deb -fL "https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2024.01.22_amd64.deb"
-    #old: sudo apt -y install libpango1.0-0 python3-gpg
-    #sudo apt -y install libpango-1.0-0 python3-gpg
-    sudo dpkg -i /tmp/dropbox.deb
+# https://filen.io/
+installFilen() {
+    textColor 3 'Install: Filen'
+    curl --progress-bar -o /tmp/filen.deb -fL "https://cdn.filen.io/@filen/desktop/release/latest/Filen_linux_amd64.deb"
+    sudo dpkg -i /tmp/filen.deb
 }
 
 # https://restic.net/
@@ -1270,7 +1267,7 @@ installSoftware() {
         "${TICK:-TRUE}" "installSteam" "Steam" "Game client" "Apt" \
         "${TICK:-TRUE}" "installSyncthing" "Syncthing" "Sycronisation tool" "Debian Repository" \
         "${TICK:-FALSE}" "installNextcloudDesktop" "Nextcloud Desktop" "Sycronisation tool" "AppImage" \
-        "${TICK:-FALSE}" "installDropbox" "Dropbox" "Sycronisation tool" "Debian Package" \
+        "${TICK:-FALSE}" "installFilen" "Filen" "Cloud Drive" "Debian Package" \
         "${TICK:-TRUE}" "installRestic" "Restic" "Backup tool" "Apt + Self" \
         "${TICK:-TRUE}" "installRdiffBackup" "RdiffBackup" "Backup tool" "Apt" \
         "${TICK:-TRUE}" "installCroc" "Croc" "File transfer tool" "External" \
