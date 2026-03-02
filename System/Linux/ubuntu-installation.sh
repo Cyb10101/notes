@@ -620,7 +620,7 @@ installMkvToolNix() {
 
     # Optional: Updates
     sudo curl --progress-bar -o /usr/share/keyrings/gpg-pub-moritzbunkus.gpg -fL "https://mkvtoolnix.download/gpg-pub-moritzbunkus.gpg"
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/mkvtoolnix.list
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/mkvtoolnix.list
     echo "deb-src [arch=amd64 signed-by=/usr/share/keyrings/gpg-pub-moritzbunkus.gpg] https://mkvtoolnix.download/ubuntu/ $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/mkvtoolnix.list
     sudo apt update
 
@@ -851,7 +851,7 @@ installAnyDesk() {
     if [ "${fingerprint}" != "06B5EA2FAE208E7CDA9761DCA2FB21D5A8772835" ]; then
         echo "Verification failed: The fingerprint (${fingerprint}) does not match!"; exit 1;
     fi
-    echo "deb [signed-by=/etc/apt/keyrings/packages.anydesk.asc] http://deb.anydesk.com/ all main" | sudo tee -a /etc/apt/sources.list.d/anydesk.list 1>/dev/null
+    echo "deb [signed-by=/etc/apt/keyrings/packages.anydesk.asc] http://deb.anydesk.com/ all main" | sudo tee /etc/apt/sources.list.d/anydesk.list 1>/dev/null
     sudo apt update
     sudo apt -y install anydesk
 }
