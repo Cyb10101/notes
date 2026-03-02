@@ -240,6 +240,32 @@ installDockerCompose() {
     sudo install /tmp/docker-compose /usr/local/bin/docker-compose
 }
 
+# Update a package from a direct .deb URL only if it is newer
+updateDebFromUrl() {
+  local name="$1"
+  local url="$2"
+  local tmp
+  tmp="$(mktemp -d /tmp/app-install_XXXXXXXX)"
+  #trap 'rm -r "$tmp"' RETURN
+
+  # Download
+  curl --progress-bar -o "$tmp/$name.deb" -fL "$url"
+
+  # Read versions
+  local new_ver="$(dpkg-deb -f "$tmp/$name.deb" Version)"
+  local installed_ver="$(dpkg-query -W -f='${Version}\n' "$name" 2>/dev/null || true)"
+
+  if [[ -n "${installed_ver}" ]] && dpkg --compare-versions "$new_ver" le "$installed_ver"; then
+    echo "$name is up to date ($installed_ver)"
+    rm -r "$tmp"
+    return 0
+  fi
+
+  textColor 3 "Installing $name $new_ver (was ${installed_ver:-not installed}) ..."
+  sudo dpkg -i "$tmp/$name.deb"
+  rm -r "$tmp"
+}
+
 # Software #####################################################################
 # https://www.mozilla.org/firefox/
 installFirefoxFlatpak() {
@@ -364,10 +390,12 @@ installYacReaderFlatpak() {
 # https://discord.com/
 installDiscord() {
     textColor 3 'Install: Discord'
-    curl --progress-bar -o /tmp/discord.deb -fL "https://discord.com/api/download?platform=linux&format=deb"
+    updateDebFromUrl "discord" "https://discord.com/api/download?platform=linux&format=deb"
+
+    #curl --progress-bar -o /tmp/discord.deb -fL "https://discord.com/api/download?platform=linux&format=deb"
     # @bug Installation failed because packages missing
     #set +e
-    sudo dpkg -i /tmp/discord.deb
+    #sudo dpkg -i /tmp/discord.deb
     #set -e
     #sudo apt -y -f install
 }
