@@ -19,14 +19,14 @@ sudo dmesg | grep -i lockdown
 
 If `SecureBoot enabled` or `hibernation is restricted` appears, then kernel lockdown is most likely active and hibernation is blocked. You need to disable secure boot.
 
-
 Check whether S4 (Hibernate) is offered by the kernel:
 
 ```bash
 cat /sys/power/state
 # freeze mem disk
 
-sudo dmesg | grep -i "ACPI.*PM:.*supports"
+journalctl -b -k -g 'acpi.*pm.*supports'
+# sudo dmesg | grep -i "ACPI.*PM:.*supports"
 # ACPI: PM: (supports S0 S3 S4 S5)
 # S0 = Normal operation (PC on)
 # S3 = Standby / Sleep (Energy saving mode)
@@ -116,7 +116,6 @@ sudo update-initramfs -u
 
 Finally, add hibernate to the power menu.
 
-
 Create polkit rule file:
 
 ```bash
@@ -141,7 +140,6 @@ polkit.addRule(function(action, subject) {
 Additionally, install the extension for Gnome Desktop:
 
 * [Gnome: Hibernate Status Button](https://extensions.gnome.org/extension/755/hibernate-status-button/)
-
 
 ## Functional test
 
