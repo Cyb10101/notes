@@ -73,7 +73,6 @@ sudo filefrag -v /swap.img
 # 0:   0.. 0:          140578816.. 140578816: 1:
 ```
 
-
 ## Determine root UUID
 
 Determine root UUID for `resume=3f7b326b-ae9e-4171-9979-650db45a1161`:
@@ -86,7 +85,7 @@ blkid $(findmnt -no SOURCE /)
 # /dev/nvme0n1p2: UUID="3f7b326b-ae9e-4171-9979-650db45a1161"
 ```
 
-## 4. GRUB & Initramfs konfigurieren
+## Configure GRUB & Initramfs
 
 Edit Grub:
 
