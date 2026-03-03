@@ -28,10 +28,10 @@ cat /sys/power/state
 
 sudo dmesg | grep -i "ACPI.*PM:.*supports"
 # ACPI: PM: (supports S0 S3 S4 S5)
-# S0 = Normalbetrieb
-# S3 = Standby / Sleep (Energiesparmodus)
+# S0 = Normal operation (PC on)
+# S3 = Standby / Sleep (Energy saving mode)
 # S4 = Hibernate
-# S5 = Heruntergefahren
+# S5 = Shutdown (PC off)
 ```
 
 If `disk` is missing, then secure boot or kernel parameters are blocking hibernation.
