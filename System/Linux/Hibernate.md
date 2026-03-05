@@ -152,3 +152,18 @@ You can test this manually:
 ```bash
 sudo systemctl hibernate
 ```
+
+## Configure lid power settings
+
+```bash
+sudo vim /etc/systemd/logind.conf
+
+# Handle lid switch when lid is closed
+HandleLidSwitch=poweroff # Shutdown computer
+HandleLidSwitch=hibernate # Hibernate computer
+HandleLidSwitch=suspend # Suspend computer
+HandleLidSwitch=ignore # Do nothing
+
+sudo reboot
+#sudo systemctl restart systemd-logind
+```
