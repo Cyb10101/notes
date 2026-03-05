@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: App Comment IP
-Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Websites/Wordpress/mu-plugins/app-comment-ip.php
+Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/app-comment-ip.php
 Description: Remove comment IP addresses immediately or after a configurable retention period.
 Version: 2026.03.05
 Author: Cyb10101

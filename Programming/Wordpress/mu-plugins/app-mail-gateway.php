@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: App Mail Gateway
-Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Websites/Wordpress/mu-plugins/app-mail-gateway.php
+Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/app-mail-gateway.php
 Description: Configure outgoing mails
-Version: 2025.11.12
+Version: 2026.03.05
 Author: Cyb10101
 Author URI: https://cyb10101.de/
 License: GPLv2 or later

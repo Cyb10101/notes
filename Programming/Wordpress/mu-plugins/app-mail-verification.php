@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: App Mail Verification
-Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Websites/Wordpress/mu-plugins/app-mail-verification.php
+Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/app-mail-verification.php
 Description: Control WordPress administration email verification prompt
-Version: 2025.11.12
+Version: 2026.03.05
 Author: Cyb10101
 Author URI: https://cyb10101.de/
 License: GPLv2 or later
