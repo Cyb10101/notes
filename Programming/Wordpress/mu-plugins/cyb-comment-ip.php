@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: App Comment IP
-Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/app-comment-ip.php
+Plugin Name: Cyb Comment IP
+Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/cyb-comment-ip.php
 Description: Remove comment IP addresses immediately or after a configurable retention period.
 Version: 2026.03.05
 Author: Cyb10101
@@ -15,12 +15,12 @@ if (!defined('ABSPATH')) {
 }
 
 // Add in wp-config.php or here:
-// define('APP_COMMENT_IP_RETENTION_DAYS', 0); // Default, remove all IP addresses from comments directly without scheduler
-// define('APP_COMMENT_IP_RETENTION_DAYS', 7); // Remove ip addresses after 7 days (DSVGO)
+// define('CYB_COMMENT_IP_RETENTION_DAYS', 0); // Default, remove all IP addresses from comments directly without scheduler
+// define('CYB_COMMENT_IP_RETENTION_DAYS', 7); // Remove ip addresses after 7 days (DSVGO)
 
-final class AppCommentIP {
+final class CybCommentIP {
     private const DEFAULT_RETENTION_DAYS = 0;
-    private const CRON_HOOK = 'app_comment_ip_cleanup';
+    private const CRON_HOOK = 'cyb_comment_ip_cleanup';
 
     public static function initialize(): void {
         add_filter('pre_comment_user_ip', [self::class, 'filterCommentIp'], PHP_INT_MAX);
@@ -64,7 +64,7 @@ final class AppCommentIP {
     }
 
     private static function getRetentionDays(): int {
-        return max(0, (int) self::getConfigValue('APP_COMMENT_IP_RETENTION_DAYS', self::DEFAULT_RETENTION_DAYS));
+        return max(0, (int) self::getConfigValue('CYB_COMMENT_IP_RETENTION_DAYS', self::DEFAULT_RETENTION_DAYS));
     }
 
     private static function getConfigValue(string $constant, $default) {
@@ -72,4 +72,4 @@ final class AppCommentIP {
     }
 }
 
-AppCommentIP::initialize();
+CybCommentIP::initialize();

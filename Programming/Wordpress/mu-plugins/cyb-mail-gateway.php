@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: App Mail Gateway
-Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/app-mail-gateway.php
+Plugin Name: Cyb Mail Gateway
+Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/cyb-mail-gateway.php
 Description: Configure outgoing mails
 Version: 2026.03.05
 Author: Cyb10101
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 Add mail configuration to wp-config.php.
 
 ## SMTP (Recommended minimal setup)
-// Mail configuration, see mu-plugins/app-mail-gateway.php
+// Mail configuration, see mu-plugins/cyb-mail-gateway.php
 define('MAIL_FROM', 'info@example.com');     // Optional: Overrides the default sender email
 define('MAIL_FROM_NAME', 'Example Webpage'); // Optional: Overrides the default sender name
 define('MAIL_DSN', 'smtps://username:password@smtp.example.com:465?encryption=ssl&auth=true');
@@ -40,7 +40,7 @@ define('MAIL_DSN', 'smtp://username@smtp.example.com:25?auth=false');
 wp-cli --path='public' eval "var_dump(wp_mail('user@example.com', 'Mail test', date('Y-m-d H:i:s') . ' It works'));"
 */
 
-class AppMailGateway {
+class CybMailGateway {
     public function initialize() {
         add_action('phpmailer_init', [$this, 'phpmailerInit'], PHP_INT_MAX);
         add_filter('wp_mail_from', [$this, 'wpMailFrom'], PHP_INT_MAX);
@@ -214,4 +214,4 @@ class AppMailGateway {
     }
 }
 
-(new AppMailGateway())->initialize();
+(new CybMailGateway())->initialize();

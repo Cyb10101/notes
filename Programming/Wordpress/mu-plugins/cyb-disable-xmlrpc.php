@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: App Disable XML-RPC
-Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/app-disable-xmlrpc.php
+Plugin Name: Cyb Disable XML-RPC
+Plugin URI: https://github.com/Cyb10101/notes/tree/master/Programming/Wordpress/mu-plugins/cyb-disable-xmlrpc.php
 Description: Disable XML-RPC in WordPress
 Version: 2026.03.03
 Author: Cyb10101
