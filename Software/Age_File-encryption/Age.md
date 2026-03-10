@@ -37,7 +37,7 @@ cat <<'EOF' > ~/.config/age/users.json
 [
   {"name": "Alice", "key": "age1-alice-public-key", "groups": "family, backup"},
   {"name": "Laptop SSH", "key": "ssh-ed25519 AAAAC3Nz...I1NTE5AAAA", "groups": "devices"},
-  {"name": "Own public key", "key": "age1-my-public-key"}
+  {"name": "Your name", "key": "age1-my-public-key", "groups": "own-publc-key"}
 ]
 EOF
 
@@ -87,7 +87,7 @@ Create a users.json to store public keys:
 [
   {"name": "Alice", "key": "age1-alice-public-key", "groups": "family, backup"},
   {"name": "Laptop SSH", "key": "ssh-ed25519 AAAAC3Nz...I1NTE5AAAA", "groups": "devices"},
-  {"name": "Own public key", "key": "age1-my-public-key"}
+  {"name": "Your name", "key": "age1-my-public-key", "groups": "own-publc-key"}
 ]
 '@ | Set-Content "$env:USERPROFILE\.config\age\users.json"
 
