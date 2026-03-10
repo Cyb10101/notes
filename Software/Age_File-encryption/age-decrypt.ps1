@@ -1,7 +1,5 @@
-$binAge=$(if (Test-Path "$PSScriptRoot\bin\age.exe") {"$PSScriptRoot\bin\age"} else {"age"})
-
 if ($args.Count -eq 0) {
-  Write-Host "Usage: $(Split-Path -Leaf $PSCommandPath) <file>..."; exit 1
+  Write-Host "Usage: $(Split-Path -Leaf $PSCommandPath) <file.age>..."; exit 1
 }
 
 $identityPaths = @(
@@ -9,29 +7,48 @@ $identityPaths = @(
   "$env:USERPROFILE\.ssh\id_rsa"
 )
 
-$keys = @(
-  # "-i" "my-key"
-)
+$keys = @()
 foreach ($path in $identityPaths) {
   if (Test-Path $path) {
     $keys += "-i", $path
   }
 }
 
-$tmpZip = "$env:TEMP\tmp.zip"
-foreach ($file in $args) {
-  Write-Host "Decrypting: $file"
-  if (!(Test-Path $file)) {
-    Write-Host "Error - not found: $file"; continue
-  } elseif ($file -like '*.zip.age') {
-    & $binAge -d @keys -o $tmpZip $file
-    if ($LASTEXITCODE -eq 0) {
-      Expand-Archive -Path $tmpZip -DestinationPath .\
-      Remove-Item $tmpZip
-    } else {
-      Write-Host "Not extracted: $file"
-    }
-  } else {
-    & $binAge -d @keys -o ((Split-Path -Leaf $file) -replace '\.age$', '') $file
+foreach ($inputFile in $args) {
+  if (-not (Test-Path $inputFile)) {
+    Write-Host "Error - not found: $inputFile"; continue
   }
+
+  if ($inputFile -notlike '*.age') {
+    Write-Host "Unsupported file type: $inputFile"; continue
+  }
+
+  # Decrypt
+  $outputPath = Split-Path -Leaf ($inputFile -replace '\.age$', '')
+  & age -d @keys -o $outputPath $inputFile
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "Not decrypted: $inputFile"; continue
+  }
+
+  if ($outputPath -notlike '*.zip') {
+    Write-Host "Decrypted: $outputPath"; continue
+  }
+
+  # Extract
+  $destination = Split-Path -Leaf ($outputPath -replace '\.zip$', '')
+  if ((Test-Path $destination) -and (-not (Get-Item $destination).PSIsContainer)) {
+    Write-Host "Extraction target exists and is not a directory: $destination"; continue
+  }
+
+  & unzip -q $outputPath -d $destination | Out-Null
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "Archive extraction failed: $inputFile"
+  }
+
+  if (Test-Path $outputPath) {
+    Remove-Item $outputPath
+  } else {
+    Write-Host "Cleanup warning! Extracted archive not found: $outputPath"
+  }
+  Write-Host "Decrypted and extracted: $destination"
 }
