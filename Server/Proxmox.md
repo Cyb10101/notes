@@ -102,3 +102,79 @@ wget -O - https://getcroc.schollz.com | bash
 cd /var/lib/vz/dump/
 croc send *
 ```
+
+## Add Samba in Proxmox
+
+Go into Proxmox VE Shell.
+
+Enter LXC Container and check permissions:
+
+```bash
+pct enter 102
+
+# Get username from running application
+ps aux | grep -Ei 'USER|application'
+# USER   PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+# app    234  0.0 10.9 273362324 230064 ?    Ssl  20:18   0:03 /usr/bin/application ...
+
+# Get user and group id
+id app
+# uid=107(app) gid=110(app)
+
+# Logout to Proxmox shell
+exit
+pct shutdown 102
+```
+
+Test Samba connection:
+
+```bash
+# apt install cifs-utils smbclient
+smbclient -U share-username -L 192.168.178.21
+```
+
+Add folder and edit fstab:
+
+```bash
+mkdir /mnt/nas
+nano /etc/fstab
+```
+
+Add to fstab:
+
+```conf
+# Samba (uid/gid=100<app user/group id>)
+# <file system>                <mount point>  <type> <options> <dump> <pass>
+//192.168.178.21/share/files   /mnt/nas       cifs   uid=100107,gid=100110,username=share-username,password=share-password 0 0
+```
+
+Restard daemon and mount share:
+
+```bash
+systemctl daemon-reload
+mount /mnt/nas
+```
+
+Edit container configuration:
+
+```bash
+nano /etc/pve/lxc/102.conf
+```
+
+Add mount point:
+
+```conf
+# Default
+mp0: /mnt/nas,mp=/mnt/nas,backup=0
+
+# Read-only
+mp0: /mnt/nas,mp=/mnt/nas,backup=0,ro=1
+```
+
+Start Container and check file permissions:
+
+```bash
+pct start 102
+pct enter 102
+ls -l /mnt/nas
+```
