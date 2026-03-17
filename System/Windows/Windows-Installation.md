@@ -40,8 +40,9 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 
 # Recommended
-scoop install aria2 7zip git sudo
 scoop config aria2-warning-enabled false
+scoop install aria2 7zip git
+#scoop install sudo
 scoop bucket add extras
 
 # Bucket: Standard (Without other buckets)
