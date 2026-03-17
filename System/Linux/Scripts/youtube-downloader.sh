@@ -53,7 +53,7 @@ textColor() {
 
 translate() {
   local msg="$1"
-  
+
   # Definieren Sie die Übersetzungen für jede Sprache
   declare -A translations
   case "${LANG:0:2}" in
