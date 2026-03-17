@@ -367,6 +367,7 @@ TryExec=/usr/local/bin/fluent-reader.AppImage
 EOF
 }
 
+# https://calibre-ebook.com/
 installCalibre() {
     textColor 3 'Install: Calibre'
     sudo apt -y install calibre
@@ -456,12 +457,7 @@ installSlack() {
     sudo snap install slack
 }
 
-installSkype() {
-    textColor 3 'Install: Skype'
-    sudo snap install skype
-}
-
-# https://element.io/download
+# https://element.io/
 installElement() {
     textColor 3 'Install: Element'
     sudo apt -y install wget apt-transport-https
@@ -472,7 +468,7 @@ installElement() {
     sudo apt -y install element-desktop
 }
 
-# https://zoom.us/download
+# https://zoom.com/
 installZoom() {
     textColor 3 'Install: Zoom'
     updateDebFromUrl "zoom" "https://zoom.us/client/latest/zoom_amd64.deb"
@@ -846,12 +842,12 @@ installAnyDesk() {
     textColor 3 'Install: AnyDesk'
 
     # Note: Own fix
-    wget -q https://keys.anydesk.com/repos/DEB-GPG-KEY -O- | sudo tee /etc/apt/keyrings/packages.anydesk.asc 1>/dev/null
-    fingerprint=$(gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.anydesk.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0}')
+    wget -q https://keys.anydesk.com/repos/DEB-GPG-KEY -O- | sudo tee /etc/apt/keyrings/keys.anydesk.asc 1>/dev/null
+    fingerprint=$(gpg -n -q --import --import-options import-show /etc/apt/keyrings/keys.anydesk.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0}')
     if [ "${fingerprint}" != "06B5EA2FAE208E7CDA9761DCA2FB21D5A8772835" ]; then
         echo "Verification failed: The fingerprint (${fingerprint}) does not match!"; exit 1;
     fi
-    echo "deb [signed-by=/etc/apt/keyrings/packages.anydesk.asc] http://deb.anydesk.com/ all main" | sudo tee /etc/apt/sources.list.d/anydesk.list 1>/dev/null
+    echo "deb [signed-by=/etc/apt/keyrings/keys.anydesk.asc] https://deb.anydesk.com all main" | sudo tee /etc/apt/sources.list.d/anydesk.list 1>/dev/null
     sudo apt update
     sudo apt -y install anydesk
 }
@@ -1286,7 +1282,6 @@ installSoftware() {
         "${TICK:-TRUE}" "installSignalFlatpak" "Signal (Flatpak)" "Instant messaging, Voice conferencing" "Flatpak" \
         "${TICK:-TRUE}" "installTelegram" "Telegram" "Instant messaging, Voice conferencing" "Archive" \
         "${TICK:-FALSE}" "installSlack" "Slack" "Instant messaging, Voice conferencing" "Snap" \
-        "${TICK:-FALSE}" "installSkype" "Skype" "Instant messaging, Voice conferencing" "Snap" \
         "${TICK:-FALSE}" "installElement" "Element" "Instant messaging" "Debian Repository" \
         "${TICK:-TRUE}" "installZoom" "Zoom" "Zoom meeting client" "Debian Package" \
         "${TICK:-FALSE}" "installLinphone" "Linphone" "Voice conferencing" "Apt" \
