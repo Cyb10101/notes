@@ -74,6 +74,15 @@ Sometimes the best patch is sunglasses and some ear protectors.
 
 ```bash
 sudo flatpak install flathub com.usebottles.bottles
+# sudo flatpak install flathub org.freedesktop.Platform.VulkanLayer.vkBasalt
+# sudo flatpak install flathub org.freedesktop.Platform.VulkanLayer.vkBasalt//25.08
+# sudo flatpak install flathub org.freedesktop.Platform.VulkanLayer.MangoHud
+# sudo flatpak install flathub com.obsproject.Studio.Plugin.OBSVkCapture
+# flatpak override --user --device=dri --socket=x11 --socket=wayland com.usebottles.bottles
+
+flatpak run --command=bottles-cli com.usebottles.bottles list bottles
+flatpak run --command=bottles-cli com.usebottles.bottles programs -b 'Games'
+flatpak run --command=bottles-cli com.usebottles.bottles run -b 'Games' -p 'Games Launcher'
 ```
 
 * Menü > Settings:
