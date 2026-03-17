@@ -65,6 +65,12 @@ Config file:
 # Do not overwrite any files
 --no-overwrites
 
+# Ignore errors
+--ignore-errors
+
+################################################################################
+# Video
+
 # Select best format
 -f bestvideo[ext=mkv]/bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best
 
