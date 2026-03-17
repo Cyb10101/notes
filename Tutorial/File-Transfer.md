@@ -77,6 +77,7 @@ Magic Wormhole:
 * [Rymdport](https://flathub.org/apps/details/io.github.jacalz.rymdport)
 * [RiftShare](https://flathub.org/apps/details/app.riftshare.RiftShare)
 * [Warp](https://flathub.org/apps/details/app.drey.Warp)
+* [Packet](https://github.com/nozwock/packet)
 
 * [Wormhole William](https://github.com/psanford/wormhole-william)
 * [Wormhole William Mobile](https://github.com/psanford/wormhole-william-mobile)
