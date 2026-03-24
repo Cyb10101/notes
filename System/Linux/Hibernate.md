@@ -155,15 +155,42 @@ sudo systemctl hibernate
 
 ## Configure lid power settings
 
+Edit logind.conf:
+
 ```bash
 sudo vim /etc/systemd/logind.conf
+```
 
+Changes of logind.conf:
+
+```conf
 # Handle lid switch when lid is closed
-HandleLidSwitch=poweroff # Shutdown computer
-HandleLidSwitch=hibernate # Hibernate computer
-HandleLidSwitch=suspend # Suspend computer
-HandleLidSwitch=ignore # Do nothing
+HandleLidSwitch=suspend-then-hibernate # Suspend then hibernate computer (delayed)
+HandleLidSwitchExternalPower=suspend-then-hibernate
+#HandleLidSwitch=poweroff # Shutdown computer
+#HandleLidSwitch=hibernate # Hibernate computer
+#HandleLidSwitch=suspend # Suspend computer
+#HandleLidSwitch=ignore # Do nothing
+```
 
+Edit sleep.conf:
+
+```bash
+sudo vim /etc/systemd/sleep.conf
+```
+
+Changes of sleep.conf:
+
+```conf
+[Sleep]
+AllowSuspendThenHibernate=yes
+HibernateDelaySec=30min
+#HibernateDelaySec=2h
+```
+
+Reboot:
+
+```bash
 sudo reboot
 #sudo systemctl restart systemd-logind
 ```
