@@ -74,7 +74,7 @@ ren "C:\opt\syncthing-windows-amd64-v$($version)" C:\opt\Syncthing
 $s=(New-Object -ComObject WScript.Shell).CreateShortcut($env:APPDATA + "\Microsoft\Windows\Start Menu\Programs\Startup\Start Syncthing.lnk");
 $s.TargetPath="C:\opt\Syncthing\syncthing.exe";
 $s.WorkingDirectory="C:\opt\Syncthing";
-$s.Arguments="serve --no-browser --logfile=default";
+$s.Arguments="serve --no-console --no-browser --logfile=default";
 $s.WindowStyle=7;
 $s.Save();
 
