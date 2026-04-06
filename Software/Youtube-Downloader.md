@@ -6,6 +6,8 @@
 
 * [yt-dlp](https://github.com/yt-dlp/yt-dlp)
 * [Simple Youtube Downloader GUI](../System/Linux/Scripts/youtube-downloader.sh)
+* [JavaScript Runtime](https://github.com/yt-dlp/yt-dlp/wiki/EJS)
+  * [Deno](https://docs.deno.com/runtime/getting_started/installation/#download-and-install)
 
 Install Linux:
 
@@ -22,6 +24,13 @@ yt-dlp 'https://www.youtube.com/watch?v=_I_m2_6TBbQ'
 # Lazy slow down downloading a playlist
 yt-dlp-playlist 'https://www.youtube.com/@SproutsDeutschland/shorts'
 yt-dlp-playlist() { yt-dlp --flat-playlist -j "$1" | jq -r '.webpage_url' | sed -r 's/(.*)/yt-dlp "\1"/'| awk 'NR % 3 == 0 {print; print "echo \"Sleep for 10 seconds ...\"; sleep 10"; next} 1' > 0-download.txt && bash 0-download.txt; }
+
+# Deno
+usernameRepository='denoland/deno'
+VERSION=$(curl -fsSL https://api.github.com/repos/${usernameRepository}/releases/latest | jq -r '.tag_name' | sed -r 's/v//g'); echo $VERSION
+curl --progress-bar -o /tmp/deno.zip -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/deno-x86_64-unknown-linux-gnu.zip"
+unzip /tmp/deno.zip -d /tmp/deno
+sudo install /tmp/deno/deno /usr/local/bin/deno
 ```
 
 Install Windows, run `powershell` as user.
@@ -67,6 +76,9 @@ Config file:
 
 # Ignore errors
 --ignore-errors
+
+# JavaScript Runtime
+--js-runtimes deno:/usr/local/bin/deno
 
 ################################################################################
 # Video
