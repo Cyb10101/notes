@@ -2,6 +2,16 @@
 
 Configure url: [about:config](about:config)
 
+## Enable touch-scrolling in Firefox
+
+Edit `/etc/security/pam_env.conf` and add this line:
+
+```text
+MOZ_USE_XINPUT2 DEFAULT=1
+```
+
+Log out and in again.
+
 ## Remove all service worker
 
 Open developer console on: [about:serviceworkers](about:serviceworkers)
