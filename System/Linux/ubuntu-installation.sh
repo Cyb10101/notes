@@ -724,6 +724,29 @@ installDrawioFlatpak() {
 }
 
 # https://github.com/qarmin/czkawka
+installKrokiet() {
+    textColor 3 'Install: Krokiet'
+    local usernameRepository='qarmin/czkawka'
+    local VERSION=$(getGithubReleaseLatest "${usernameRepository}")
+
+    curl --progress-bar -o /tmp/krokiet -fL "https://github.com/${usernameRepository}/releases/download/${VERSION}/linux_krokiet_x86_64"
+    sudo install /tmp/krokiet /usr/local/bin/krokiet
+
+    sudo curl --progress-bar -o /usr/local/share/icons/krokiet.svg -fL "https://raw.githubusercontent.com/${usernameRepository}/master/krokiet/icons/krokiet_logo.svg"
+
+    cat << EOF | sudo tee /usr/share/applications/Krokiet.desktop
+[Desktop Entry]
+Name=KrokietCzkawka
+Comment=Krokiet is a app to remove unnecessary files from your computer.
+Exec=/usr/local/bin/krokiet
+TryExec=/usr/local/bin/krokiet
+Terminal=false
+Type=Application
+Icon=/usr/local/share/icons/krokiet.svg
+StartupWMClass=krokiet
+Categories=Utility;
+EOF
+}
 installCzkawka() {
     textColor 3 'Install: Czkawka'
     local usernameRepository='qarmin/czkawka'
@@ -1310,7 +1333,8 @@ installSoftware() {
         "${TICK:-TRUE}" "installInkscape" "Inkscape" "Vector image editor" "Apt" \
         "${TICK:-FALSE}" "installDrawioSnap" "Draw.io" "Create diagrams" "Snap" \
         "${TICK:-TRUE}" "installDrawioFlatpak" "Draw.io" "Create diagrams" "Flatpak" \
-        "${TICK:-TRUE}" "installCzkawka" "Czkawka" "Duplicate image finder" "Github" \
+        "${TICK:-TRUE}" "installKrokiet" "Krokiet" "Duplicate image finder" "Github" \
+        "${TICK:-FALSE}" "installCzkawka" "Czkawka" "Duplicate image finder" "Github" \
         "${TICK:-TRUE}" "installExifCleaner" "ExifCleaner" "Remove exif data from files" "Github" \
         "${TICK:-TRUE}" "installFlameshot" "Flameshot" "Screenshot tools" "Apt" \
         "${TICK:-FALSE}" "installVokoScreen" "VokoScreen" "Screen recorder" "Apt" \
@@ -1370,6 +1394,7 @@ updateSoftware() {
         --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
         "FALSE" "installCroc" "Croc" "File transfer tool" \
         "FALSE" "installRestic" "Restic" "Backup tool" \
+        "FALSE" "installKrokiet" "Krokiet" "Duplicate image finder" \
         "FALSE" "installCzkawka" "Czkawka" "Duplicate image finder" \
         "FALSE" "installExifCleaner" "ExifCleaner" "Remove exif data from files" \
         "FALSE" "installDiscord" "Discord" "Instant messaging, Chat, Voice conferencing" \
