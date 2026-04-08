@@ -6,6 +6,7 @@
 Ctrl + , = Settings
 
 Ctrl + Shift + P = Powerbar / Command Palette
+Ctrl + P = Switch files
 
 Ctrl + D = Multi selection
 Ctrl + U = Revert Multi selection
@@ -22,62 +23,65 @@ This may not working:
 * VS Code Remote Development
 * Debugger: C#
 
+## Codium alias
+
+```bash
+alias code=codium
+```
+
 ## Extensions
 
 *Note: Restard needed!*
 
 ```bash
-binCode=$(which codium)
-binCode=$(which code)
-
 # Theme: One Dark Pro (Powerbar > Preferences: Color Theme)
-${binCode} --install-extension zhuangtongfa.material-theme
+code --install-extension zhuangtongfa.material-theme
 
 # German: (Powerbar > Configure Display Language)
-${binCode} --install-extension ms-ceintl.vscode-language-pack-de
-${binCode} --locale=de
+code --install-extension ms-ceintl.vscode-language-pack-de
+code --locale=de
 
 # Shortcut menu
-${binCode} --install-extension jerrygoyal.shortcut-menu-bar
+code --install-extension jerrygoyal.shortcut-menu-bar
 
 # ----------------------------------------------------------
 
 # Language: Apache Conf
-#${binCode} --install-extension mrmlnc.vscode-apache
+#code --install-extension mrmlnc.vscode-apache
 
 # Language: Twig
-${binCode} --install-extension mblode.twig-language-2
+code --install-extension mblode.twig-language-2
 
 # Language: PHP
-${binCode} --install-extension bmewburn.vscode-intelephense-client
+code --install-extension bmewburn.vscode-intelephense-client
 
 # Language: Markdown
-${binCode} --install-extension yzhang.markdown-all-in-one
+code --install-extension yzhang.markdown-all-in-one
 
 # Language: Windows Registry Script
-${binCode} --install-extension ionutvmi.reg
+code --install-extension ionutvmi.reg
 
 # Language: Better Shell Syntax (Highlighting)
-${binCode} --install-extension jeff-hykin.better-shellscript-syntax
+code --install-extension jeff-hykin.better-shellscript-syntax
 
 # Todo Tree
-${binCode} --install-extension gruntfuggly.todo-tree
+code --install-extension gruntfuggly.todo-tree
 
 # Unique Lines
-# ${binCode} --install-extension bibhasdn.unique-lines
-${binCode} --install-extension earshinov.filter-lines
-${binCode} --install-extension earshinov.simple-alignment
-${binCode} --install-extension earshinov.sort-lines-by-selection
-${binCode} --install-extension earshinov.permute-lines
+# code --install-extension bibhasdn.unique-lines
+code --install-extension earshinov.filter-lines
+code --install-extension earshinov.simple-alignment
+code --install-extension earshinov.sort-lines-by-selection
+code --install-extension earshinov.permute-lines
 
 # Rest Client
-${binCode} --install-extension humao.rest-client
+code --install-extension humao.rest-client
 
 # Markdown Editor
-${binCode} --install-extension zaaack.markdown-editor
+code --install-extension zaaack.markdown-editor
 
 # Hex Editor
-${binCode} --install-extension ms-vscode.hexeditor
+code --install-extension ms-vscode.hexeditor
 
 # Language: C++
 code --install-extension ms-vscode.cpptools
