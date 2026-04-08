@@ -3,15 +3,14 @@
 * [VSCodium](https://vscodium.com/)
 * [Visual Studio Code](https://code.visualstudio.com/)
 
-Ctrl + , = Settings
-
-Ctrl + Shift + P = Powerbar / Command Palette
-Ctrl + P = Switch files
-
-Ctrl + D = Multi selection
-Ctrl + U = Revert Multi selection
-
-Alt + Shift + Arrow-Key = Multi selection
+| Shortcut | Action |
+| --- | --- |
+| Ctrl + , | Settings |
+| Ctrl + Shift + P | Powerbar / Command Palette |
+| Ctrl + P | Switch files |
+| Ctrl + D | Multi selection |
+| Ctrl + U | Revert Multi selection |
+| Alt + Shift + Arrow-Key | Multi selection |
 
 ## Difference VSCodium
 
