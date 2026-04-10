@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# https://endoflife.date/
+set -euo pipefail
+
+# Functions ####################################################################
+scriptPath="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"; cd "$scriptPath"
+
+# textColor <color-digit> <string>...
+textColor() {
+  local color="$1"; shift
+  printf -- '\033[0;3%sm%s\033[0m\n' "$color" "$*"
+}
+
+textColorWithoutNewLine() {
+  local color="$1"; shift
+  printf -- '\033[0;3%sm%s\033[0m' "$color" "$*"
+}
+
+# hyperlink <url> [<title>]
+hyperlink() {
+  if [ $# -eq 1 ] || [ $# -eq 2 ]; then
+    printf "\e]8;;%s\a%s\e]8;;\a" "$1" "${2:-$1}"
+  fi
+}
+
+# Check required dependencies: checkDependencies <command>...
+checkDependencies() {
+  local missing=()
+
+  for cmd in "$@"; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      missing+=("$cmd")
+    fi
+  done
+
+  if [ "${#missing[@]}" -ne 0 ]; then
+    printf "Missing dependencies:\n" >&2
+    for cmd in "${missing[@]}"; do
+      printf -- " - %s\n" "$cmd" >&2
+    done
+    exit 1
+  fi
+}
+
+# Script #######################################################################
+fetchProductJson() {
+  local product="$1"
+  curl --header 'Accept: application/json' -fsSL "https://endoflife.date/api/${product}.json"
+}
+
+renderRows() {
+  local name="$1"
+  local product="$2"
+  local min_version="$3"
+  local link="$(hyperlink "https://endoflife.date/${product}" "Link")"
+
+  fetchProductJson "$product" | jq -r --arg name "$name" --arg version "$min_version" --arg link "$link" '
+def remove_older:
+  del((.[] | select((.cycle | split(".") | map(tonumber)) < ($version | split(".") | map(tonumber)))));
+  
+def is_old:
+  if .eol == true then true elif .eol == false then false
+  elif (.eol | strptime("%Y-%m-%d") | todate) < (now | todate) then true
+  else false end;
+
+def render_true(value):
+  (if value then "X" else "" end);
+
+remove_older | .[] | (if is_old then "\u001b[0;31m" else "\u001b[0;32m" end)
+  + "\($name)|\(.cycle)|\(.latest)|" + render_true(.lts) + "|\(.releaseDate)|\(.eol)|" + render_true(is_old) + "|\($link)" + "\u001b[0m"
+' | sort -t '|' -k2,2 -V --reverse
+}
+
+render() { \
+  textColor 3 '# End of life overview'
+  {
+    printf 'Name|Version|Latest|LTS|Release|End of life|Old|Url\n'
+    renderRows 'PHP' 'php' '8.1'
+    renderRows 'MariaDB' 'mariadb' '11.8'
+  } | column -t -s '|'; echo ''
+}
+
+checkDependencies curl jq sort awk
+render
+
