@@ -500,6 +500,18 @@ installAudacity() {
     sudo apt -y install audacity
 }
 
+# https://abcde.einval.com/wiki/
+installAbcde() {
+    textColor 3 'Install: abcde'
+    sudo apt -y install abcde
+}
+
+# https://picard.musicbrainz.org/
+installMusicBrainzPicard() {
+    textColor 3 'Install: MusicBrainz Picard'
+    sudo flatpak install -y flathub org.musicbrainz.Picard
+}
+
 installFreac() {
     textColor 3 'Install: fre:ac'
     sudo snap install freac
@@ -1273,6 +1285,8 @@ installSoftware() {
         "${TICK:-FALSE}" "installLinphone" "Linphone" "Voice conferencing" "Apt" \
         "${TICK:-TRUE}" "installSpotify" "Spotify" "Audio streaming" "Snap" \
         "${TICK:-TRUE}" "installAudacity" "Audacity" "Audio editor" "Apt" \
+        "${TICK:-FALSE}" "installAbcde" "abcde" "CD ripper" "Apt" \
+        "${TICK:-FALSE}" "installMusicBrainzPicard" "MusicBrainz Picard" "Audio tagger" "Snap" \
         "${TICK:-FALSE}" "installFreac" "fre:ac" "Audio converter and CD ripper" "Snap" \
         "${TICK:-TRUE}" "installJDownloader" "JDownloader" "Download manager" "Flatpak" \
         "${TICK:-TRUE}" "installVlc" "VLC (Video Lan Client)" "Video player" "Apt" \
