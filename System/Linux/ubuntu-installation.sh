@@ -953,45 +953,6 @@ installSyncthing() {
     curl --progress-bar -o ~/.local/share/applications/syncthing-ui.desktop -fL "https://raw.githubusercontent.com/syncthing/syncthing/main/etc/linux-desktop/syncthing-ui.desktop"
 }
 
-# https://nextcloud.com/
-installNextcloudDesktop() {
-    textColor 3 'Install: Nextcloud Desktop'
-
-    local usernameRepository='nextcloud-releases/desktop'
-    local VERSION=$(getGithubReleaseLatest "${usernameRepository}")
-    curl --progress-bar -o /tmp/nextcloud.AppImage -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/Nextcloud-${VERSION}-x86_64.AppImage"
-    sudo install /tmp/nextcloud.AppImage /usr/local/bin/nextcloud.AppImage
-
-    local usernameRepository='nextcloud/desktop'
-    sudo curl --progress-bar -o /usr/local/share/icons/nextcloud.svg -fL "https://raw.githubusercontent.com/${usernameRepository}/master/theme/colored/Nextcloud-icon.svg"
-
-    cat << EOF | sudo tee /usr/share/applications/nextcloud.desktop
-[Desktop Entry]
-Categories=Utility;X-SuSE-SyncUtility;
-Type=Application
-Exec=/usr/local/bin/nextcloud.AppImage
-Name=Nextcloud Desktop
-Comment=Nextcloud desktop synchronization client
-GenericName=Folder Sync
-Icon=/usr/local/share/icons/nextcloud.svg
-Keywords=Nextcloud;syncing;file;sharing;
-X-GNOME-Autostart-Delay=3
-Actions=Quit;
-Comment[de]=Nextcloud Desktop-Synchronisationsclient
-GenericName[de]=Ordner-Synchronisation
-Name[de]=Nextcloud Desktop-Synchronisationsclient
-Comment[de_DE]=Nextcloud Desktop-Synchronisationsclient
-GenericName[de_DE]=Ordner-Synchronisation
-Name[de_DE]=Nextcloud Desktop-Synchronisationsclient
-
-[Desktop Action Quit]
-Exec=/usr/local/bin/nextcloud.AppImage --quit
-Name=Quit Nextcloud
-Icon=/usr/local/bin/nextcloud.AppImage
-Name[de]=Nextcloud Beenden
-EOF
-}
-
 # https://filen.io/
 installFilen() {
     textColor 3 'Install: Filen'
@@ -1362,7 +1323,6 @@ installSoftware() {
         "${TICK:-FALSE}" "installPlayOnLinux" "PlayOnLinux" "Create multiple Wine prefixes" "Apt" \
         "${TICK:-TRUE}" "installSteam" "Steam" "Game client" "Apt" \
         "${TICK:-TRUE}" "installSyncthing" "Syncthing" "Sycronisation tool" "Debian Repository" \
-        "${TICK:-FALSE}" "installNextcloudDesktop" "Nextcloud Desktop" "Sycronisation tool" "AppImage" \
         "${TICK:-FALSE}" "installFilen" "Filen" "Cloud Drive" "Debian Package" \
         "${TICK:-TRUE}" "installRestic" "Restic" "Backup tool" "Apt + Self" \
         "${TICK:-TRUE}" "installRdiffBackup" "RdiffBackup" "Backup tool" "Apt" \
@@ -1409,7 +1369,6 @@ updateSoftware() {
         "FALSE" "installFluentReader" "Fluent Reader" "RSS Reader" \
         "FALSE" "installHeidiSql" "HeidiSQL" "FTP/SFTP Client" \
         "FALSE" "installMpvOverlay" "MPV Overlay" "MPV Overlay" \
-        "FALSE" "installNextcloudDesktop" "Nextcloud Desktop" "Sycronisation tool" \
         "FALSE" "installOpenShot" "OpenShot" "Video editor" \
         "FALSE" "installPutty" "PuTTY" "PuTTY utilities" \
         "FALSE" "installRustDesk" "RustDesk" "Remote maintenance" \
