@@ -470,7 +470,6 @@ sudo apt -y install steam
 
 * [Rsync](https://rsync.samba.org/)
 * [FreeFileSync](https://freefilesync.org/)
-* [Synchredible](https://www.ascomp.de/de/products/synchredible/)
 
 * [TeraCopy](https://www.codesector.com/teracopy)
 
@@ -488,14 +487,11 @@ sudo apt install -f
 
 * [Restic notes](../Software/Restic/Restic.md)
 * [rdiff-backup notes](../Software/rdiff-backup.md)
-* [ascomp - BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
 
 Windows:
 
 ```shell
 sudo scoop install restic --global
-
-#$tools.lazyInstall("Backup Maker", "https://www.ascomp.de/de/download/bkmaker.exe", "bkmaker.exe", "/SILENT /NORESTART")
 ```
 
 ## File transfer

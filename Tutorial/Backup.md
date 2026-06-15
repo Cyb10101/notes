@@ -10,7 +10,8 @@ But what you want is as simple a tool as possible to back up the most important 
 
 For most inexperienced users, it is a good choice.
 
-* [ascomp - BackUp Maker](https://www.ascomp.de/de/products/backupmaker/)
+* [FreeFileSync](https://freefilesync.org/)
+  * [Backup Tutorial (German)](https://www.youtube.com/watch?v=FWi0DSlc81U)
 
 ## Experienced users
 
@@ -38,7 +39,6 @@ rsync -rtPhv --no-p --no-g --chmod=ugo=rwX --delete \
   --exclude "**/AppData/Local/Microsoft/WindowsApps" \
   --exclude "**/AppData/Local/Packages" \
   --exclude "**/AppData/Local/Temp" \
-  --exclude "**/AppData/Roaming/ASCOMP Software/BackUp Maker" \
   /mnt/c/Users/username/ /media/backup/
 ```
 

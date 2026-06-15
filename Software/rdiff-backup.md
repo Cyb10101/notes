@@ -54,7 +54,6 @@ C:\Users\username\Desktop\rdiff-backup --use-compatible-timestamps --api-version
   --exclude "**/AppData/Local/Microsoft/WindowsApps" ^
   --exclude "**/AppData/Local/Packages" ^
   --exclude "**/AppData/Local/Temp" ^
-  --exclude "**/AppData/Roaming/ASCOMP Software/BackUp Maker" ^
   C:\Users\username\ D:\backup\
 ```
 
