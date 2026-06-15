@@ -81,7 +81,7 @@ Magic Wormhole:
 
 * [Wormhole William](https://github.com/psanford/wormhole-william)
 * [Wormhole William Mobile](https://github.com/psanford/wormhole-william-mobile)
-* [Android: Wormhole William](https://play.google.com/store/apps/details?id=io.sanford.wormhole_william)
+  * [Android: Wormhole William](https://play.google.com/store/apps/details?id=io.sanford.wormhole_william)
 
 ```bash
 # Install Linux
@@ -115,8 +115,6 @@ LocalSend:
 Open source:
 
 * [Syncthing](https://syncthing.net/)
-* [Nextcloud](https://nextcloud.com/)
-* [ownCloud](https://owncloud.com/)
 
 Closed source:
 

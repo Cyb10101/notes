@@ -184,7 +184,6 @@ $apps = @(
   "Balena.Etcher",                      # balenaEtcher (https://www.balena.io/etcher)
   "Valve.Steam",                        # Steam (https://store.steampowered.com)
   # Error: "Syncthing.Syncthing",       # Syncthing (https://github.com/syncthing/syncthing)
-  "Nextcloud.NextcloudDesktop",         # Nextcloud (https://nextcloud.com)
   "Dropbox.Dropbox",                    # Dropbox (https://www.dropbox.com)
   # Error: "restic.restic",             # Restic (https://github.com/restic/restic)
   "Microsoft.VisualStudioCode",         # Visual Studio Code (https://code.visualstudio.com)
