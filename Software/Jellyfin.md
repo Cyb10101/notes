@@ -163,6 +163,8 @@ volume-gain=10
 
 Kiosk mode, media center, Home Theater Personal Computer (HTPC), or whatever you call it when you use a small computer as a TV player.
 
+* [Cage Kiosk](https://github.com/cage-kiosk/cage/wiki)
+
 * Maybe you should not use a sandbox system like Flatpak.
 * Use as few permissions as possible.
   * That means locking the app, for example using Cage.
@@ -173,7 +175,8 @@ Kiosk mode, media center, Home Theater Personal Computer (HTPC), or whatever you
 Install and create cage-jellyfin.desktop:
 
 ```bash
-sudo apt install cage
+sudo apt install cage imv gnome-backgrounds
+#sudo apt install feh swaybg
 sudo vim /usr/share/wayland-sessions/cage-jellyfin.desktop
 ```
 
@@ -194,7 +197,7 @@ DesktopNames=Cage
 Create cage-jellyfin.desktop:
 
 ```bash
-sudo vim /usr/local/bin/cage-watchdog-jellyfin.sh
+sudo nano /usr/local/bin/cage-watchdog-jellyfin.sh
 ```
 
 Contents of cage-watchdog-jellyfin.sh:
@@ -208,6 +211,8 @@ SERVER_URL="http://192.168.178.21:8096/health"
 INITIAL_CHECK_SECONDS=10
 RUNTIME_CHECK_SECONDS=180
 FAILS_BEFORE_RESTART=3
+#WALLPAPER="/usr/share/backgrounds/gnome/blobs-l.svg"
+WALLPAPER="/usr/share/backgrounds/Little_numbat_boy_by_azskalt.png"
 
 # Jellyfin command
 APP_ID="org.jellyfin.JellyfinDesktop"
@@ -221,7 +226,25 @@ is_server_up() {
   /usr/bin/curl -fsS --max-time 3 "$SERVER_URL" > /dev/null 2>&1
 }
 
-# Flatpak signal not exists
+wallpaper_start() {
+  if [ -n "${WALLPAPER_PID:-}" ] && kill -0 "$WALLPAPER_PID" 2>/dev/null; then
+    return
+  fi
+  # @todo Test in virtual machine: cage -- feh ...
+  # feh --borderless --bg-scale "$WALLPAPER" & # No --bg-scale on Wayland
+  #swaybg -i "$WALLPAPER" -m fill & # Missing a required Wayland interface
+  imv-wayland -f "$WALLPAPER" &
+  WALLPAPER_PID=$!
+}
+
+wallpaper_stop() {
+  if [ -n "${WALLPAPER_PID:-}" ]; then
+    kill "$WALLPAPER_PID" 2>/dev/null || true
+    WALLPAPER_PID=""
+  fi
+}
+
+# @todo Flatpak signal not exists https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-kill
 kill_app_soft_kill() {
   # Ask nicely
   /usr/bin/flatpak kill --signal=TERM "$APP_ID" >/dev/null 2>&1 || true
@@ -242,7 +265,14 @@ kill_app() {
   /usr/bin/flatpak kill "$APP_ID" >/dev/null 2>&1 || true
 }
 
+# Clean Wallpaper at the end of the script
+trap wallpaper_stop EXIT
+WALLPAPER_PID=""
+
 while true; do
+  # Show wallpapers as long as server is waiting
+  wallpaper_start
+
   # Wait until server is reachable
   until is_server_up; do sleep "$INITIAL_CHECK_SECONDS"; done
 
