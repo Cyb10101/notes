@@ -6,6 +6,13 @@ Requirements:
 sudo apt -y install ffmpeg faac faad flac lame libmad0 libmpcdec6 mppenc vorbis-tools wavpack
 ```
 
+## Text
+
+```bash
+# Convert ISO-8859-1 to UTF-8
+cat input.txt | iconv -f ISO-8859-1 -t UTF-8 > output.txt
+```
+
 ## Image
 
 Convert images:
@@ -252,13 +259,14 @@ ffmpeg -f concat -safe 0 -i <(find -maxdepth 1 -type f -name '*.mp4' -printf "fi
 # Create Mkv file
 ```
 
-## Concat *.mp4
+## Concat *.mp4/avi
 
 ```bash
 # Re-encode
-filterComplex=$(for i in {0..2}; do echo -n "[${i}:v] [${i}:a] "; done; i=$((i+1)); echo "concat=n=${i}:v=1:a=1 [vv] [aa]")
-ffmpeg -i file1.mp4 -i file2.mp4 -i file3.mp4 \
-    -filter_complex "${filterComplex}" -map "[vv]" -map "[aa]" output.mp4
+files=("movie 1.mp4" "movie 2.mp4")
+filterComplex=$(for i in {0..$((${#files} -1))}; do echo -n "[${i}:v] [${i}:a] "; done; i=$((i+1)); echo "concat=n=${i}:v=1:a=1 [vv] [aa]")
+argsInput=(); for f in "${files[@]}"; do argsInput+=(-i "$f"); done
+ffmpeg "${argsInput[@]}" -filter_complex "${filterComplex}" -map "[vv]" -map "[aa]" output.mp4
 
 # Just concat
 ffmpeg -f concat -safe 0 -i <(find -maxdepth 1 -type f -name '*.mp4' -printf "file '$PWD/%p'\n" | sort) -c copy output.mp4
