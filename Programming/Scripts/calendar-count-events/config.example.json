@@ -1,0 +1,21 @@
+{
+  "ics_files": [
+    "General.ics"
+  ],
+  "caldav": {
+    "url": "https://example.com/remote.php/dav",
+    "username": "username",
+    "password": "app-password",
+    "calendar_names": [
+      "General"
+    ]
+  },
+  "rules": [
+    {
+      "calendar_name": "General",
+      "event_name": "Meeting",
+      "start_date": "2020-01-01",
+      "maximum_count": 10
+    }
+  ]
+}
