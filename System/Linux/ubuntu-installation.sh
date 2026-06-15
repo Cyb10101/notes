@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # wget -O - https://raw.githubusercontent.com/Cyb10101/notes/master/System/Linux/ubuntu-installation.sh | bash
 
 # Development:
 # echo ~/Sync/notes/System/Linux/ubuntu-installation.sh | entr cp ~/Sync/notes/System/Linux/ubuntu-installation.sh ~/Downloads/public/
-
-# Exit on error
-set -e
 
 # @todo if script is root: sudo $USER $HOME ~ is root path
 #echo "1u: $USER"
@@ -29,35 +27,45 @@ textColor() {
   echo -e "\033[0;3${1}m${2}\033[0m"
 }
 
-checkCurlInstalled() {
-  if ! command -v yad &>/dev/null; then
-    textColor 3 "# Install: Curl"
-    sudo apt update
-    sudo apt -y install curl
-  fi
-  if ! command -v curl &>/dev/null; then
-    textColor 1 "Curl is not installed. Aborting!"
-    exit 1;
+# Check required dependencies: checkDependencies <command>...
+checkDependencies() {
+  local missing=()
+
+  for cmd in "$@"; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      missing+=("$cmd")
+    fi
+  done
+
+  if [ "${#missing[@]}" -ne 0 ]; then
+    printf "Missing dependencies:\n" >&2
+    for cmd in "${missing[@]}"; do
+      printf -- " - %s\n" "$cmd" >&2
+    done
+
+    askRequired 'Install packages?'
+    if [ $? -eq 0 ]; then
+      sudo apt update
+      sudo apt -y install "${missing[@]}"
+    else
+      exit 1
+    fi
   fi
 }
 
-checkYadInstalled() {
-  if ! command -v yad &>/dev/null; then
-    textColor 3 "# Install: Yad"
-    sudo apt update
-    sudo apt -y install yad
-  fi
-  if ! command -v yad &>/dev/null; then
-    textColor 1 "Yad is not installed. Aborting!"
-    exit 1;
-  fi
+# askRequired 'Install packages?'
+askRequired() {
+    read -p "$1 [y/N] " -n 1 -r; echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1 # handle exits from shell or function but don't exit interactive shell
+    fi
 }
 
 getUsername() {
     #local selectedUsername=($(yad --center --on-top --width=600 --height=200 --title="Select current user" \
     #    --list --radiolist --separator=" " \
     #    --column=" " --column="Username" \
-    #    --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+    #    --print-column=2 --button=yad-cancel:1 --button=yad-ok:0 \
     #    "TRUE" "cyb10101" \
     #    "FALSE" "user" \
     #))
@@ -66,7 +74,7 @@ getUsername() {
     local text=${1:-Select a user}
     local selectedUsername=($(yad --center --on-top --width=400 --title="Select a username" \
         --entry --text="${text}:" --image="user-info" --editable  \
-        --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        --print-column=2 --button=yad-cancel:1 --button=yad-ok:0 \
         "cyb10101" "user" \
     ))
     echo "${selectedUsername}"
@@ -92,7 +100,7 @@ getGithubReleaseLatestFileUrl() {
 reboot() {
     set +e
     yad --center --on-top --image="gtk-dialog-warning" --width=300 --title "Reboot" \
-        --button="gtk-cancel:1" --button="gtk-ok:0" --text "Reboot System?"
+        --button=yad-cancel:1 --button=yad-ok:0 --text "Reboot System?"
     if [ $? -eq 0 ]; then sudo reboot; exit; fi
     set -e
 }
@@ -225,8 +233,7 @@ installDocker() {
     # Only if your want run it for another user than root
     selectedUsername=$(getUsername 'Select a user to run Docker container')
     if [ -z "${selectedUsername}" ]; then
-        textColor 1 "Error: Username not selected!"
-        exit 1;
+        textColor 1 "Error: Username not selected!"; exit 1
     fi
     sudo usermod -aG docker ${selectedUsername}
 }
@@ -245,25 +252,26 @@ updateDebFromUrl() {
   local name="$1"
   local url="$2"
   local tmp
-  tmp="$(mktemp -d /tmp/app-install_XXXXXXXX)"
-  #trap 'rm -r "$tmp"' RETURN
+  #trap 'rm -r "$TMP_DIR"' RETURN
 
   # Download
-  curl --progress-bar -o "$tmp/$name.deb" -fL "$url"
+  curl --progress-bar -o "$TMP_DIR/$name.deb" -fL "$url"
 
   # Read versions
-  local new_ver="$(dpkg-deb -f "$tmp/$name.deb" Version)"
+  local new_ver="$(dpkg-deb -f "$TMP_DIR/$name.deb" Version)"
   local installed_ver="$(dpkg-query -W -f='${Version}\n' "$name" 2>/dev/null || true)"
 
   if [[ -n "${installed_ver}" ]] && dpkg --compare-versions "$new_ver" le "$installed_ver"; then
     echo "$name is up to date ($installed_ver)"
-    rm -r "$tmp"
+    rm "$TMP_DIR/$name.deb"
     return 0
   fi
 
-  textColor 3 "Installing $name $new_ver (was ${installed_ver:-not installed}) ..."
-  sudo dpkg -i "$tmp/$name.deb"
-  rm -r "$tmp"
+  local textWasInstalled=''
+  if [[ -n "${installed_ver}" ]]; then textWasInstalled=" (was ${installed_ver:-})"; fi;
+  textColor 3 "Installing $name ${new_ver}${textWasInstalled} ..."
+  sudo dpkg -i "$TMP_DIR/$name.deb"
+  rm "$TMP_DIR/$name.deb"
 }
 
 # Software #####################################################################
@@ -1143,7 +1151,6 @@ installVirtualBoxExtensionPack() {
     rm /tmp/Oracle_VirtualBox_Extension_Pack-${VBOX_VERSION}.vbox-extpack
 }
 
-
 installUbuntuRestrictedExtras() {
     textColor 3 'Install: Ubuntu Restricted Extras'
 
@@ -1193,7 +1200,7 @@ removePackages() {
     #packages=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=400 --title="Remove Software" \
     #    --list --checklist --multiple --separator=" " \
     #    --column=" " --column="Action" --column="Application" --column="Description" \
-    #    --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+    #    --search-column=3 --hide-column=2 --print-column=2 --button=yad-cancel:1 --button=yad-ok:0 \
     #    "TRUE" "totem" "Totem" "Video player" \
     #))
     #sudo apt -y remove "${packages[@]}"
@@ -1203,7 +1210,7 @@ removePackages() {
         selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=600 --height=400 --title="Remove Software (Snap)" \
             --list --checklist --multiple --separator=" " \
             --column=" " --column="Action" --column="Application" --column="Description" \
-            --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+            --search-column=3 --hide-column=2 --print-column=2 --button=yad-cancel:1 --button=yad-ok:0 \
             "TRUE" "removeFirefoxSnap" "Remove Firefox" "Web Browser" \
         ))
         for selected in "${selectedList[@]}"; do
@@ -1216,12 +1223,12 @@ removePackages() {
 # https://github.com/junegunn/fzf
 installEssential() {
     textColor 3 'Install: Essential'
-    sudo apt -y install git aria2 curl jq
-
     packages=($(yad --center --on-top --width=600 --height=400 --title="Install Essential" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
         --search-column=3 --hide-column=2 --print-column=2 \
+        "FALSE" "git" "Git" "Version control system" \
+        "TRUE" "aria2" "Aria2" "Command line download client" \
         "TRUE" "cifs-utils nfs-common sshfs" "File system tools" "Tools for SSH, Samba and NFS" \
         "TRUE" "vim" "Vim" "Text editor" \
         "TRUE" "ncdu" "Ncdu" "NCurses Disk Usage" \
@@ -1249,13 +1256,14 @@ installEssential() {
 }
 
 installDependencies() {
+    # @todo docker is not a dependency
     notExistsFlatpak=$([ ! -e /usr/bin/flatpak ] && echo 'TRUE' || echo 'FALSE')
     notExistsWine=$([ ! -e /usr/bin/wine ] && echo 'TRUE' || echo 'FALSE')
     notExistsDocker=$([ ! -e /usr/bin/docker ] && echo 'TRUE' || echo 'FALSE')
     selectedList=($(yad --center --on-top --width=600 --height=300 --title="Install Dependencies" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
-        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        --search-column=3 --hide-column=2 --print-column=2 --button=yad-cancel:1 --button=yad-ok:0 \
         "${notExistsFlatpak}" "installFlatpak" "Flatpak" "Package manager" \
         "${notExistsWine}" "installWine" "Wine" "Run Windows applications" \
         "${notExistsDocker}" "installDocker" "Docker" "Container Virtualisation" \
@@ -1284,7 +1292,7 @@ installSoftware() {
     selectedList=($(yad --center --window-icon="gtk-ok" --width=800 --height=600 --title="Install Software" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" --column="Source" \
-        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        --search-column=3 --hide-column=2 --print-column=2 --button=yad-cancel:1 --button=yad-ok:0 \
         --expand-column=4 \
         "${TICK:-FALSE}" "installFirefoxFlatpak" "Firefox (Flatpak)" "Webbrowser" "Flatpak" \
         "${TICK:-FALSE}" "installFirefoxSnap" "Firefox (Snap)" "Webbrowser" "Snap" \
@@ -1414,33 +1422,40 @@ updateSoftware() {
     done
 }
 
-TICK="${1:-}"
-if [[ "${1}" == "true" ]]; then
-    TICK='TRUE'
-elif [[ "${1}" == "false" ]]; then
-    TICK='FALSE'
+if [ "${EUID}" -eq 0 ]; then
+    textColor 1 'Error: Do not run this script as root or with sudo! Script execute as sudo command when needed.'; exit 1
 fi
 
+TMP_DIR="$(mktemp -d /tmp/app-install_$(date +%Y-%m-%d_%H-%M-%S)_XXXXXX)"
+trap 'rm -r "$TMP_DIR"' EXIT
+TMP_GNUPGHOME="$TMP_DIR/gnupghome"; mkdir "$TMP_GNUPGHOME"; chmod 700 "$TMP_GNUPGHOME"
+
+
 # Better to ask what should be started
-checkCurlInstalled
-checkYadInstalled
+checkDependencies curl jq yad
 prepareSystem
 
-selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=350 --height=250 --title="Installation Process" \
-    --list --checklist --multiple --separator=" " \
-    --column=" " --column="Action" --column="Application" \
-    --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
-    "${TICK:-FALSE}" "configure" "Configure" \
-    "${TICK:-TRUE}" "systemUpdate" "System update" \
-    "${TICK:-FALSE}" "removePackages" "Remove Packages" \
-    "${TICK:-FALSE}" "installEssential" "Install Essential" \
-    "${TICK:-FALSE}" "installDependencies" "Install Dependencies: Flatpak, Wine, Docker" \
-    "${TICK:-FALSE}" "installSoftware" "Install Software" \
-    "${TICK:-TRUE}" "updateSoftware" "Update Software" \
-))
-for selected in "${selectedList[@]}"; do
-    ${selected}
-done
+# Simple quick run
+quickCmd="${1:-}"
+if [[ ! -z "$quickCmd" ]]; then
+ "$quickCmd"
+else
+    selectedList=($(yad --center --window-icon="gtk-ok" --on-top --width=350 --height=250 --title="Installation Process" \
+        --list --checklist --multiple --separator=" " \
+        --column=" " --column="Action" --column="Application" \
+        --search-column=3 --hide-column=2 --print-column=2 --button=yad-cancel:1 --button=yad-ok:0 \
+        "FALSE" "configure" "Configure" \
+        "TRUE" "systemUpdate" "System update" \
+        "FALSE" "removePackages" "Remove Packages" \
+        "FALSE" "installEssential" "Install Essential" \
+        "FALSE" "installDependencies" "Install Dependencies: Flatpak, Wine, Docker" \
+        "FALSE" "installSoftware" "Install Software" \
+        "TRUE" "updateSoftware" "Update Software" \
+    ))
+    for selected in "${selectedList[@]}"; do
+        ${selected}
+    done
+fi
 
 #if [ ! -f /tmp/ubuntu-installation.lock ]; then
     #yad --center --on-top --image="gtk-dialog-info" --width=400 --title "Prepare System" \
