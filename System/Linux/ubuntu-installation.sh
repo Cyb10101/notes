@@ -345,11 +345,6 @@ installLibreOffice() {
     sudo apt -y install libreoffice libreoffice-base libreoffice-l10n-de
 }
 
-installPdfArranger() {
-    textColor 3 'Install: PDF Arranger'
-    sudo apt -y install pdfarranger
-}
-
 # https://hyliu.me/fluent-reader/
 installFluentReader() {
     textColor 3 'Install: Fluent Reader'
@@ -1263,7 +1258,6 @@ installSoftware() {
         "${TICK:-FALSE}" "installThunderbird" "Thunderbird" "Mail client" "Apt" \
         "${TICK:-TRUE}" "installThunderbirdSnap" "Thunderbird" "Mail client" "Snap" \
         "${TICK:-TRUE}" "installLibreOffice" "LibreOffice" "Office Suite" "Apt" \
-        "${TICK:-TRUE}" "installPdfArranger" "PDF Arranger" "PDF Arranger" "Apt" \
         "${TICK:-FALSE}" "installFluentReader" "Fluent Reader" "RSS Reader" "Github" \
         "${TICK:-FALSE}" "installCalibre" "Calibre" "EBook Reader (epub)" "Apt" \
         "${TICK:-FALSE}" "installComix" "Comix (mComix)" "Comic Book Reader (cbz, cbr)" "Apt" \
