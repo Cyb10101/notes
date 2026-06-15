@@ -221,7 +221,7 @@ installWine() {
     textColor 3 'Install: Wine'
     sudo dpkg --add-architecture i386
     sudo apt update
-    sudo apt -y install wine-stable winbind wine32:i386 winetricks
+    sudo apt -y install wine wine64 wine32 winetricks
     winecfg -v win11
 }
 
@@ -243,8 +243,8 @@ installDockerCompose() {
     textColor 3 'Install: Docker Compose'
     local usernameRepository='docker/compose'
     local VERSION=$(getGithubReleaseLatest "${usernameRepository}")
-    curl --progress-bar -o /tmp/docker-compose -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/docker-compose-$(uname -s)-$(uname -m)"
-    sudo install /tmp/docker-compose /usr/local/bin/docker-compose
+    curl --progress-bar -o "$TMP_DIR/docker-compose" -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/docker-compose-$(uname -s)-$(uname -m)"
+    sudo install "$TMP_DIR/docker-compose" /usr/local/bin/docker-compose
 }
 
 # Update a package from a direct .deb URL only if it is newer
@@ -301,11 +301,15 @@ removeFirefoxSnap() {
 installFirefoxForceAptMozilla() {
     textColor 3 'Install: Firefox (Force Apt Mozilla)'
 
-    wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc 1>/dev/null
-    fingerprint=$(gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0}')
+    wget -O "$TMP_DIR/packages.mozilla.org.asc" -q https://packages.mozilla.org/apt/repo-signing-key.gpg
+    fingerprint=$( \
+        GNUPGHOME="$TMP_GNUPGHOME" gpg -n -q --import --import-options import-show "$TMP_DIR/packages.mozilla.org.asc" \
+        | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0}'
+    )
     if [ "${fingerprint}" != "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3" ]; then
         echo "Verification failed: The fingerprint (${fingerprint}) does not match\!"; exit 1
     fi
+    sudo mv "$TMP_DIR/packages.mozilla.org.asc" /etc/apt/keyrings/packages.mozilla.org.asc
     echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee /etc/apt/sources.list.d/mozilla.list 1>/dev/null
     printf "Package: *\nPin: origin packages.mozilla.org\nPin-Priority: 1001" | sudo tee /etc/apt/preferences.d/mozilla 1>/dev/null
 
@@ -395,13 +399,6 @@ installYacReaderFlatpak() {
 installDiscord() {
     textColor 3 'Install: Discord'
     updateDebFromUrl "discord" "https://discord.com/api/download?platform=linux&format=deb"
-
-    #curl --progress-bar -o /tmp/discord.deb -fL "https://discord.com/api/download?platform=linux&format=deb"
-    # @bug Installation failed because packages missing
-    #set +e
-    #sudo dpkg -i /tmp/discord.deb
-    #set -e
-    #sudo apt -y -f install
 }
 
 # https://threema.ch/
@@ -474,18 +471,8 @@ installElement() {
 # https://zoom.com/
 installZoom() {
     textColor 3 'Install: Zoom'
+    sudo apt -y install libxcb-keysyms1 libxcb-image0 libxcb-xtest0 libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4
     updateDebFromUrl "zoom" "https://zoom.us/client/latest/zoom_amd64.deb"
-
-    #curl --progress-bar -o /tmp/zoom.deb -fL "https://zoom.us/client/latest/zoom_amd64.deb"
-    #sudo apt -y install libgl1-mesa-glx libegl1-mesa libxcb-xtest0 libxcb-cursor0
-    sudo apt -y install libxcb-xinerama0 libxcb-xtest0 libxcb-cursor0
-    #sudo dpkg -i /tmp/zoom.deb
-}
-
-# https://download.linphone.org/releases/linux/app/
-installLinphone() {
-    textColor 3 'Install: Linphone'
-    sudo apt -y install linphone-desktop
 }
 
 # https://www.spotify.com/de/download/linux/
@@ -652,10 +639,8 @@ installGwenview() {
 installXnview() {
     textColor 3 'Install: Xnview'
 
-    curl --progress-bar -o /tmp/XnViewMP.deb -fL "https://download.xnview.com/XnViewMP-linux-x64.deb"
-    # Fix missing
-    sudo apt -y install libgdk-pixbuf2.0-0 libxcb-xinerama0
-    sudo dpkg -i /tmp/XnViewMP.deb
+    sudo apt -y install libxcb-xinerama0 libopenal1 libopenal-data libsndio7.0
+    updateDebFromUrl "xnview" "https://download.xnview.com/XnViewMP-linux-x64.deb"
 
     xnview &
     yad --center --on-top --width=400 --title "Configure XnView" --button="gtk-ok:0" --text "Run XnView, initialize config file and close it!"
@@ -803,6 +788,16 @@ installExifCleaner() {
     sudo dpkg -i /tmp/exifcleaner.deb
 }
 
+# https://gradia.alexandervanhee.be/
+installGradiaFlatpak() {
+    textColor 3 'Install: Flameshot'
+    sudo flatpak install -y flathub be.alexandervanhee.gradia
+}
+installGradiaSnap() {
+    textColor 3 'Install: Flameshot'
+    sudo snap install gradia
+}
+
 # https://flameshot.org/
 installFlameshot() {
     textColor 3 'Install: Flameshot'
@@ -842,15 +837,6 @@ installConky() {
     sudo apt -y install conky-all
 }
 
-# https://www.hoptodesk.com/
-installHopToDesk() {
-    textColor 3 'Install: HopToDesk'
-    curl --progress-bar -o /tmp/hoptodesk.deb -fL "https://www.hoptodesk.com/hoptodesk.deb"
-    # Fix missing packages
-    sudo apt -y install libxdo3
-    sudo dpkg -i /tmp/hoptodesk.deb
-}
-
 # https://rustdesk.com/
 installRustDesk() {
     textColor 3 'Install: RustDesk'
@@ -862,17 +848,13 @@ installRustDesk() {
     sudo dpkg -i /tmp/rustdesk.deb
 }
 
-# https://teamviewer.com/
-installTeamViewer() {
-    textColor 3 'Install: TeamViewer'
-    curl --progress-bar -o /tmp/teamviewer.deb -fL "https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
+# https://www.hoptodesk.com/
+installHopToDesk() {
+    textColor 3 'Install: HopToDesk'
+    curl --progress-bar -o /tmp/hoptodesk.deb -fL "https://www.hoptodesk.com/hoptodesk.deb"
     # Fix missing packages
-    sudo apt -y install libminizip1t64 libxcb-xinerama0
-    sudo dpkg -i /tmp/teamviewer.deb
-
-    # @fixme: Key is stored in deprecated trusted.gpg keychain
-    #sudo apt-key export 8CAE012EBFAC38B17A937CD8C5E224500C1289C0 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/teamviewer -2017.gpg
-    #sudo apt-key export D2A5FEB3488160F028CC17918DA84BE5DEB49217 | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/teamviewer.gpg
+    sudo apt -y install libxdo3
+    sudo dpkg -i /tmp/hoptodesk.deb
 }
 
 # https://anydesk.com/
@@ -880,27 +862,41 @@ installAnyDesk() {
     textColor 3 'Install: AnyDesk'
 
     # Note: Own fix
-    wget -q https://keys.anydesk.com/repos/DEB-GPG-KEY -O- | sudo tee /etc/apt/keyrings/keys.anydesk.asc 1>/dev/null
-    fingerprint=$(gpg -n -q --import --import-options import-show /etc/apt/keyrings/keys.anydesk.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0}')
+    wget -O "$TMP_DIR/keys.anydesk.asc" -q https://keys.anydesk.com/repos/DEB-GPG-KEY
+    fingerprint=$( \
+        GNUPGHOME="$TMP_GNUPGHOME" gpg -n -q --import --import-options import-show "$TMP_DIR/keys.anydesk.asc" \
+        | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0}'
+    )
     if [ "${fingerprint}" != "06B5EA2FAE208E7CDA9761DCA2FB21D5A8772835" ]; then
         echo "Verification failed: The fingerprint (${fingerprint}) does not match!"; exit 1;
     fi
+    sudo mv "$TMP_DIR/keys.anydesk.asc" /etc/apt/keyrings/keys.anydesk.asc
     echo "deb [signed-by=/etc/apt/keyrings/keys.anydesk.asc] https://deb.anydesk.com all main" | sudo tee /etc/apt/sources.list.d/anydesk.list 1>/dev/null
     sudo apt update
     sudo apt -y install anydesk
 }
 
+# https://teamviewer.com/
+installTeamViewer() {
+    textColor 3 'Install: TeamViewer'
+    curl --progress-bar -o /tmp/teamviewer.deb -fL "https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
+    # Fix missing packages
+    sudo apt -y install libminizip1 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
+    sudo dpkg -i /tmp/teamviewer.deb
+}
+
+# @todo Checksum, defect by design
 installNoMachine() {
     textColor 3 'Install: NoMachine'
     # NoMachine Linux 64bit - https://download.nomachine.com/download/?id=1&platform=linux
-    local NOMACHINE_VERSION="9.0.188_11"
-    local NOMACHINE_MD5="3be0ab4243c1000a8cca5f653f8ea7fc"
+    local NOMACHINE_VERSION="9.4.14_1"
+    local NOMACHINE_MD5="482826d9e0c2a7e23a1020a15213556c"
     local NOMACHINE_OS="Linux" && NOMACHINE_ARCHITECTURE="amd64"
     local NOMACHINE_VERSION_SHORT=`echo ${NOMACHINE_VERSION} | cut -d. -f1-2`
     curl --progress-bar -o /tmp/nomachine.deb -fL "https://download.nomachine.com/download/${NOMACHINE_VERSION_SHORT}/${NOMACHINE_OS}/nomachine_${NOMACHINE_VERSION}_${NOMACHINE_ARCHITECTURE}.deb"
 
     if ! echo "${NOMACHINE_MD5} /tmp/nomachine.deb" | md5sum -c -; then
-        yad --center --on-top --image="gtk-dialog-error" --width=400 --title "NoMachine" --button="gtk-close:1" --text "Error installing NoMachine!\nMD5 checksum not match!"
+        yad --center --on-top --image="gtk-dialog-error" --width=400 --title "NoMachine" --button=yad-close:1 --text "Error installing NoMachine!\nMD5 checksum not match!"
     else
         sudo dpkg -i /tmp/nomachine.deb
     fi
@@ -914,7 +910,7 @@ installBalenaEtcher() {
     curl --progress-bar -o /tmp/etcher.deb -fL "https://github.com/${usernameRepository}/releases/download/v${VERSION}/balena-etcher_${VERSION}_amd64.deb"
 
     ## Fix
-    sudo apt -y install gconf2 gconf-service libgconf-2-4
+    #sudo apt -y install gconf2 gconf-service libgconf-2-4
 
     sudo dpkg -i /tmp/etcher.deb
 
@@ -999,7 +995,7 @@ installDeluge() {
 # https://flathub.org/apps/com.vixalien.sticky
 # https://www.vixalien.com/
 installVixalienStickyNotes() {
-    textColor 3 'Install: VSCodium'
+    textColor 3 'Install: Sticky Notes'
     sudo flatpak install -y flathub com.vixalien.sticky
 }
 
@@ -1058,21 +1054,24 @@ installFileZilla() {
 
 # https://www.heidisql.com/download.php
 installHeidiSql() {
-    local VERSION='12.11.1.167'
-    curl --progress-bar -o /tmp/HeidiSQL.deb -fL "https://www.heidisql.com/downloads/releases/HeidiSQL_${VERSION}.deb"
+    local VERSION='12.17'
+    local VERSION2='12.17'
+    curl --progress-bar -o /tmp/HeidiSQL.deb -fL "https://github.com/HeidiSQL/HeidiSQL/releases/download/${VERSION}/heidisql_${VERSION2}_amd64.deb"
     sudo apt -y install libmysqlclient21 mysql-common
+    #sudo apt -y install libqt6widgets6 libqt6gui6 libqt6core6 libqt6pas6 libmariadb-dev libpq5 libsybdb5
     sudo dpkg -i /tmp/HeidiSQL.deb
 }
 installHeidiSqlWine() {
     textColor 3 'Install: HeidiSQL (Wine)'
-    local VERSION='12.11.1.167'
+    local VERSION='12.17'
+    local VERSION2='12.17.0.7270'
 
     if [ ! -d ~/Dokumente/HeidiSQL ]; then mkdir -p ~/Dokumente/HeidiSQL; fi
     if [ -d ~/Dokumente/HeidiSQL/../../Sync/notes/Programming/SQL ] && [ ! -d ~/Dokumente/HeidiSQL/Snippets ]; then
         ln -s ../../Sync/notes/Programming/SQL ~/Dokumente/HeidiSQL/Snippets
     fi
 
-    curl --progress-bar -o /tmp/heidisql.exe -fL "https://www.heidisql.com/installers/HeidiSQL_${VERSION}_Setup.exe"
+    curl --progress-bar -o /tmp/heidisql.exe -fL "https://github.com/HeidiSQL/HeidiSQL/releases/download/${VERSION}/HeidiSQL_${VERSION2}_Setup.exe"
     wine /tmp/heidisql.exe
 }
 
@@ -1088,7 +1087,7 @@ installPutty() {
 installVirtualBox() {
     textColor 3 'Install: VirtualBox'
     echo 'virtualbox-ext-pack virtualbox-ext-pack/license select true' | sudo debconf-set-selections
-    sudo apt -y install virtualbox virtualbox-ext-pack
+    sudo apt -y install virtualbox virtualbox-ext-pack virtualbox-guest-additions-iso
     #sudo systemctl disable vboxweb.service
 }
 
@@ -1206,7 +1205,7 @@ installEssential() {
         "TRUE" "htop" "Htop" "Interactive process viewer" \
         "TRUE" "inxi" "Inxi" "System information script" \
         "TRUE" "testdisk extundelete" "Recover files" "Packages: testdisk, extundelete" \
-        "TRUE" "p7zip-full p7zip-rar" "7-Zip" "Compression tools (+7-Zip-Rar)" \
+        "TRUE" "7zip 7zip-rar" "7-Zip" "Compression tools (7-Zip + Rar)" \
         "TRUE" "rar unrar-free" "Rar" "Compression tools" \
         "TRUE" "diffutils" "Diff Utils" "Compare files" \
         "TRUE" "gparted" "GParted" "Partition Editor" \
@@ -1268,7 +1267,7 @@ installSoftware() {
         "${TICK:-FALSE}" "installFirefoxForceAptPPA" "Firefox (Force Apt PPA)" "Webbrowser directly from mozilla repository" "Apt" \
         "${TICK:-TRUE}" "installChromiumSnap" "Chromium (Snap)" "Webbrowser" "Snap" \
         "${TICK:-FALSE}" "installThunderbird" "Thunderbird" "Mail client" "Apt" \
-        "${TICK:-TRUE}" "installThunderbirdSnap" "Thunderbird" "Mail client" "Snap" \
+        "${TICK:-TRUE}" "installThunderbirdSnap" "Thunderbird (Snap)" "Mail client" "Snap" \
         "${TICK:-TRUE}" "installLibreOffice" "LibreOffice" "Office Suite" "Apt" \
         "${TICK:-FALSE}" "installFluentReader" "Fluent Reader" "RSS Reader" "Github" \
         "${TICK:-FALSE}" "installCalibre" "Calibre" "EBook Reader (epub)" "Apt" \
@@ -1282,7 +1281,6 @@ installSoftware() {
         "${TICK:-FALSE}" "installSlack" "Slack" "Instant messaging, Voice conferencing" "Snap" \
         "${TICK:-FALSE}" "installElement" "Element" "Instant messaging" "Debian Repository" \
         "${TICK:-TRUE}" "installZoom" "Zoom" "Zoom meeting client" "Debian Package" \
-        "${TICK:-FALSE}" "installLinphone" "Linphone" "Voice conferencing" "Apt" \
         "${TICK:-TRUE}" "installSpotify" "Spotify" "Audio streaming" "Snap" \
         "${TICK:-TRUE}" "installAudacity" "Audacity" "Audio editor" "Apt" \
         "${TICK:-FALSE}" "installAbcde" "abcde" "CD ripper" "Apt" \
@@ -1313,16 +1311,18 @@ installSoftware() {
         "${TICK:-TRUE}" "installKrokiet" "Krokiet" "Duplicate image finder" "Github" \
         "${TICK:-FALSE}" "installCzkawka" "Czkawka" "Duplicate image finder" "Github" \
         "${TICK:-TRUE}" "installExifCleaner" "ExifCleaner" "Remove exif data from files" "Github" \
-        "${TICK:-TRUE}" "installFlameshot" "Flameshot" "Screenshot tools" "Apt" \
+        "${TICK:-TRUE}" "installGradiaFlatpak" "Gradia (Flatpak)" "Screenshot tool" "Flatpak" \
+        "${TICK:-FALSE}" "installGradiaSnap" "Gradia (Snap)" "Screenshot tool" "Snap" \
+        "${TICK:-FALSE}" "installFlameshot" "Flameshot" "Screenshot tool" "Apt" \
         "${TICK:-FALSE}" "installVokoScreen" "VokoScreen" "Screen recorder" "Apt" \
         "${TICK:-FALSE}" "installObsStudio" "ObsStudio" "Screen recorder" "Apt + Repository" \
         "${TICK:-TRUE}" "installObsStudioFlatpak" "ObsStudio (Flatpak)" "Screen recorder" "Flatpak" \
         "${TICK:-TRUE}" "installVideoTools" "Video tools" "ffmpeg" "Apt" \
         "${TICK:-TRUE}" "installConky" "Conky" "Desktop tools" "Apt" \
-        "${TICK:-TRUE}" "installHopToDesk" "HopToDesk" "Remote maintenance" "Debian Package" \
         "${TICK:-TRUE}" "installRustDesk" "RustDesk" "Remote maintenance" "Git + Debian Package" \
-        "${TICK:-TRUE}" "installTeamViewer" "TeamViewer" "Remote maintenance" "Debian Package" \
+        "${TICK:-TRUE}" "installHopToDesk" "HopToDesk" "Remote maintenance" "Debian Package" \
         "${TICK:-TRUE}" "installAnyDesk" "AnyDesk" "Remote maintenance" "Debian Repository" \
+        "${TICK:-TRUE}" "installTeamViewer" "TeamViewer" "Remote maintenance" "Debian Package" \
         "${TICK:-TRUE}" "installNoMachine" "NoMachine" "Remote maintenance" "Debian Package" \
         "${TICK:-TRUE}" "installBalenaEtcher" "Balena Etcher" "USB burning tool" "Debian Package" \
         "${TICK:-TRUE}" "installK3b" "K3b" "Disc burning tool" "Apt" \
@@ -1367,7 +1367,7 @@ updateSoftware() {
     selectedList=($(yad --center --window-icon="gtk-ok" --width=600 --height=600 --title="Update Software" \
         --list --checklist --multiple --separator=" " \
         --column=" " --column="Action" --column="Application" --column="Description" \
-        --search-column=3 --hide-column=2 --print-column=2 --button=gtk-cancel:1 --button=gtk-ok:0 \
+        --search-column=3 --hide-column=2 --print-column=2 --button=yad-cancel:1 --button=yad-ok:0 \
         "FALSE" "installCroc" "Croc" "File transfer tool" \
         "FALSE" "installRestic" "Restic" "Backup tool" \
         "FALSE" "installKrokiet" "Krokiet" "Duplicate image finder" \
