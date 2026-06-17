@@ -10,7 +10,7 @@ Download the [TMDB](https://www.themoviedb.org/) Watchlist of available streamin
 
 ```bash
 # One time: Add the TMDB v4 read access token to .env file
-TMDB_APIKEY='Your API Key'<
+TMDB_APIKEY='Your API Key'
 
 # Then allow account access. This stores .tmdb-auth.json locally.
 ./tmdb-local.py auth
