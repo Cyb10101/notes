@@ -2,6 +2,13 @@
 
 Configure url: [about:config](about:config)
 
+## user.js
+
+```javascript
+// Don't open download panel on new downloads
+user_pref("browser.download.alwaysOpenPanel", false);
+```
+
 ## Enable touch-scrolling in Firefox
 
 Edit `/etc/security/pam_env.conf` and add this line:
@@ -90,4 +97,93 @@ Double encoding - Disable encoding (Gzip):
 
 ```text
 network.http.accept-encoding = ""
+```
+
+## Extract jsonlz4 file
+
+```bash
+sudo apt install python3-virtualenv python3-venv python3-distutils-extra
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install --upgrade pip lz4
+```
+
+File `extract-jsonlz4.sh input.jsonlz4 output.json`:
+
+```python
+#!/usr/bin/env python3
+import sys
+import json
+import lz4.block
+
+input_file = sys.argv[1]
+output_file = sys.argv[2]
+
+with open(input_file, "rb") as file:
+    data = file.read()
+
+if not data.startswith(b"mozLz40\0"):
+    raise SystemExit("Not a Firefox jsonlz4 file")
+
+decompressed = lz4.block.decompress(data[8:])
+
+with open(output_file, "wb") as file:
+    file.write(decompressed)
+```
+
+## Statistics
+
+Therapeutic measure to display almost insignificant statistics about browser use.
+
+- [firefox-bookmark-tree.py](firefox-bookmark-tree.py)
+
+### Statistics from open tabs via Addon
+
+- [Addon: Export Tabs URLs](https://addons.mozilla.org/en-US/firefox/addon/export-tabs-urls-and-titles/)
+
+```bash
+# Top domains from open tabs (Use "Export Tab Urls" extension)
+sed -r 's/https?:\/\/(www\.)?([^\/]+)\/.*/\2/g' ex.txt | sort | uniq -c | sort -nr | head -n 20
+```
+
+### Statistics from open tabs via recovery.json
+
+Navigate to to your firefox profile and extract `sessionstore-backups/recovery.jsonlz4`.
+
+```bash
+# Top domains from open tabs
+jq -r '
+  .windows[].tabs[]
+  | .entries[.index - 1].url
+  | select(type == "string")
+  | capture("^[a-zA-Z]+://(?<host>[^/]+)")?
+  | .host
+  | sub("^www\\."; "")
+' recovery.json | sort | uniq -c | sort -nr | less
+
+# Duplicate URLs
+jq -r '.windows[].tabs[] | .entries[.index - 1].url | select(type == "string")' recovery.json | sort | uniq -c | sort -nr | awk '$1 > 1'
+```
+
+### Statistics from bookmarks
+
+[Extract bookmarks](https://support.mozilla.org/en-US/kb/restore-bookmarks-from-backup-or-move-them#w_manual-backup):
+
+- Menu > Bookmarks > Manage bookmarks
+- Import and Backup > Backup
+
+```bash
+# Show top bookmarked domains
+jq -r '
+  .. | objects
+  | select(.type == "text/x-moz-place" and .uri)
+  | .uri
+  | select(test("^https?://"))
+  | capture("^https?://(?<host>[^/]+)")?
+  | .host
+  | sub("^www\\."; "")
+' bookmarks.json | sort | uniq -c | sort -nr | head -n 20
+
+# Show duplicate bookmark URLs
+jq -r '.. | objects | select(.type == "text/x-moz-place" and .uri) | .uri' bookmarks.json | sort | uniq -c | sort -nr | awk '$1 > 1'
 ```
