@@ -136,34 +136,7 @@ with open(output_file, "wb") as file:
 Therapeutic measure to display almost insignificant statistics about browser use.
 
 - [firefox-bookmark-tree.py](firefox-bookmark-tree.py)
-
-### Statistics from open tabs via Addon
-
-- [Addon: Export Tabs URLs](https://addons.mozilla.org/en-US/firefox/addon/export-tabs-urls-and-titles/)
-
-```bash
-# Top domains from open tabs (Use "Export Tab Urls" extension)
-sed -r 's/https?:\/\/(www\.)?([^\/]+)\/.*/\2/g' ex.txt | sort | uniq -c | sort -nr | head -n 20
-```
-
-### Statistics from open tabs via recovery.json
-
-Navigate to to your firefox profile and extract `sessionstore-backups/recovery.jsonlz4`.
-
-```bash
-# Top domains from open tabs
-jq -r '
-  .windows[].tabs[]
-  | .entries[.index - 1].url
-  | select(type == "string")
-  | capture("^[a-zA-Z]+://(?<host>[^/]+)")?
-  | .host
-  | sub("^www\\."; "")
-' recovery.json | sort | uniq -c | sort -nr | less
-
-# Duplicate URLs
-jq -r '.windows[].tabs[] | .entries[.index - 1].url | select(type == "string")' recovery.json | sort | uniq -c | sort -nr | awk '$1 > 1'
-```
+- [firefox-tab-tree.py](firefox-tab-tree.py)
 
 ### Statistics from bookmarks
 
@@ -173,17 +146,52 @@ jq -r '.windows[].tabs[] | .entries[.index - 1].url | select(type == "string")' 
 - Import and Backup > Backup
 
 ```bash
+# Store firefox profile folder in a variable
+FIREFOX_PROFILE=~/.mozilla/firefox/f1r3f0x.default-release
+
 # Show top bookmarked domains
-jq -r '
-  .. | objects
-  | select(.type == "text/x-moz-place" and .uri)
-  | .uri
-  | select(test("^https?://"))
-  | capture("^https?://(?<host>[^/]+)")?
-  | .host
-  | sub("^www\\."; "")
-' bookmarks.json | sort | uniq -c | sort -nr | head -n 20
+lz4jsoncat "$(ls $FIREFOX_PROFILE/bookmarkbackups/*.jsonlz4 | tail -1)" | jq -r '
+  .. | objects | select(.type == "text/x-moz-place" and .uri) | .uri | select(test("^https?://"))
+  | capture("^https?://(?<host>[^/]+)")? | .host | sub("^www\\."; "")
+' | sort | uniq -c | sort -nr | head -n 20
 
 # Show duplicate bookmark URLs
-jq -r '.. | objects | select(.type == "text/x-moz-place" and .uri) | .uri' bookmarks.json | sort | uniq -c | sort -nr | awk '$1 > 1'
+lz4jsoncat "$(ls $FIREFOX_PROFILE/bookmarkbackups/*.jsonlz4 | tail -1)" | \
+  jq -r '.. | objects | select(.type == "text/x-moz-place" and .uri) | .uri' | sort | uniq -c | sort -nr | awk '$1 > 1'
+```
+
+### Statistics from open tabs via Addon
+
+- [Addon: Export Tabs URLs](https://addons.mozilla.org/en-US/firefox/addon/export-tabs-urls-and-titles/)
+
+```bash
+# Top domains from open tabs (Use "Export Tab Urls" extension)
+sed -r 's/https?:\/\/(www\.)?([^\/]+)\/.*/\2/g' firefox-tabs.txt | sort | uniq -c | sort -nr | head -n 20
+```
+
+### Statistics from open tabs via recovery.json
+
+Navigate to to your firefox profile and extract `sessionstore-backups/recovery.jsonlz4`.
+
+```bash
+sudo apt install lz4json
+
+# Store firefox profile folder in a variable
+FIREFOX_PROFILE=~/.mozilla/firefox/f1r3f0x.default-release
+
+# Top domains from open tabs
+lz4jsoncat "$FIREFOX_PROFILE/sessionstore-backups/previous.jsonlz4" | jq -r '
+  .windows[].tabs[] | .entries[.index - 1].url | select(type == "string")
+  | capture("^[a-zA-Z]+://(?<host>[^/]+)")? | .host | sub("^www\\."; "")
+' | sort | uniq -c | sort -nr | head -n 20
+
+# Duplicate URLs
+lz4jsoncat "$FIREFOX_PROFILE/sessionstore-backups/previous.jsonlz4" | \
+  jq -r '.windows[].tabs[] | .entries[.index - 1].url | select(type == "string")' | sort | uniq -c | sort -nr | awk '$1 > 1'
+
+# Tabs per group
+lz4jsoncat "$FIREFOX_PROFILE/sessionstore-backups/previous.jsonlz4" | \
+  jq -r '.windows[] as $w | (($w.groups // []) | map({(.id): .name}) | add // {}) as $g |
+       $w.tabs[] | $g[.groupId // "-"] // "(ungrouped)"' |
+  sort | uniq -c | sort -rn
 ```
