@@ -8,7 +8,7 @@ Handy if you need a lot of images for test purposes.
 
 Create a aria2 hook file `0-aria2-fix-extension.sh`:
 
-```bash
+```shell
 #!/usr/bin/env bash
 # aria2c calls this with: GID, number of files, file path
 filepath="$3"
@@ -27,7 +27,7 @@ mv "$filepath" "$filepath.$ext"
 
 Prepare and download images:
 
-```bash
+```shell
 # Download and extract file
 wget -O unsplash-lite.zip https://unsplash.com/data/lite/latest
 unzip -p unsplash-lite.zip photos.tsv000 > 0-photos.tsv
@@ -35,7 +35,11 @@ unzip -p unsplash-lite.zip photos.tsv000 > 0-photos.tsv
 # Generate download file
 tail -n +2 0-photos.tsv | cut -f3 > 1-images.txt
 
-# Add hook file and make it executable
+# Consider if you really need original pictures
+# sed -i 's/$/\?w=1920/' 1-images.txt
+sed -i 's/$/\?w=640/' 1-images.txt
+
+# Add aria2 hook file and make it executable
 chmod +x 0-aria2-fix-extension.sh
 
 # Download and resume aborted download
