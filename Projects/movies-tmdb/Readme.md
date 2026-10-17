@@ -9,20 +9,20 @@ Download the [TMDB](https://www.themoviedb.org/) Watchlist of available streamin
 * [TMDB Developer: Getting Started](https://developer.themoviedb.org/reference/intro/getting-started)
 
 ```bash
-# One time: Add the TMDB v4 read access token to .env file
+# One time: Add the TMDB v4 read access token to .env.local file (overrides .env)
 TMDB_APIKEY='Your API Key'
 
 # Then allow account access. This stores .tmdb-auth.json locally.
-./tmdb-local.py auth
+./cli.py auth
 
-# Save the current watchlist as movies.json.
-./tmdb-local.py watchlist
+# Save the current watchlist as cache/watchlist.json (posters to cache/images/tmdb).
+./cli.py watchlist
 
-# Update streaming providers separately.
-./tmdb-local.py providers
+# Update streaming providers separately (cache/providers.json, logos to cache/images/providers).
+./cli.py providers
 
 # Optional: Generate static website
-./create-static.py
+./cli.py static
 ```
 
 ## Configuration
@@ -42,9 +42,9 @@ const config = {
 FILENAME="movies_$(date '+%Y-%m-%d').md"
 
 echo "## Movies\n" > "$FILENAME"
-jq -r '.movies |= sort_by(.title) | .movies[] | "- [ ] [\(.title) (\(.year))](\(.url))"' movies.json >> "$FILENAME"
+jq -r '.movies |= sort_by(.title) | .movies[] | "- [ ] [\(.title) (\(.year))](\(.url))"' cache/watchlist.json >> "$FILENAME"
 
 echo '' >> "$FILENAME"
 echo "## TV\n" >> "$FILENAME"
-jq -r '.tvs |= sort_by(.title) | .tvs[] | "- [ ] [\(.title) (\(.year))](\(.url))"' movies.json >> "$FILENAME"
+jq -r '.tvs |= sort_by(.title) | .tvs[] | "- [ ] [\(.title) (\(.year))](\(.url))"' cache/watchlist.json >> "$FILENAME"
 ```

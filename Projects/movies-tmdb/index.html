@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- https://getbootstrap.com/ -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
   <title>Movies</title>
 <style>
@@ -20,21 +20,33 @@ body {
   cursor: pointer;
 }
 
-#filterProviders {
+#filterProviders,
+#filterGenres {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: .45rem;
   align-items: stretch;
 }
-#filterProviders > .text-secondary {
+.filter-section > summary {
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: .45rem;
+}
+.filter-section:not([open]) > summary {
+  margin-bottom: 0;
+}
+#filterProviders > .text-secondary,
+#filterGenres > .text-secondary {
   grid-column: 1 / -1;
 }
-#filterProviders .form-check {
+#filterProviders .form-check,
+#filterGenres .form-check {
   padding-left: 0;
   margin: 0;
   min-width: 0;
 }
-#filterProviders .form-check-input {
+#filterProviders .form-check-input,
+#filterGenres .form-check-input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
@@ -64,12 +76,14 @@ body {
 .filter-provider-label.provider-favorite:hover {
   background: rgb(253, 230, 138);
 }
-#filterProviders .form-check-input:checked + .filter-provider-label {
+#filterProviders .form-check-input:checked + .filter-provider-label,
+#filterGenres .form-check-input:checked + .filter-provider-label {
   background: rgb(255, 255, 255);
   border-color: rgb(37, 99, 235);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, .16);
 }
-#filterProviders .form-check-input:checked + .filter-provider-label.provider-favorite {
+#filterProviders .form-check-input:checked + .filter-provider-label.provider-favorite,
+#filterGenres .form-check-input:checked + .filter-provider-label.provider-favorite {
   background: rgb(254, 243, 199);
   border-color: rgb(37, 99, 235);
 }
@@ -202,10 +216,10 @@ body {
     </div>
   </template>
 
-  <div id="filter" class="container-fluid">
+  <div id="filter" class="container-fluid mb-3">
     <div class="row">
       <div class="col-12 col-md-12 col-lg-3 col-xl-2">
-        <div class="text-secondary">View</div>
+        <div class="text-secondary">Availability</div>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="showProviderFreeAds" name="showProviderFreeAds" checked>
           <label class="form-check-label" for="showProviderFreeAds"><span class="provider-dot provider-free-ads-color"></span>Free / Ads</label>
@@ -224,7 +238,7 @@ body {
         </div>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="showProviderNone" name="showProviderNone" checked>
-          <label class="form-check-label" for="showProviderNone"><span class="provider-dot provider-none-color"></span>Unavailable</label>
+          <label class="form-check-label" for="showProviderNone"><span class="provider-dot provider-none-color"></span>No provider detected</label>
         </div>
         <div class="text-secondary mt-3">Sort</div>
         <select id="sortMode" class="form-select form-select-sm">
@@ -233,11 +247,14 @@ body {
         </select>
       </div>
       <div class="col">
-        <div class="row">
-          <div class="col" id="filterProviders">
-            <div class="text-secondary">Providers</div>
-          </div>
-        </div>
+        <details class="filter-section" open>
+          <summary class="text-secondary">Providers <span id="filterProvidersCount"></span></summary>
+          <div id="filterProviders"></div>
+        </details>
+        <details class="filter-section mt-3" open>
+          <summary class="text-secondary">Genres <span id="filterGenresCount"></span></summary>
+          <div id="filterGenres"></div>
+        </details>
       </div>
     </div>
   </div>
@@ -267,6 +284,7 @@ class Movies {
   initialize(moviesDirect, providersDirect, config = {}) {
     const instance = this;
     this.filterProvidersAvailable = {};
+    this.genreNames = {};
     this.providersData = {items: {}};
     this.providerGroups = [
       {key: 'freeAds', sources: ['free', 'ads'], label: 'Free / Ads', className: 'provider-free-ads'},
@@ -283,7 +301,7 @@ class Movies {
       Array.isArray(config?.providerBlacklist) ? config.providerBlacklist : defaultProviderBlacklist
     ).map(String);
 
-    // For lazy movies.json include, not really recommended
+    // For lazy watchlist.json include, not really recommended
     if (moviesDirect && (
       moviesDirect.movies && moviesDirect.movies.length > 0
       || moviesDirect.tvs && moviesDirect.tvs.length > 0
@@ -292,8 +310,8 @@ class Movies {
       instance.render(moviesDirect);
     } else {
       Promise.all([
-        fetch('/movies.json', {cache: 'no-cache'}).then((response) => response.json()),
-        fetch('/providers.json', {cache: 'no-cache'}).then((response) => response.json()).catch(() => ({items: {}})),
+        fetch('/cache/watchlist.json', {cache: 'no-cache'}).then((response) => response.json()),
+        fetch('/cache/providers.json', {cache: 'no-cache'}).then((response) => response.json()).catch(() => ({items: {}})),
       ]).then(([moviesData, providersData]) => {
         instance.providersData = providersData || {items: {}};
         instance.render(moviesData);
@@ -318,6 +336,7 @@ class Movies {
     this.parseMovies('tvs', data.tvs);
     this.sortContainers();
     this.addProviderFilter();
+    this.addGenreFilter();
     this.addViewFilter();
     this.search();
   }
@@ -351,6 +370,10 @@ class Movies {
 
       tmpl.children[0].dataset.type = movieType;
       tmpl.children[0].dataset.id = movie.id || 0;
+      tmpl.children[0].dataset.genres = Object.keys(movie.genres || {}).join(',');
+      for (const [genreId, genreName] of Object.entries(movie.genres || {})) {
+        this.genreNames[genreId] = genreName;
+      }
       tmpl.children[0].dataset.title = movie.title.toLowerCase();
       tmpl.children[0].dataset.year = Number.isInteger(year) ? year : 0;
       tmpl.querySelector('.title').innerText = movie.title + (year > 0 ? ` (${year})` : '');
@@ -361,7 +384,7 @@ class Movies {
         image.onerror = null;
         image.setAttribute('src', 'images/no-image.jpg');
       };
-      image.setAttribute('src', `images/tmdb/${movieType}-${movie.id}.jpg`);
+      image.setAttribute('src', `cache/images/tmdb/${movieType}-${movie.id}.jpg`);
 
       this.addProvidersToCard(tmpl.children[0], tmpl.querySelector('.providers'), movie, movieType);
 
@@ -499,17 +522,29 @@ class Movies {
     }
     const visibleGroups = this.visibleProviderGroups();
     const showNoProviders = document.getElementById('showProviderNone').checked;
+    const selectedGenres = [...document.querySelectorAll('#filterGenres input:checked')].map(input => input.value);
+    document.getElementById('filterProvidersCount').innerText = selectedProviders.length > 0 ? `(${selectedProviders.length} selected)` : '';
+    document.getElementById('filterGenresCount').innerText = selectedGenres.length > 0 ? `(${selectedGenres.length} selected)` : '';
 
     this.updateProviderBadges(selectedProviders, visibleGroups);
-    const movieStats = this.filterMovies(document.querySelectorAll('#movies > *'), selectedProviders, visibleGroups, showNoProviders);
-    const tvStats = this.filterMovies(document.querySelectorAll('#tvs > *'), selectedProviders, visibleGroups, showNoProviders);
+    const movieStats = this.filterMovies(document.querySelectorAll('#movies > *'), selectedProviders, visibleGroups, showNoProviders, selectedGenres);
+    const tvStats = this.filterMovies(document.querySelectorAll('#tvs > *'), selectedProviders, visibleGroups, showNoProviders, selectedGenres);
     this.updateStats(movieStats, tvStats);
   }
 
-  filterMovies(movies, selectedProviders, visibleGroups, showNoProviders) {
+  filterMovies(movies, selectedProviders, visibleGroups, showNoProviders, selectedGenres = []) {
     let visibleCount = 0;
+    let totalCount = 0;
     if (movies.length > 0) {
       for (let i = 0; i < movies.length; i++) {
+        totalCount++;
+
+        const movieGenres = (movies[i].dataset.genres || '').split(',');
+        if (selectedGenres.length > 0 && !selectedGenres.some(genreId => movieGenres.includes(genreId))) {
+          movies[i].style.display = 'none';
+          continue;
+        }
+
         let display = false;
         const movieProviderIds = this.movieProviderIdsForGroups(movies[i], visibleGroups);
         const hasAnyProvider = this.movieProviderIdsForGroups(movies[i], this.providerGroups.map(group => group.key)).length > 0;
@@ -530,7 +565,7 @@ class Movies {
     }
     return {
       visible: visibleCount,
-      total: movies.length,
+      total: totalCount,
     };
   }
 
@@ -558,7 +593,7 @@ class Movies {
     });
 
     const filterProviders = document.getElementById('filterProviders');
-    filterProviders.innerHTML = '<div class="text-secondary">Providers</div>';
+    filterProviders.innerHTML = '';
     for (const provider of filterProvidersAvailableSorted) {
       const tmpl = document.getElementById('template-filter-switch').content.cloneNode(true);
 
@@ -587,6 +622,41 @@ class Movies {
         instance.search();
       });
       filterProviders.appendChild(tmpl);
+    }
+  }
+
+  addGenreFilter() {
+    const instance = this;
+    const selectedGenres = new Set();
+    document.querySelectorAll('#filterGenres input:checked').forEach(input => selectedGenres.add(input.value));
+
+    const genreIds = new Set();
+    for (const card of document.querySelectorAll('.movie-card')) {
+      (card.dataset.genres || '').split(',').filter(Boolean).forEach(genreId => genreIds.add(genreId));
+    }
+    const genreIdsSorted = [...genreIds].sort((a, b) => (this.genreNames[a] || '').localeCompare(this.genreNames[b] || ''));
+
+    const filterGenres = document.getElementById('filterGenres');
+    filterGenres.innerHTML = '';
+    for (const genreId of genreIdsSorted) {
+      const tmpl = document.getElementById('template-filter-switch').content.cloneNode(true);
+
+      const input = tmpl.querySelector('input');
+      input.id = `filterGenre-${genreId}`;
+      input.name = `filterGenre-${genreId}`;
+      input.value = genreId;
+      input.checked = selectedGenres.has(genreId);
+
+      const label = tmpl.querySelector('label');
+      label.classList.add('filter-provider-label');
+      label.htmlFor = `filterGenre-${genreId}`;
+      label.innerText = this.genreNames[genreId] || genreId;
+      label.title = this.genreNames[genreId] || genreId;
+
+      input.addEventListener('change', (event) => {
+        instance.search();
+      });
+      filterGenres.appendChild(tmpl);
     }
   }
 
@@ -656,7 +726,7 @@ class Movies {
 
 const movies = new Movies();
 
-// Only if you want include movies.json
+// Only if you want include watchlist.json
 const moviesDirect = {movies: [], tvs: []};
 const providersDirect = {items: {}};
 

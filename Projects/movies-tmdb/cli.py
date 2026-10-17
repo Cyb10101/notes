@@ -12,12 +12,17 @@ from datetime import datetime, timezone
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 AUTH_FILE = os.path.join(BASE_DIR, ".tmdb-auth.json")
 ENV_FILE = os.path.join(BASE_DIR, ".env")
+# Local overrides (e.g. the real API key)
+ENV_LOCAL_FILE = os.path.join(BASE_DIR, ".env.local")
+CACHE_DIR = os.path.join(BASE_DIR, "cache")
+WATCHLIST_FILE = os.path.join(CACHE_DIR, "watchlist.json")
+PROVIDERS_FILE = os.path.join(CACHE_DIR, "providers.json")
 API3 = "https://api.themoviedb.org/3"
 API4 = "https://api.themoviedb.org/4"
 IMAGE_BASE = "https://image.tmdb.org/t/p/w300_and_h450_bestv2"
 LOGO_BASE = "https://image.tmdb.org/t/p/original"
-POSTER_DIR = os.path.join(BASE_DIR, "images", "tmdb")
-PROVIDER_LOGO_DIR = os.path.join(BASE_DIR, "images", "providers")
+POSTER_DIR = os.path.join(CACHE_DIR, "images", "tmdb")
+PROVIDER_LOGO_DIR = os.path.join(CACHE_DIR, "images", "providers")
 PROGRESS_LINE_LENGTH = 0
 
 
@@ -43,6 +48,7 @@ def load_json(path, fallback):
 
 
 def save_json(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as stream:
         json.dump(data, stream, ensure_ascii=False, indent=2)
         stream.write("\n")
@@ -70,12 +76,12 @@ def progress_bar(label, current, total, width=32):
 
 
 def bearer_token(auth_required=False):
-    env = load_dotenv(ENV_FILE)
+    env = {**load_dotenv(ENV_FILE), **load_dotenv(ENV_LOCAL_FILE)}
     auth = load_json(AUTH_FILE, {})
     token = auth.get("access_token") if auth_required else None
     token = token or env.get("TMDB_APIKEY") or os.environ.get("TMDB_APIKEY")
     if not token:
-        source = ".tmdb-auth.json" if auth_required else ".env or TMDB_APIKEY"
+        source = ".tmdb-auth.json" if auth_required else ".env.local, .env or TMDB_APIKEY"
         raise SystemExit(f"TMDB token missing in {source}.")
     return token
 
@@ -83,7 +89,7 @@ def bearer_token(auth_required=False):
 def auth_data():
     auth = load_json(AUTH_FILE, {})
     if not auth.get("access_token") or not auth.get("account_id"):
-        raise SystemExit("Run './tmdb-local.py auth' first.")
+        raise SystemExit("Run './cli.py auth' first.")
     return auth
 
 
@@ -185,7 +191,17 @@ def cache_poster(item, media_type, tmdb_id):
     download_file(f"{IMAGE_BASE}{poster}", output_path)
 
 
-def watchlist_entity(item, media_type):
+def fetch_genre_names(token, language):
+    names = {}
+    query = urllib.parse.urlencode({"language": language})
+    for media_type in ("movie", "tv"):
+        data = request_json(f"{API3}/genre/{media_type}/list?{query}", token)
+        for genre in data.get("genres", []):
+            names[str(genre["id"])] = genre["name"]
+    return names
+
+
+def watchlist_entity(item, media_type, genre_names):
     title, year = title_and_year(item)
     tmdb_id = int(item["id"])
     cache_poster(item, media_type, tmdb_id)
@@ -195,6 +211,7 @@ def watchlist_entity(item, media_type):
         "title": title,
         "year": year,
         "url": f"https://themoviedb.org/{media_type}/{tmdb_id}",
+        "genres": {str(genre_id): genre_names.get(str(genre_id), "") for genre_id in item.get("genre_ids", [])},
     }
 
 
@@ -226,17 +243,18 @@ def command_watchlist(args):
     output = os.path.abspath(args.output)
     movie_items = fetch_watchlist("movie", args.language)
     tv_items = fetch_watchlist("tv", args.language)
+    genre_names = fetch_genre_names(auth_data()["access_token"], args.language)
 
     movies = []
     tvs = []
     total = len(movie_items) + len(tv_items)
     current = 0
     for item in movie_items:
-        movies.append(watchlist_entity(item, "movie"))
+        movies.append(watchlist_entity(item, "movie", genre_names))
         current += 1
         progress_bar("Cache posters", current, total)
     for item in tv_items:
-        tvs.append(watchlist_entity(item, "tv"))
+        tvs.append(watchlist_entity(item, "tv", genre_names))
         current += 1
         progress_bar("Cache posters", current, total)
 
@@ -263,7 +281,7 @@ def provider_logo_cache_path(provider):
 
     extension = os.path.splitext(urllib.parse.urlparse(logo_path).path)[1] or ".png"
     filename = f"provider-{provider_id}{extension}"
-    return os.path.join(PROVIDER_LOGO_DIR, filename), f"images/providers/{filename}"
+    return os.path.join(PROVIDER_LOGO_DIR, filename), f"cache/images/providers/{filename}"
 
 
 def cache_provider_logo(provider):
@@ -336,24 +354,84 @@ def command_providers(args):
     print(f"Saved streaming providers for {count} titles to {output}")
 
 
+def read_text(path):
+    with open(path, "r", encoding="utf-8") as stream:
+        return stream.read().strip()
+
+
+def command_static(args):
+    """Embed watchlist, providers and config into index.html, so it works without a webserver."""
+    static_file = os.path.join(BASE_DIR, "index-static.html")
+    config_file = os.path.join(BASE_DIR, "config.js")
+    with open(os.path.join(BASE_DIR, "index.html"), "r", encoding="utf-8") as stream:
+        template = stream.read()
+    template = template.replace("{movies: [], tvs: []}", read_text(WATCHLIST_FILE))
+
+    if os.path.exists(PROVIDERS_FILE):
+        template = template.replace("const providersDirect = {items: {}};", f"const providersDirect = {read_text(PROVIDERS_FILE)};")
+
+    if os.path.exists(config_file):
+        template = template.replace('<script src="config.js"></script>', f"<script>{read_text(config_file)}</script>")
+
+    with open(static_file, "w", encoding="utf-8") as stream:
+        stream.write(template)
+    print(f"Saved static website to {static_file}")
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Small local TMDB watchlist helper.")
+    parser = argparse.ArgumentParser(
+        description="Small local TMDB watchlist helper.",
+        epilog=(
+            "examples:\n"
+            "  ./cli.py auth         one time: allow account access, stores .tmdb-auth.json\n"
+            "  ./cli.py watchlist    download watchlist, posters and genres to cache/\n"
+            "  ./cli.py providers    update streaming providers in cache/providers.json\n"
+            "  ./cli.py static       optional: generate index-static.html (works without webserver)\n"
+            "\n"
+            "TMDB_APIKEY (v4 read access token) is read from .env.local, .env or the environment.\n"
+            "Use './cli.py <command> --help' for the options of a command."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    auth = sub.add_parser("auth", help="Create local TMDB account access token.")
+    auth = sub.add_parser(
+        "auth",
+        help="Create local TMDB account access token.",
+        description="Create a TMDB account access token (needs TMDB_APIKEY). Opens a confirmation URL and stores .tmdb-auth.json.",
+    )
     auth.set_defaults(func=command_auth)
 
-    watchlist = sub.add_parser("watchlist", help="Download TMDB account watchlist to movies.json.")
-    watchlist.add_argument("-o", "--output", default=os.path.join(BASE_DIR, "movies.json"))
-    watchlist.add_argument("--language", default="de-DE")
+    watchlist = sub.add_parser(
+        "watchlist",
+        help="Download TMDB account watchlist to cache/watchlist.json.",
+        description="Download the TMDB account watchlist with genres and cache missing posters to cache/images/tmdb.",
+        epilog="example:\n  ./cli.py watchlist --language en-US",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    watchlist.add_argument("-o", "--output", default=WATCHLIST_FILE, help="output JSON (default: cache/watchlist.json)")
+    watchlist.add_argument("--language", default="de-DE", help="language of titles and genres (default: de-DE)")
     watchlist.set_defaults(func=command_watchlist)
 
-    providers = sub.add_parser("providers", help="Update separate streaming provider JSON.")
-    providers.add_argument("-i", "--input", default=os.path.join(BASE_DIR, "movies.json"))
-    providers.add_argument("-o", "--output", default=os.path.join(BASE_DIR, "providers.json"))
-    providers.add_argument("--region", default="DE")
-    providers.add_argument("-v", "--verbose", action="store_true")
+    providers = sub.add_parser(
+        "providers",
+        help="Update separate streaming provider JSON.",
+        description="Update streaming providers for all watchlist titles and cache provider logos to cache/images/providers.",
+        epilog="example:\n  ./cli.py providers --region AT -v",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    providers.add_argument("-i", "--input", default=WATCHLIST_FILE, help="input watchlist JSON (default: cache/watchlist.json)")
+    providers.add_argument("-o", "--output", default=PROVIDERS_FILE, help="output JSON (default: cache/providers.json)")
+    providers.add_argument("--region", default="DE", help="country code for providers (default: DE)")
+    providers.add_argument("-v", "--verbose", action="store_true", help="print every updated title")
     providers.set_defaults(func=command_providers)
+
+    static = sub.add_parser(
+        "static",
+        help="Generate index-static.html.",
+        description="Generate index-static.html with embedded watchlist, providers and config.js, so it can be opened without a webserver.",
+    )
+    static.set_defaults(func=command_static)
 
     args = parser.parse_args()
     args.func(args)
